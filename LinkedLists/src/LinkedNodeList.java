@@ -43,6 +43,19 @@ public class LinkedNodeList {
 		head = prev;
 	}
 	
+	public void add(int value){
+		if(head == null){
+			head = new Node(value);
+			tail = head;
+			size++;
+		}
+		else {
+			tail.next = new Node(value);
+			tail = tail.next;
+			size++;
+		}
+	}
+	
 	/**
 	 * this method will print out your list, starting from head
 	 */
