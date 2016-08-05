@@ -59,7 +59,7 @@ public class Main extends Application {
 		grid.add(actionTarget, 1, 5);
 		
 		btn.setOnAction((ActionEvent actionEvent) -> {
-//			actionTarget.setTextAlignment(TextAlignment.CENTER);
+//			actionTarget.setTextAlignment(TextAlignment.RIGHT); //???
 			actionTarget.setText("Sign in button pressed");
 			actionTarget.setFill(Color.FIREBRICK);
 		});
@@ -75,7 +75,9 @@ public class Main extends Application {
 		
 		Scene scene = new Scene(grid, 300, 275);
 		primaryStage.setScene(scene);
+		scene.getStylesheets().add(Main.class.getResource("Login.css").toExternalForm());
 		primaryStage.show();
+		
 	}
 	
 	public static void main(String[] args) {
