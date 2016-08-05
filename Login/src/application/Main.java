@@ -31,7 +31,8 @@ public class Main extends Application {
 		grid.setPadding(new Insets(25, 25, 25, 25));
 		
 		Text scenetitle = new Text("Welcome");
-		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+		scenetitle.setId("welcome-id");
+//		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20)); //this is inline style, better to do CSS
 		grid.add(scenetitle, 0, 0, 2, 1);
 
 		Label userName = new Label("User Name:");
@@ -47,7 +48,7 @@ public class Main extends Application {
 		grid.add(pwBox, 1, 2);
 		
 		//Set Grid lines visible
-		grid.setGridLinesVisible(true);
+		grid.setGridLinesVisible(false);
 		
 		Button btn = new Button("Sign In");
 		HBox hbBtn = new HBox(10);
@@ -59,9 +60,9 @@ public class Main extends Application {
 		grid.add(actionTarget, 1, 5);
 		
 		btn.setOnAction((ActionEvent actionEvent) -> {
-//			actionTarget.setTextAlignment(TextAlignment.RIGHT); //???
+			actionTarget.setId("action-id");
 			actionTarget.setText("Sign in button pressed");
-			actionTarget.setFill(Color.FIREBRICK);
+//			actionTarget.setFill(Color.FIREBRICK); //this is inline style, better to do CSS
 		});
 		/*
 		btn.setOnAction(new EventHandler<ActionEvent>() {		
