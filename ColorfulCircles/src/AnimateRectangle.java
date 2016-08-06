@@ -100,21 +100,21 @@ public class AnimateRectangle extends Application {
 		scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
-				if (event.getCode() == KeyCode.RIGHT) {
-					if (rectangleXVelocity.get() > 0) {
-						rectangleXVelocity.set(0);
-					}
-				} else if (event.getCode() == KeyCode.LEFT) {
-					if (rectangleXVelocity.get() < 0) {
-						rectangleXVelocity.set(0);
+				if (event.getCode() == KeyCode.DOWN) {
+					if (rectangleYVelocity.get() > 0) {
+						rectangleYVelocity.set(0);
 					}
 				} else if (event.getCode() == KeyCode.UP) {
 					if (rectangleYVelocity.get() < 0) {
 						rectangleYVelocity.set(0);
 					}
-				} else if (event.getCode() == KeyCode.DOWN) {
-					if (rectangleYVelocity.get() > 0) {
-						rectangleYVelocity.set(0);
+				} else if (event.getCode() == KeyCode.LEFT) {
+					if (rectangleXVelocity.get() < 0) {
+						rectangleXVelocity.set(0);
+					}
+				} else if (event.getCode() == KeyCode.RIGHT) {
+					if (rectangleXVelocity.get() > 0) {
+						rectangleXVelocity.set(0);
 					}
 				}
 			}
