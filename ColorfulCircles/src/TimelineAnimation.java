@@ -22,6 +22,8 @@ public class TimelineAnimation extends Application {
 		rectBasicTimeline.setFill(Color.RED);
 		
 		root.getChildren().add(rectBasicTimeline);
+		primaryStage.show();
+
 		
 		final Timeline timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
@@ -31,12 +33,10 @@ public class TimelineAnimation extends Application {
 		timeline.getKeyFrames().add(kf);
 		timeline.play();
 		
-		primaryStage.show();
 	}
 	
 	public static void main(String[] args){
 		launch(args);
 	}
-	
 
 }
