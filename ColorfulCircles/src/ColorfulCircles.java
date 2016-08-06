@@ -53,12 +53,21 @@ public class ColorfulCircles extends Application {
 		
 		// Animation
 		Timeline timeline = new Timeline();
+		
 		for (Node circle : circles.getChildren()){
+			KeyValue startx = new KeyValue(circle.translateXProperty(), random() * 800);
+			KeyValue starty = new KeyValue(circle.translateYProperty(), random() * 600);
+
 			timeline.getKeyFrames().addAll(
-					new KeyFrame(Duration.ZERO, //set start position at 0
+					//this will have static circles in random locations
+//					new KeyFrame(Duration.ZERO, startx, starty),
+//					new KeyFrame(new Duration(10000), startx, starty)
+					
+					//this has randomly moving in a linear fashion from beginning to end points after the set amount of time
+					new KeyFrame(Duration.ZERO, //set start position time at 0
 							new KeyValue(circle.translateXProperty(), random() * 800),
 							new KeyValue(circle.translateYProperty(), random() * 600)
-					),
+					),			
 					new KeyFrame(new Duration(30000), // set end position at 30 seconds
 							new KeyValue(circle.translateXProperty(), random() * 800),
 							new KeyValue(circle.translateYProperty(), random() * 600)
