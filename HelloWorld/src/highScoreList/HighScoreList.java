@@ -35,6 +35,7 @@ public class HighScoreList extends Application {
 
 	private TextField field;
 	private Integer randomScore;
+	private static final int MAX_LIST_SIZE = 3;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -92,12 +93,12 @@ public class HighScoreList extends Application {
 		randomScore = rand.nextInt(101);
 		String nameText = field.getText();
 
-		if (view.getItems().size() < 3) {
+		if (view.getItems().size() < MAX_LIST_SIZE) {
 			addHighScoreName();
 		} else if (scoreIsHighScore()) {
 			replaceHighScoreName();
 		} else {
-			//do nothing
+			// do nothing
 			field.clear();
 			System.out.println("You suck");
 		}
@@ -130,25 +131,15 @@ public class HighScoreList extends Application {
 				}
 			}
 			ObservableList<NameScore> list = view.getItems();
-			list.remove(index);
+			list.remove(MAX_LIST_SIZE - 1 - index);
 			list.add(new NameScore(text, randomScore));
 			FXCollections.sort(list);
 			FXCollections.reverse(list);
 			view.setItems(list);
-			
-			//should be doing a clear or remove all and instantiating in global field
-			nameList = FXCollections.observableArrayList(); 
-			scoreList = FXCollections.observableArrayList();
 
-			for (NameScore elem : view.getItems()) {
-				nameList.add(elem.getName());
-				scoreList.add(elem.getScore());
-			}
-
-			nameView.setItems(nameList);
-			scoreView.setItems(scoreList);
+			actuallyAddToTheList();
 		}
-		
+
 		field.clear();
 	}
 
@@ -157,43 +148,56 @@ public class HighScoreList extends Application {
 
 		boolean isValid = checkIfValidName(text);
 
-		//should probably allow duplicate names
-		if (isValid && !nameView.getItems().contains(text)) { 
+		// should probably allow duplicate names
+		if (isValid) {// && !nameView.getItems().contains(text)) {
 			ObservableList<NameScore> list = view.getItems();
 			list.add(new NameScore(text, randomScore));
 			FXCollections.sort(list);
 			FXCollections.reverse(list);
 			view.setItems(list);
 
-			nameList = FXCollections.observableArrayList();
-			scoreList = FXCollections.observableArrayList();
+			actuallyAddToTheList();
 
-			for (NameScore elem : view.getItems()) {
-				nameList.add(elem.getName());
-				scoreList.add(elem.getScore());
-			}
-
-			nameView.setItems(nameList);
-			scoreView.setItems(scoreList);
 		}
 		field.clear();
 	}
 
 	public boolean checkIfValidName(String textName) {
-		if (textName.length() < 1)
+		if (textName.length() < 1) {
+			showErrorAlert();
 			return false;
+		}
 		for (int i = 0; i < textName.length(); i++) {
 			if (textName.charAt(i) == ' ')
 				break;
 			if (!Character.isLetter(textName.charAt(i))) {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setHeaderText("Incorrect Input");
-				alert.setContentText("Please input a string");
-				alert.showAndWait();
+				showErrorAlert();
 				return false;
 			}
 		}
 		return true;
+	}
+
+	public void actuallyAddToTheList() {
+		// should be doing a clear or remove all and instantiating in global
+		// field
+		nameList = FXCollections.observableArrayList();
+		scoreList = FXCollections.observableArrayList();
+
+		for (NameScore elem : view.getItems()) {
+			nameList.add(elem.getName());
+			scoreList.add(elem.getScore());
+		}
+
+		nameView.setItems(nameList);
+		scoreView.setItems(scoreList);
+	}
+
+	public void showErrorAlert() {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setHeaderText("Incorrect Input");
+		alert.setContentText("Please input a string");
+		alert.showAndWait();
 	}
 
 }
