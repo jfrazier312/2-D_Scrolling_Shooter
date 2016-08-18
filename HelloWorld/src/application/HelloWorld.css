@@ -1,0 +1,14 @@
+/*BEM STYLE CODING (block element modifier)*/
+/* .parent{} */
+/* .parent--modifier{} */
+/* .parent__child{} */
+.btn1 {
+	-fx-padding: 10;
+	-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, green 0%, red 100%);
+	/*rgba(0,0,0,1)=black, opacity 1 = default*/
+}
+
+.btn1--label {
+	-fx-font: 12px Tahoma;
+	-fx-text-fill: linear-gradient(to left top, white, black);
+}
