@@ -20,23 +20,26 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class HighScoreList extends Application {
 
 	private BorderPane root;
+	
 	private ListView<NameScore> view;
-	// private ListView<HashMap<String, Integer>> guy;
-
 	private ListView<String> nameView;
 	private ListView<Integer> scoreView;
 
-	ObservableList<String> nameList;
-	ObservableList<Integer> scoreList;
+	private ObservableList<String> nameList;
+	private ObservableList<Integer> scoreList;
 
-	private static final Text INPUT_MESSAGE = new Text("Input Initials");
+	private static final Text INPUT_MESSAGE = new Text("Input Initials:");
+	private static final Text HIGHSCORE_MESSAGE = new Text("CONGRATULATIONS, HIGHSCORE!");
 	private TextField field;
 	private Integer randomScore;
 	private static final int MAX_LIST_SIZE = 3;
@@ -53,11 +56,19 @@ public class HighScoreList extends Application {
 
 		VBox vbox = new VBox();
 		vbox.setSpacing(5.0);
+		vbox.getStyleClass().add("vbox");
 		field = new TextField();
 		// does not work for copy/paste
 		field.addEventFilter(KeyEvent.KEY_TYPED, maxLength(3));
 		
-		vbox.getChildren().addAll(INPUT_MESSAGE, field);
+		HIGHSCORE_MESSAGE.getStyleClass().add("highscoreMessage");
+		HIGHSCORE_MESSAGE.setFill(new LinearGradient(0f, 1f, 1f, 0f, true, CycleMethod.NO_CYCLE,
+						new Stop[] { new Stop(0, Color.web("#f8bd55")), new Stop(0.14, Color.web("#c0fe56")),
+								new Stop(0.28, Color.web("#5dfbc1")), new Stop(0.43, Color.web("#64c2f8")),
+								new Stop(0.57, Color.web("#be4af7")), new Stop(0.71, Color.web("#ed5fc2")),
+								new Stop(0.85, Color.web("#ef504c")), new Stop(1, Color.web("#f2660f")), }));
+		INPUT_MESSAGE.setFill(Color.GHOSTWHITE);
+		vbox.getChildren().addAll(HIGHSCORE_MESSAGE, INPUT_MESSAGE, field);
 		vbox.setPadding(new Insets(15));
 		vbox.setAlignment(Pos.CENTER);
 
@@ -77,15 +88,13 @@ public class HighScoreList extends Application {
 
 		HBox hbox = new HBox();
 		hbox.setAlignment(Pos.CENTER);
-		hbox.setPadding(new Insets(0, 50, 0, 50));
+		hbox.setPadding(new Insets(110, 50, 230, 50));
 		hbox.getStyleClass().add("hbox");
 		hbox.getChildren().addAll(nameView, scoreView);
 
 		root.setTop(vbox);
 		root.setCenter(hbox);
 		root.setBottom(buttonsBox);
-
-		// root.setCenter(nameView);
 
 		Scene scene = new Scene(root, 600, 550);
 
