@@ -1,3 +1,9 @@
 #buttonsBox-id {
 	-fx-alignment: CENTER;
 }
+
+/* hbox.getStyleClass().add("hbox");*/
+
+.hbox {
+	-fx-background-color: #2f2f2f; 
+}

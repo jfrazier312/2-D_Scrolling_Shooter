@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -18,6 +19,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class HighScoreList extends Application {
@@ -32,6 +36,7 @@ public class HighScoreList extends Application {
 	ObservableList<String> nameList;
 	ObservableList<Integer> scoreList;
 
+	private static final Text INPUT_MESSAGE = new Text("Input Initials");
 	private TextField field;
 	private Integer randomScore;
 	private static final int MAX_LIST_SIZE = 3;
@@ -46,29 +51,43 @@ public class HighScoreList extends Application {
 
 		root = new BorderPane();
 
+		VBox vbox = new VBox();
+		vbox.setSpacing(5.0);
 		field = new TextField();
 		// does not work for copy/paste
 		field.addEventFilter(KeyEvent.KEY_TYPED, maxLength(3));
+		
+		vbox.getChildren().addAll(INPUT_MESSAGE, field);
+		vbox.setPadding(new Insets(15));
+		vbox.setAlignment(Pos.CENTER);
 
-		Button okBtn = new Button("OK");
+		Button okBtn = new Button("Enter");
 		Button closeBtn = new Button("Close");
 		HBox buttonsBox = new HBox();
 		buttonsBox.setId("buttonsBox-id");
 		buttonsBox.getChildren().addAll(okBtn, closeBtn);
 
 		view = new ListView<NameScore>();
+
 		nameView = new ListView<String>();
+		nameView.setFocusTraversable(false);
+
 		scoreView = new ListView<Integer>();
+		scoreView.setFocusTraversable(false);
+
 		HBox hbox = new HBox();
+		hbox.setAlignment(Pos.CENTER);
+		hbox.setPadding(new Insets(0, 50, 0, 50));
+		hbox.getStyleClass().add("hbox");
 		hbox.getChildren().addAll(nameView, scoreView);
 
-		root.setTop(field);
+		root.setTop(vbox);
 		root.setCenter(hbox);
 		root.setBottom(buttonsBox);
 
 		// root.setCenter(nameView);
 
-		Scene scene = new Scene(root, 380, 300);
+		Scene scene = new Scene(root, 600, 550);
 
 		field.setAlignment(Pos.CENTER);
 
@@ -165,8 +184,10 @@ public class HighScoreList extends Application {
 			return false;
 		}
 		for (int i = 0; i < textName.length(); i++) {
-			if (textName.charAt(i) == ' ')
-				break;
+			if (textName.charAt(i) == ' ') {
+				showIncorrectInputErrorAlert();
+				return false;
+			}
 			if (!Character.isLetter(textName.charAt(i))) {
 				showIncorrectInputErrorAlert();
 				return false;
@@ -191,7 +212,6 @@ public class HighScoreList extends Application {
 	}
 
 	public void showIncorrectInputErrorAlert() {
-		System.out.println("ERRRRRRRRRRRRRRRRRRRRORRRRRRRRRR");
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setHeaderText("Incorrect Input");
 		alert.setContentText("Please input a string");
@@ -201,10 +221,10 @@ public class HighScoreList extends Application {
 	public EventHandler<KeyEvent> maxLength(final Integer i) {
 		return new EventHandler<KeyEvent>() {
 			@Override
-			public void handle(KeyEvent arg0) {
-				TextField tx = (TextField) arg0.getSource();
-				if (tx.getText().length() >= i) {
-					arg0.consume();
+			public void handle(KeyEvent e) {
+				TextField textfield = (TextField) e.getSource();
+				if (textfield.getText().length() >= i) {
+					e.consume();
 				}
 			}
 		};
