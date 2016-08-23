@@ -59,6 +59,7 @@ public class HighScoreList extends Application {
 		vbox.getStyleClass().add("vbox");
 		field = new TextField();
 		// does not work for copy/paste
+		field.setMaxWidth(100);
 		field.addEventFilter(KeyEvent.KEY_TYPED, maxLength(3));
 		
 		HIGHSCORE_MESSAGE.getStyleClass().add("highscoreMessage");
