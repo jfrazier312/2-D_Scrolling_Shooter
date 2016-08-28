@@ -41,7 +41,7 @@ public class practiceCollisions extends Application {
 	private static final int MAX_X = SCENE_WIDTH - RECT_WIDTH;
 	private static final int MAX_Y = SCENE_HEIGHT - RECT_HEIGHT;
 	private boolean spaceRepeat = false;
-
+	
 	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
 	private Rectangle rect;
 	Group root;
@@ -143,6 +143,7 @@ public class practiceCollisions extends Application {
 						root.getChildren().remove(enemy.getEnemyShip());
 						animation.stop();
 						root.getChildren().remove(bullet);
+						createEnemies();
 					}
 				}
 			}
@@ -163,11 +164,11 @@ public class practiceCollisions extends Application {
 //		if (moveLeft) {
 //			animation.setToX(0 + enemy.getEnemyShip().getWidth());
 //		} else {
-			animation.setToX(SCENE_WIDTH - enemy.getEnemyShip().getWidth() - 3);
+			animation.setToX(random.nextInt(SCENE_WIDTH));
 //
 //		}
 		
-		animation.setToY(enemy.getEnemyShip().getTranslateY() + 20);
+		animation.setToY(enemy.getEnemyShip().getTranslateY() + random.nextInt(100));
 //		animation.setAutoReverse(false);
 //		animation.setCycleCount(Timeline.INDEFINITE);
 		animation.setOnFinished(new EventHandler<ActionEvent>() {
@@ -184,8 +185,8 @@ public class practiceCollisions extends Application {
 		TranslateTransition animation = new TranslateTransition(Duration.seconds(2), enemy.getEnemyShip());
 		animation.setFromX(enemy.getEnemyShip().getTranslateX());
 		animation.setFromY(enemy.getEnemyShip().getTranslateY());
-		animation.setToX(3);
-		animation.setToY(enemy.getEnemyShip().getTranslateY() + 70);
+		animation.setToX(random.nextInt(SCENE_WIDTH));
+		animation.setToY(enemy.getEnemyShip().getTranslateY() + random.nextInt(100));
 		
 		animation.setOnFinished(e -> {
 			moveEnemyShipRight(enemy);
