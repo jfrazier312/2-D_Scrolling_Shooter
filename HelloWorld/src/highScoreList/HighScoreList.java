@@ -4,6 +4,7 @@ import java.util.Random;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -30,7 +31,7 @@ import javafx.stage.Stage;
 public class HighScoreList extends Application {
 
 	private BorderPane root;
-	
+
 	private ListView<NameScore> view;
 	private ListView<String> nameView;
 	private ListView<Integer> scoreView;
@@ -57,17 +58,48 @@ public class HighScoreList extends Application {
 		VBox vbox = new VBox();
 		vbox.setSpacing(5.0);
 		vbox.getStyleClass().add("vbox");
-		field = new TextField();
-		// does not work for copy/paste
-		field.setMaxWidth(100);
-		field.addEventFilter(KeyEvent.KEY_TYPED, maxLength(3));
+
+		field = new TextField() { // restricts all copy paste and numbers, does not
+									// allow you to delete or any other things
+			//first method to restrict input
+			@Override
+			public void replaceText(int start, int end, String text) {
+				if (text.matches("[a-zA-Z]")) {
+					super.replaceText(start, end, text);
+				}
+			}
+
+			@Override
+			public void replaceSelection(String text) {
+				if (text.matches("[a-zA-Z]")) {
+					super.replaceSelection(text);
+				}
+			}
+		};
+		//second method to restrict input (third is to add listener)
+		field.addEventFilter(KeyEvent.KEY_TYPED, restrictInitialMaxLength(3));
 		
+		//third method 
+		/*
+		field.textProperty().addListener((obs, oldText, newText) -> {
+			if(newText.matches("[a-z]")){
+				field.setText(newText);
+			} else {
+				field.setText(oldText);
+			}
+		});*/
+		
+		//fourth method is to use textformatter (look it up)
+
+
+		field.setMaxWidth(100);
+
 		HIGHSCORE_MESSAGE.getStyleClass().add("highscoreMessage");
 		HIGHSCORE_MESSAGE.setFill(new LinearGradient(0f, 1f, 1f, 0f, true, CycleMethod.NO_CYCLE,
-						new Stop[] { new Stop(0, Color.web("#f8bd55")), new Stop(0.14, Color.web("#c0fe56")),
-								new Stop(0.28, Color.web("#5dfbc1")), new Stop(0.43, Color.web("#64c2f8")),
-								new Stop(0.57, Color.web("#be4af7")), new Stop(0.71, Color.web("#ed5fc2")),
-								new Stop(0.85, Color.web("#ef504c")), new Stop(1, Color.web("#f2660f")), }));
+				new Stop[] { new Stop(0, Color.web("#f8bd55")), new Stop(0.14, Color.web("#c0fe56")),
+						new Stop(0.28, Color.web("#5dfbc1")), new Stop(0.43, Color.web("#64c2f8")),
+						new Stop(0.57, Color.web("#be4af7")), new Stop(0.71, Color.web("#ed5fc2")),
+						new Stop(0.85, Color.web("#ef504c")), new Stop(1, Color.web("#f2660f")), }));
 		INPUT_MESSAGE.setFill(Color.GHOSTWHITE);
 		vbox.getChildren().addAll(HIGHSCORE_MESSAGE, INPUT_MESSAGE, field);
 		vbox.setPadding(new Insets(15));
@@ -126,7 +158,7 @@ public class HighScoreList extends Application {
 		Random rand = new Random();
 		randomScore = rand.nextInt(101);
 
-		isValid = checkIfValidName(field.getText());
+		isValid = checkIfValidInitialsInput(field.getText());
 		if (isValid) {
 			if (view.getItems().size() < MAX_LIST_SIZE) {
 				addHighScoreName();
@@ -152,7 +184,6 @@ public class HighScoreList extends Application {
 	}
 
 	public void replaceHighScoreName() {
-
 		if (isValid) {
 			int min = 0;
 			int index = 0;
@@ -188,8 +219,8 @@ public class HighScoreList extends Application {
 		}
 	}
 
-	public boolean checkIfValidName(String textName) {
-		if (textName.length() < 1) {
+	public boolean checkIfValidInitialsInput(String textName) {
+		if (textName.length() < 1 || textName.length() > 3) {
 			showIncorrectInputErrorAlert();
 			return false;
 		}
@@ -224,11 +255,11 @@ public class HighScoreList extends Application {
 	public void showIncorrectInputErrorAlert() {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setHeaderText("Incorrect Input");
-		alert.setContentText("Please input a string");
+		alert.setContentText("Please input one to three initials");
 		alert.showAndWait();
 	}
 
-	public EventHandler<KeyEvent> maxLength(final Integer i) {
+	public EventHandler<KeyEvent> restrictInitialMaxLength(final Integer i) {
 		return new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent e) {
@@ -238,7 +269,5 @@ public class HighScoreList extends Application {
 				}
 			}
 		};
-
 	}
-
 }

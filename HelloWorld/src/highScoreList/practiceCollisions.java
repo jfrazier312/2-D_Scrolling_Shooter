@@ -1,5 +1,7 @@
 package highScoreList;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javafx.animation.AnimationTimer;
@@ -8,7 +10,11 @@ import javafx.application.Application;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -36,6 +42,7 @@ public class practiceCollisions extends Application {
 	private static final int MAX_Y = SCENE_HEIGHT - RECT_HEIGHT;
 	private boolean spaceRepeat = false;
 
+	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
 	private Rectangle rect;
 	Group root;
 
@@ -49,10 +56,15 @@ public class practiceCollisions extends Application {
 		root = new Group();
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
 		// 0.5 * SCENE_WIDTH - 0.5 * RECT_WIDTH
+		// wont allow you to move to negatives because of the handle in
+		// animation
 		rect = new Rectangle(0, MAX_Y - 5, RECT_WIDTH, RECT_HEIGHT);
 		root.getChildren().add(rect);
 
-		primaryStage.setTitle("Rectangle Moving");
+		// Creates enemy ships
+		createEnemies();
+
+		primaryStage.setTitle("Collision Practice");
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
@@ -83,7 +95,7 @@ public class practiceCollisions extends Application {
 				} else if (event.getCode() == KeyCode.SPACE) {
 					if (!spaceRepeat) {
 						spaceRepeat = true;
-						fireBullet();
+						fireBullet(enemies);
 					}
 				}
 			}
@@ -104,7 +116,7 @@ public class practiceCollisions extends Application {
 		});
 	}
 
-	public void fireBullet() {
+	public void fireBullet(final List<EnemyShip> enemies) {
 		// create new circle at top of my ship, and send it trasnletransition to
 		// top of screen
 		Shape bullet = new Circle(3, Color.RED);
@@ -113,12 +125,79 @@ public class practiceCollisions extends Application {
 		animation.setFromX(rect.getTranslateX() + RECT_WIDTH / 2);
 		animation.setFromY(MAX_Y);
 		animation.setToX(rect.getTranslateX() + RECT_WIDTH / 2);
-		animation.setToY(0);
+		animation.setToY(-20);
+
+		bullet.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
+				for (EnemyShip enemy : new ArrayList<EnemyShip>(enemies)) { // why
+																			// not
+																			// just
+																			// use
+																			// old
+																			// list
+					if ((Shape.intersect(enemy.getEnemyShip(), bullet)).getBoundsInLocal().getWidth() != -1) {
+						System.out.println("HIT!!!!!!!!!!");
+						enemies.remove(enemy);
+						root.getChildren().remove(enemy.getEnemyShip());
+						animation.stop();
+						root.getChildren().remove(bullet);
+					}
+				}
+			}
+		});
 
 		animation.setOnFinished(e -> {
 			root.getChildren().remove(bullet);
 		});
 
 		animation.play();
+	}
+
+	public void moveEnemyShipRight(EnemyShip enemy) {
+//		boolean moveLeft = false;
+		TranslateTransition animation = new TranslateTransition(Duration.seconds(2), enemy.getEnemyShip());
+		animation.setFromX(enemy.getEnemyShip().getTranslateX());
+		animation.setFromY(enemy.getEnemyShip().getTranslateY());
+//		if (moveLeft) {
+//			animation.setToX(0 + enemy.getEnemyShip().getWidth());
+//		} else {
+			animation.setToX(SCENE_WIDTH - enemy.getEnemyShip().getWidth() - 3);
+//
+//		}
+		
+		animation.setToY(enemy.getEnemyShip().getTranslateY() + 20);
+//		animation.setAutoReverse(false);
+//		animation.setCycleCount(Timeline.INDEFINITE);
+		animation.setOnFinished(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				moveEnemyShipLeft(enemy);
+			}
+		});
+		animation.play();
+
+	}
+	
+	public void moveEnemyShipLeft(EnemyShip enemy) {
+		TranslateTransition animation = new TranslateTransition(Duration.seconds(2), enemy.getEnemyShip());
+		animation.setFromX(enemy.getEnemyShip().getTranslateX());
+		animation.setFromY(enemy.getEnemyShip().getTranslateY());
+		animation.setToX(3);
+		animation.setToY(enemy.getEnemyShip().getTranslateY() + 70);
+		
+		animation.setOnFinished(e -> {
+			moveEnemyShipRight(enemy);
+		});
+		animation.play();
+
+	}
+
+	public void createEnemies() {
+		EnemyShip enemy = new EnemyShip();
+		enemies.add(enemy);
+		root.getChildren().add(enemy.getEnemyShip());
+		moveEnemyShipRight(enemy);
 	}
 }
