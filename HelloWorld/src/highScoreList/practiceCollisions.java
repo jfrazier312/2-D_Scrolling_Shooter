@@ -190,13 +190,13 @@ public class practiceCollisions extends Application {
 		
 		animation.setOnFinished(e -> {
 			moveEnemyShipRight(enemy);
-		});
+		}); 
 		animation.play();
 
 	}
 
 	public void createEnemies() {
-		EnemyShip enemy = new EnemyShip();
+		EnemyShip enemy = new EnemyShip(1);
 		enemies.add(enemy);
 		root.getChildren().add(enemy.getEnemyShip());
 		moveEnemyShipRight(enemy);
