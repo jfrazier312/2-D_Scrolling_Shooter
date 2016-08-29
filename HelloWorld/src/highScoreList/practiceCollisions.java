@@ -7,8 +7,11 @@ import java.util.Random;
 import javafx.animation.AnimationTimer;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -23,6 +26,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -41,6 +46,9 @@ public class practiceCollisions extends Application {
 	private static final int MAX_X = SCENE_WIDTH - RECT_WIDTH;
 	private static final int MAX_Y = SCENE_HEIGHT - RECT_HEIGHT;
 	private boolean spaceRepeat = false;
+	
+	private final Text scoreCounter = new Text();
+	private final IntegerProperty playerScore = new SimpleIntegerProperty();
 	
 	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
 	private Rectangle rect;
@@ -61,6 +69,8 @@ public class practiceCollisions extends Application {
 		rect = new Rectangle(0, MAX_Y - 5, RECT_WIDTH, RECT_HEIGHT);
 		root.getChildren().add(rect);
 
+		//sets score counter at top
+		setScoreCounter();
 		// Creates enemy ships
 		createEnemies();
 
@@ -143,6 +153,7 @@ public class practiceCollisions extends Application {
 						root.getChildren().remove(enemy.getEnemyShip());
 						animation.stop();
 						root.getChildren().remove(bullet);
+						incrementPlayerScore();
 						createEnemies();
 					}
 				}
@@ -167,7 +178,6 @@ public class practiceCollisions extends Application {
 			animation.setToX(random.nextInt(SCENE_WIDTH));
 //
 //		}
-		
 		animation.setToY(enemy.getEnemyShip().getTranslateY() + random.nextInt(100));
 //		animation.setAutoReverse(false);
 //		animation.setCycleCount(Timeline.INDEFINITE);
@@ -178,7 +188,6 @@ public class practiceCollisions extends Application {
 			}
 		});
 		animation.play();
-
 	}
 	
 	public void moveEnemyShipLeft(EnemyShip enemy) {
@@ -192,7 +201,19 @@ public class practiceCollisions extends Application {
 			moveEnemyShipRight(enemy);
 		}); 
 		animation.play();
-
+	}
+	
+	public void setScoreCounter() {
+		scoreCounter.textProperty().bind(Bindings.concat("Score: " ).concat(playerScore));
+		scoreCounter.setTextAlignment(TextAlignment.CENTER);
+		scoreCounter.setLayoutX(SCENE_WIDTH/2);
+		scoreCounter.setLayoutY(20);
+		scoreCounter.setFill(Color.RED);
+		root.getChildren().add(scoreCounter);
+	}
+	
+	public void incrementPlayerScore() {
+		playerScore.set(playerScore.get() + 1);
 	}
 
 	public void createEnemies() {
