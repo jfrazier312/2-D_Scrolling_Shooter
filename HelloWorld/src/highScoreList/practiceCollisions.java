@@ -47,17 +47,16 @@ public class practiceCollisions extends Application {
 	private static final int MAX_Y = SCENE_HEIGHT - RECT_HEIGHT;
 
 	private boolean spaceRepeat = false;
-	private boolean stopEnemyAnimation = false;
 
 	private long timestamp = 0;
-	private float ENEMY_FIRE_RATE = 5_000_000_000f;
+	private float ENEMY_FIRE_RATE = 3_000_000_000f;
 
 	private final Text scoreCounter = new Text();
 	private final IntegerProperty playerScore = new SimpleIntegerProperty();
 	private final IntegerProperty playerLives = new SimpleIntegerProperty();
 
 	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
-	private Rectangle rect;
+	private Rectangle myShip;
 	Group root;
 
 	public static void main(String[] args) {
@@ -72,8 +71,8 @@ public class practiceCollisions extends Application {
 		// 0.5 * SCENE_WIDTH - 0.5 * RECT_WIDTH
 		// wont allow you to move to negatives because of the handle in
 		// animation
-		rect = new Rectangle(0, MAX_Y - 5, RECT_WIDTH, RECT_HEIGHT);
-		root.getChildren().add(rect);
+		myShip = new Rectangle(0, MAX_Y - 5, RECT_WIDTH, RECT_HEIGHT);
+		root.getChildren().add(myShip);
 
 		// sets score counter at top and lives
 		setPlayerLives();
@@ -94,9 +93,9 @@ public class practiceCollisions extends Application {
 				if (lastUpdateTime.get() > 0) {
 					final double elapsedSeconds = (timestamp - lastUpdateTime.get()) / 1_000_000_000.0;
 					final double deltaX = elapsedSeconds * rectangleXVelocity.get();
-					final double oldX = rect.getTranslateX();
+					final double oldX = myShip.getTranslateX();
 					final double newX = Math.max(MIN_X, Math.min(MAX_X, oldX + deltaX));
-					rect.setTranslateX(newX);
+					myShip.setTranslateX(newX);
 				}
 				lastUpdateTime.set(timestamp);
 			}
@@ -140,21 +139,16 @@ public class practiceCollisions extends Application {
 		Shape bullet = new Circle(3, Color.RED);
 		root.getChildren().add(bullet);
 		TranslateTransition animation = new TranslateTransition(Duration.seconds(BULLET_SPEED), bullet);
-		animation.setFromX(rect.getTranslateX() + RECT_WIDTH / 2);
+		animation.setFromX(myShip.getTranslateX() + RECT_WIDTH / 2);
 		animation.setFromY(MAX_Y);
-		animation.setToX(rect.getTranslateX() + RECT_WIDTH / 2);
+		animation.setToX(myShip.getTranslateX() + RECT_WIDTH / 2);
 		animation.setToY(-20);
 
 		bullet.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
-				for (EnemyShip enemy : new ArrayList<EnemyShip>(enemies)) { // why
-																			// not
-																			// just
-																			// use
-																			// old
-																			// list
+				for (EnemyShip enemy : new ArrayList<EnemyShip>(enemies)) {
 					if ((Shape.intersect(enemy.getEnemyShip(), bullet)).getBoundsInLocal().getWidth() != -1) {
 						System.out.println("HIT!!!!!!!!!!");
 						enemies.remove(enemy);
@@ -162,6 +156,7 @@ public class practiceCollisions extends Application {
 						animation.stop();
 						root.getChildren().remove(bullet);
 						incrementPlayerScore();
+						enemy.setAnimationStop(true);
 						createEnemies();
 					}
 				}
@@ -194,13 +189,13 @@ public class practiceCollisions extends Application {
 		animation.setOnFinished(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				if (stopEnemyAnimation) {
+				if (enemy.getAnimationStop()) {
 					animation.stop();
 				}
 				moveEnemyShipLeft(enemy);
 			}
 		});
-		if (!stopEnemyAnimation) {
+		if (!enemy.getAnimationStop()) {
 			animation.play();
 		}
 	}
@@ -215,12 +210,12 @@ public class practiceCollisions extends Application {
 		checkYBounds(enemy, animation);
 
 		animation.setOnFinished(e -> {
-			if (stopEnemyAnimation) {
+			if (enemy.getAnimationStop()) {
 				animation.stop();
 			}
 			moveEnemyShipRight(enemy);
 		});
-		if (!stopEnemyAnimation) {
+		if (!enemy.getAnimationStop()) {
 			animation.play();
 		}
 	}
@@ -228,9 +223,10 @@ public class practiceCollisions extends Application {
 	public void checkYBounds(EnemyShip enemy, TranslateTransition animation) {
 		if (enemy.getEnemyShip().getTranslateY() >= (SCENE_HEIGHT)) {
 			System.out.println("REMOVED ENEMY SHIP AT BOTTOM OF SCREEN");
-			stopEnemyAnimation = true;
+			enemy.setAnimationStop(true);
 			enemies.remove(enemy);
 			root.getChildren().remove(enemy.getEnemyShip());
+			createEnemies();
 		}
 	}
 
@@ -239,20 +235,59 @@ public class practiceCollisions extends Application {
 		enemies.add(enemy);
 		root.getChildren().add(enemy.getEnemyShip());
 		moveEnemyShipRight(enemy);
-		enemyFireAnimation();
+		enemyFireAnimation(enemy);
 	}
 
-	public void enemyFireAnimation() {
+	public void enemyFireAnimation(EnemyShip enemy) {
 		AnimationTimer animation = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-				if (now - timestamp > ENEMY_FIRE_RATE && !stopEnemyAnimation) {
-					System.out.println("PRINTED ENEMY FIRE ANIMATION");
+				if (now - timestamp > ENEMY_FIRE_RATE && !enemy.getAnimationStop()) {
+					System.out.println("ENEMY FIRE");
+					System.out.println(now - timestamp + "::::::" + ENEMY_FIRE_RATE);
+					enemyFire(enemy);
 					timestamp = now;
 				}
 			}
 		};
 		animation.start();
+		if (enemy.getAnimationStop()) {
+			animation.stop();
+		}
+	}
+
+	public void enemyFire(EnemyShip enemy) {
+		Rectangle ship = enemy.getEnemyShip();
+		Shape enemyBullet = new Circle(5, Color.BLUE);
+		root.getChildren().add(enemyBullet);
+		TranslateTransition animation = new TranslateTransition(Duration.seconds(random.nextInt(3) + 1), enemyBullet);
+		animation.setFromX(ship.getTranslateX() + enemy.getEnemyWidth() / 2);
+		animation.setFromY(ship.getTranslateY() + enemy.getEnemyHeight());
+		animation.setToX(ship.getTranslateX() + enemy.getEnemyWidth() / 2);
+		animation.setToY(SCENE_HEIGHT);
+		animation.play();
+
+		enemyBullet.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
+				if ((Shape.intersect(enemyBullet, myShip)).getBoundsInLocal().getWidth() != -1) {
+					System.out.println("ENEMY BULLET HIT ME");
+					root.getChildren().remove(enemyBullet);
+					decrementPlayerLives();
+					if (playerLives.get() <= 0) {
+						root.getChildren().remove(myShip);
+						System.out.println("You lost all of your lives");
+					}
+					animation.stop();
+				}
+			}
+		});
+
+		animation.setOnFinished(e -> {
+			root.getChildren().remove(enemyBullet);
+			animation.stop();
+		});
 
 	}
 
