@@ -45,11 +45,17 @@ public class practiceCollisions extends Application {
 	private static final int MIN_Y = 0;
 	private static final int MAX_X = SCENE_WIDTH - RECT_WIDTH;
 	private static final int MAX_Y = SCENE_HEIGHT - RECT_HEIGHT;
+
 	private boolean spaceRepeat = false;
-	
+	private boolean stopEnemyAnimation = false;
+
+	private long timestamp = 0;
+	private float ENEMY_FIRE_RATE = 5_000_000_000f;
+
 	private final Text scoreCounter = new Text();
 	private final IntegerProperty playerScore = new SimpleIntegerProperty();
-	
+	private final IntegerProperty playerLives = new SimpleIntegerProperty();
+
 	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
 	private Rectangle rect;
 	Group root;
@@ -69,7 +75,8 @@ public class practiceCollisions extends Application {
 		rect = new Rectangle(0, MAX_Y - 5, RECT_WIDTH, RECT_HEIGHT);
 		root.getChildren().add(rect);
 
-		//sets score counter at top
+		// sets score counter at top and lives
+		setPlayerLives();
 		setScoreCounter();
 		// Creates enemy ships
 		createEnemies();
@@ -124,6 +131,7 @@ public class practiceCollisions extends Application {
 				spaceRepeat = false;
 			}
 		});
+
 	}
 
 	public void fireBullet(final List<EnemyShip> enemies) {
@@ -168,52 +176,62 @@ public class practiceCollisions extends Application {
 	}
 
 	public void moveEnemyShipRight(EnemyShip enemy) {
-//		boolean moveLeft = false;
+		// boolean moveLeft = false;
 		TranslateTransition animation = new TranslateTransition(Duration.seconds(2), enemy.getEnemyShip());
 		animation.setFromX(enemy.getEnemyShip().getTranslateX());
 		animation.setFromY(enemy.getEnemyShip().getTranslateY());
-//		if (moveLeft) {
-//			animation.setToX(0 + enemy.getEnemyShip().getWidth());
-//		} else {
-			animation.setToX(random.nextInt(SCENE_WIDTH));
-//
-//		}
+		// if (moveLeft) {
+		// animation.setToX(0 + enemy.getEnemyShip().getWidth());
+		// } else {
+		animation.setToX(random.nextInt(SCENE_WIDTH));
+		//
+		// }
 		animation.setToY(enemy.getEnemyShip().getTranslateY() + random.nextInt(100));
-//		animation.setAutoReverse(false);
-//		animation.setCycleCount(Timeline.INDEFINITE);
+
+		checkYBounds(enemy, animation);
+		// animation.setAutoReverse(false);
+		// animation.setCycleCount(Timeline.INDEFINITE);
 		animation.setOnFinished(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
+				if (stopEnemyAnimation) {
+					animation.stop();
+				}
 				moveEnemyShipLeft(enemy);
 			}
 		});
-		animation.play();
+		if (!stopEnemyAnimation) {
+			animation.play();
+		}
 	}
-	
+
 	public void moveEnemyShipLeft(EnemyShip enemy) {
 		TranslateTransition animation = new TranslateTransition(Duration.seconds(2), enemy.getEnemyShip());
 		animation.setFromX(enemy.getEnemyShip().getTranslateX());
 		animation.setFromY(enemy.getEnemyShip().getTranslateY());
 		animation.setToX(random.nextInt(SCENE_WIDTH));
 		animation.setToY(enemy.getEnemyShip().getTranslateY() + random.nextInt(100));
-		
+
+		checkYBounds(enemy, animation);
+
 		animation.setOnFinished(e -> {
+			if (stopEnemyAnimation) {
+				animation.stop();
+			}
 			moveEnemyShipRight(enemy);
-		}); 
-		animation.play();
+		});
+		if (!stopEnemyAnimation) {
+			animation.play();
+		}
 	}
-	
-	public void setScoreCounter() {
-		scoreCounter.textProperty().bind(Bindings.concat("Score: " ).concat(playerScore));
-		scoreCounter.setTextAlignment(TextAlignment.CENTER);
-		scoreCounter.setLayoutX(SCENE_WIDTH/2);
-		scoreCounter.setLayoutY(20);
-		scoreCounter.setFill(Color.RED);
-		root.getChildren().add(scoreCounter);
-	}
-	
-	public void incrementPlayerScore() {
-		playerScore.set(playerScore.get() + 1);
+
+	public void checkYBounds(EnemyShip enemy, TranslateTransition animation) {
+		if (enemy.getEnemyShip().getTranslateY() >= (SCENE_HEIGHT)) {
+			System.out.println("REMOVED ENEMY SHIP AT BOTTOM OF SCREEN");
+			stopEnemyAnimation = true;
+			enemies.remove(enemy);
+			root.getChildren().remove(enemy.getEnemyShip());
+		}
 	}
 
 	public void createEnemies() {
@@ -221,5 +239,43 @@ public class practiceCollisions extends Application {
 		enemies.add(enemy);
 		root.getChildren().add(enemy.getEnemyShip());
 		moveEnemyShipRight(enemy);
+		enemyFireAnimation();
 	}
+
+	public void enemyFireAnimation() {
+		AnimationTimer animation = new AnimationTimer() {
+			@Override
+			public void handle(long now) {
+				if (now - timestamp > ENEMY_FIRE_RATE && !stopEnemyAnimation) {
+					System.out.println("PRINTED ENEMY FIRE ANIMATION");
+					timestamp = now;
+				}
+			}
+		};
+		animation.start();
+
+	}
+
+	public void setScoreCounter() {
+		scoreCounter.textProperty()
+				.bind(Bindings.concat("Score: ").concat(playerScore).concat("\nLives: ").concat(playerLives));
+		scoreCounter.setTextAlignment(TextAlignment.CENTER);
+		scoreCounter.setLayoutX(SCENE_WIDTH / 2);
+		scoreCounter.setLayoutY(20);
+		scoreCounter.setFill(Color.RED);
+		root.getChildren().add(scoreCounter);
+	}
+
+	public void incrementPlayerScore() {
+		playerScore.set(playerScore.get() + 1);
+	}
+
+	public void decrementPlayerLives() {
+		playerLives.set(playerLives.get() - 1);
+	}
+
+	public void setPlayerLives() {
+		playerLives.set(3);
+	}
+
 }
