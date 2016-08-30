@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
@@ -48,8 +51,10 @@ public class practiceCollisions extends Application {
 
 	private boolean spaceRepeat = false;
 
-	private long timestamp = 0;
+	private LongProperty lastUpdateTimeEnemyFire = new SimpleLongProperty();
+
 	private float ENEMY_FIRE_RATE = 3_000_000_000f;
+	private static final int SCORE_TO_WIN = 3;
 
 	private final Text scoreCounter = new Text();
 	private final IntegerProperty playerScore = new SimpleIntegerProperty();
@@ -57,7 +62,9 @@ public class practiceCollisions extends Application {
 
 	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
 	private Rectangle myShip;
-	Group root;
+	private Group root;
+
+	private Stage stage;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -65,7 +72,7 @@ public class practiceCollisions extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-
+		stage = primaryStage;
 		root = new Group();
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
 		// 0.5 * SCENE_WIDTH - 0.5 * RECT_WIDTH
@@ -170,6 +177,8 @@ public class practiceCollisions extends Application {
 		animation.play();
 	}
 
+	// either move randomly up and sideways, or if they go all the way down then
+	// you lose a life/points
 	public void moveEnemyShipRight(EnemyShip enemy) {
 		// boolean moveLeft = false;
 		TranslateTransition animation = new TranslateTransition(Duration.seconds(2), enemy.getEnemyShip());
@@ -181,7 +190,7 @@ public class practiceCollisions extends Application {
 		animation.setToX(random.nextInt(SCENE_WIDTH));
 		//
 		// }
-		animation.setToY(enemy.getEnemyShip().getTranslateY() + random.nextInt(100));
+		animation.setToY(enemy.getEnemyShip().getTranslateY() + random.nextInt(100) + 40);
 
 		checkYBounds(enemy, animation);
 		// animation.setAutoReverse(false);
@@ -189,9 +198,10 @@ public class practiceCollisions extends Application {
 		animation.setOnFinished(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				if (enemy.getAnimationStop()) {
-					animation.stop();
-				}
+				// if (enemy.getAnimationStop()) {
+				// animation.stop();
+				// }
+				// animation.stop();
 				moveEnemyShipLeft(enemy);
 			}
 		});
@@ -205,7 +215,7 @@ public class practiceCollisions extends Application {
 		animation.setFromX(enemy.getEnemyShip().getTranslateX());
 		animation.setFromY(enemy.getEnemyShip().getTranslateY());
 		animation.setToX(random.nextInt(SCENE_WIDTH));
-		animation.setToY(enemy.getEnemyShip().getTranslateY() + random.nextInt(100));
+		animation.setToY(enemy.getEnemyShip().getTranslateY() + random.nextInt(100) + 40);
 
 		checkYBounds(enemy, animation);
 
@@ -235,18 +245,27 @@ public class practiceCollisions extends Application {
 		enemies.add(enemy);
 		root.getChildren().add(enemy.getEnemyShip());
 		moveEnemyShipRight(enemy);
-		enemyFireAnimation(enemy);
+		Timeline timeline = new Timeline(new KeyFrame(Duration.millis(random.nextInt(2000) + 1000), 
+				e -> enemyFireAnimation2(enemy)));
+		timeline.setCycleCount(Animation.INDEFINITE);
+		timeline.play();
+	}
+	
+	public void enemyFireAnimation2(EnemyShip enemy){
+		System.out.println("new guy enemy guy");
+		enemyFire(enemy);
 	}
 
+	@Deprecated
 	public void enemyFireAnimation(EnemyShip enemy) {
 		AnimationTimer animation = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-				if (now - timestamp > ENEMY_FIRE_RATE && !enemy.getAnimationStop()) {
+				if (now - lastUpdateTimeEnemyFire.get() > ENEMY_FIRE_RATE && !enemy.getAnimationStop()) {
 					System.out.println("ENEMY FIRE");
-					System.out.println(now - timestamp + "::::::" + ENEMY_FIRE_RATE);
+					System.out.println(now - lastUpdateTimeEnemyFire.get() + "::::::" + ENEMY_FIRE_RATE);
 					enemyFire(enemy);
-					timestamp = now;
+					lastUpdateTimeEnemyFire.set(now);
 				}
 			}
 		};
@@ -303,6 +322,10 @@ public class practiceCollisions extends Application {
 
 	public void incrementPlayerScore() {
 		playerScore.set(playerScore.get() + 1);
+		if (playerScore.get() >= SCORE_TO_WIN) {
+			HighScoreView hsView = new HighScoreView(playerScore.get());
+			stage.setScene(hsView.getScene());
+		}
 	}
 
 	public void decrementPlayerLives() {
