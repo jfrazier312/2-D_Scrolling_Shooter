@@ -61,14 +61,14 @@ public class GameView implements GameWorld {
 	public static IntegerProperty playerScore = new SimpleIntegerProperty();
 	private List<TranslateTransition> animationList = new ArrayList<>();
 	private List<Timeline> timelineList = new ArrayList<>();
-	
+
 	private CountDownTimer timer;
 
 	private Group gameRoot;
 	private AnimationTimer shipAnimation;
 
 	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
-	
+
 	public void animateGame() {
 		timer.startCountDown();
 		EnemyShip enemy = createEnemy();
@@ -155,8 +155,6 @@ public class GameView implements GameWorld {
 
 		return gameScene;
 	}
-	
-	
 
 	public Scene getGameScene() {
 		return gameScene;
@@ -245,10 +243,11 @@ public class GameView implements GameWorld {
 
 	public void animateEnemy(EnemyShip enemy) {
 		moveEnemyShip(enemy);
-		// this method fires even once after enemy dies.
+		// this method fires even once after enemy dies. how to fix
 		Timeline timeline = new Timeline();
 		timelineList.add(timeline);
-		KeyFrame key1 = new KeyFrame(Duration.millis(random.nextInt(2000) + 1000), e -> enemyFireAnimation2(enemy));
+		KeyFrame key1 = new KeyFrame(Duration.millis(random.nextInt(2000) + 1000),
+				e -> enemyFireAnimation2(timeline, enemy));
 		timeline.getKeyFrames().add(key1);
 		timeline.setCycleCount(1);
 		timeline.setOnFinished(e -> {
@@ -261,9 +260,13 @@ public class GameView implements GameWorld {
 		timeline.play();
 	}
 
-	public void enemyFireAnimation2(EnemyShip enemy) {
+	public void enemyFireAnimation2(Timeline timeline, EnemyShip enemy) {
 		System.out.println("EnemyFireAnimation Method Called");
-		enemyFire(enemy);
+		if (enemy.getAnimationStop()) {
+			timeline.stop();
+		} else {
+			enemyFire(enemy);
+		}
 	}
 
 	public void enemyFire(EnemyShip enemy) {
@@ -312,7 +315,7 @@ public class GameView implements GameWorld {
 			animateEnemy(en);
 		}
 	}
-	
+
 	public void cleanUpEnemy(EnemyShip enemy) {
 		enemies.remove(enemy);
 		gameRoot.getChildren().remove(enemy.getEnemyShip());
