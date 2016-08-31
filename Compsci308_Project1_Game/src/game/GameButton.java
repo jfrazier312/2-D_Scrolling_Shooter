@@ -12,7 +12,7 @@ public class GameButton extends Button {
 		switch (text) {
 			case "Start":	
 				button = new Button("Start");
-				button.setOnAction(e -> initGame());
+//				button.setOnAction(e -> initGame());
 				break;
 			case "Rules":
 				button = new Button("Rules");
@@ -31,6 +31,7 @@ public class GameButton extends Button {
 		return button;
 	}
 	
+	@Deprecated
 	public void initGame() {
 		System.out.println("start the game");
 		GameView game = new GameView();

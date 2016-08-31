@@ -49,6 +49,15 @@ public class StartScreen extends Application implements GameWorld {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		
+		startBtn.getButton().setOnAction(e -> initMainGame());
+		
+	}
+	
+	public void initMainGame() {
+		GameView game = new GameView();
+		Scene gameScene = game.initGame();
+		mainStage.setScene(gameScene);
+		mainStage.show();
 	}
 
 }

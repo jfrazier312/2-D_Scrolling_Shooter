@@ -241,7 +241,7 @@ public class practiceCollisions extends Application {
 	}
 
 	public void createEnemies() {
-		EnemyShip enemy = new EnemyShip(1);
+		EnemyShip enemy = new EnemyShip(1); // TODO: how do I make them spawn randomly and still move correctly? 
 		enemies.add(enemy);
 		root.getChildren().add(enemy.getEnemyShip());
 		moveEnemyShipRight(enemy);
@@ -251,8 +251,8 @@ public class practiceCollisions extends Application {
 		timeline.getKeyFrames().add(key1);
 		timeline.setCycleCount(1);
 		timeline.setOnFinished(e -> {
-			if(!enemy.getAnimationStop()) {
-				timeline.play();
+			if(!enemy.getAnimationStop()) { 
+				timeline.play();// Don't think this gets hit
 			}
 		});
 		timeline.play(); // TODO: HOW DO I STOP THIS ANIMATION
