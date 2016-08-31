@@ -29,8 +29,11 @@ public class CountDownTimer {
 			timeline.setOnFinished(event -> goToBossBattle());
 		},
 				new KeyValue(countdownSeconds, 0)));
-		timeline.playFromStart();
 
+	}
+	
+	public void startCountDown() {
+		timeline.playFromStart();
 	}
 	
 	public void goToBossBattle() {

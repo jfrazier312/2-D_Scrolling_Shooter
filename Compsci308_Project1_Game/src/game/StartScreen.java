@@ -47,18 +47,20 @@ public class StartScreen extends Application implements GameWorld {
 		primaryStage.setTitle("Game Start Screen");
 		primaryStage.setScene(scene);
 		primaryStage.show();
+		
+		//set up game screen behind scenes
+		GameView game = new GameView();
+		Scene gameScene = game.initGame();
 
-		startBtn.getButton().setOnAction(e -> initMainGame());
+		startBtn.getButton().setOnAction(e -> initMainGame(game, gameScene));
 
 		isGameOverLost();
 	}
 
-	public void initMainGame() {
-		GameView game = new GameView();
-		Scene gameScene = game.initGame();
+	public void initMainGame(GameView game, Scene gameScene) {
 		mainStage.setScene(gameScene);
 		mainStage.show();
-
+		game.animateGame();
 	}
 
 	//Doesn't work bc of animations

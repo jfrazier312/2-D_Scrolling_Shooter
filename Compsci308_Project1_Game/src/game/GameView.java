@@ -61,11 +61,19 @@ public class GameView implements GameWorld {
 	public static IntegerProperty playerScore = new SimpleIntegerProperty();
 	private List<TranslateTransition> animationList = new ArrayList<>();
 	private List<Timeline> timelineList = new ArrayList<>();
+	
+	private CountDownTimer timer;
 
 	private Group gameRoot;
 	private AnimationTimer shipAnimation;
 
 	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
+	
+	public void animateGame() {
+		timer.startCountDown();
+		EnemyShip enemy = createEnemy();
+		animateEnemy(enemy);
+	}
 
 	public Scene initGame() {
 		// Creates game scene
@@ -73,7 +81,7 @@ public class GameView implements GameWorld {
 		gameScene = new Scene(gameRoot, SCENE_WIDTH, SCENE_HEIGHT);
 
 		// Creates game play timer
-		CountDownTimer timer = new CountDownTimer(30);
+		timer = new CountDownTimer(30);
 		gameRoot.getChildren().add(timer.getLabel());
 
 		// Creates your ship
@@ -82,8 +90,6 @@ public class GameView implements GameWorld {
 
 		// sets score counter at top and lives
 		setScoreCounter();
-		// Creates enemy ships
-		createEnemies();
 
 		SimpleDoubleProperty shipXVelocity = new SimpleDoubleProperty();
 		LongProperty lastUpdateTime = new SimpleLongProperty();
@@ -125,7 +131,7 @@ public class GameView implements GameWorld {
 				} else if (event.getCode() == KeyCode.LEFT) {
 					shipXVelocity.set(-SHIP_SPEED);
 				} else if (event.getCode() == KeyCode.SPACE) {
-					if (!spaceRepeat) {
+					if (!spaceRepeat && !isGameOver) {
 						spaceRepeat = true;
 						fireBullet(enemies);
 					}
@@ -149,6 +155,8 @@ public class GameView implements GameWorld {
 
 		return gameScene;
 	}
+	
+	
 
 	public Scene getGameScene() {
 		return gameScene;
@@ -188,18 +196,19 @@ public class GameView implements GameWorld {
 				for (EnemyShip enemy : new ArrayList<EnemyShip>(enemies)) {
 					if ((Shape.intersect(enemy.getEnemyShip(), bullet)).getBoundsInLocal().getWidth() != -1) {
 						System.out.println("HIT!!!!!!!!!!");
-						gameRoot.getChildren().remove(enemy.getEnemyShip());
-						enemies.remove(enemy);
+						cleanUpEnemy(enemy);
 						animation.stop();
 						gameRoot.getChildren().remove(bullet);
 						incrementPlayerScore();
 						enemy.setAnimationStop(true);
-						createEnemies();
+						EnemyShip en = createEnemy();
+						animateEnemy(en);
 					}
 				}
 			}
 		});
 		animation.setOnFinished(e -> {
+			animation.stop();
 			gameRoot.getChildren().remove(bullet);
 		});
 		animation.play();
@@ -227,10 +236,14 @@ public class GameView implements GameWorld {
 		}
 	}
 
-	public void createEnemies() {
-		EnemyShip enemy = new EnemyShip(1); // TODO: should be scenewidth
+	public EnemyShip createEnemy() {
+		EnemyShip enemy = new EnemyShip(10); // TODO: should be scenewidth
 		enemies.add(enemy);
 		gameRoot.getChildren().add(enemy.getEnemyShip());
+		return enemy;
+	}
+
+	public void animateEnemy(EnemyShip enemy) {
 		moveEnemyShip(enemy);
 		// this method fires even once after enemy dies.
 		Timeline timeline = new Timeline();
@@ -294,10 +307,15 @@ public class GameView implements GameWorld {
 		if (enemy.getEnemyShip().getTranslateY() >= (SCENE_HEIGHT)) {
 			System.out.println("REMOVED ENEMY SHIP AT BOTTOM OF SCREEN");
 			enemy.setAnimationStop(true);
-			enemies.remove(enemy);
-			gameRoot.getChildren().remove(enemy.getEnemyShip());
-			createEnemies();
+			cleanUpEnemy(enemy);
+			EnemyShip en = createEnemy();
+			animateEnemy(en);
 		}
+	}
+	
+	public void cleanUpEnemy(EnemyShip enemy) {
+		enemies.remove(enemy);
+		gameRoot.getChildren().remove(enemy.getEnemyShip());
 	}
 
 	public void popupGameOverDialog() {
