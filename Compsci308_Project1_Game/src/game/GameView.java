@@ -55,6 +55,9 @@ public class GameView implements GameWorld {
 
 	private boolean spaceRepeat = false;
 	private Ship myShip;
+	
+	private int enemyNumber = 2;
+	private static final int MAX_ENEMIES = 9;
 
 	private Scene gameScene;
 	private final Text scoreCounter = new Text();
@@ -199,8 +202,13 @@ public class GameView implements GameWorld {
 						gameRoot.getChildren().remove(bullet);
 						incrementPlayerScore();
 						enemy.setAnimationStop(true);
-						EnemyShip en = createEnemy();
-						animateEnemy(en);
+						if(enemyNumber % 3 == 0 && enemies.size() < MAX_ENEMIES){
+							animateEnemy(createEnemy());
+							animateEnemy(createEnemy());
+						} else {
+							animateEnemy(createEnemy());
+						}
+						enemyNumber++;
 					}
 				}
 			}
@@ -235,7 +243,7 @@ public class GameView implements GameWorld {
 	}
 
 	public EnemyShip createEnemy() {
-		EnemyShip enemy = new EnemyShip(10); // TODO: should be scenewidth
+		EnemyShip enemy = new EnemyShip(40); // TODO: should be scenewidth
 		enemies.add(enemy);
 		gameRoot.getChildren().add(enemy.getEnemyShip());
 		return enemy;
