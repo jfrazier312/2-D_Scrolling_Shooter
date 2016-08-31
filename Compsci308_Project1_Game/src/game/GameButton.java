@@ -33,14 +33,15 @@ public class GameButton extends Button {
 	
 	public void initGame() {
 		System.out.println("start the game");
-		//need to somehow start the game here lol HOW?
+		GameView game = new GameView();
+		game.initGame();
 	}
 	
 	public void popupRulesDialog() {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("How to Play");
 		alert.setHeaderText("Rules");
-		alert.setContentText("Use arrow keys to move your ship back and forth and space to fire!\nYour goal is to destroy as many enemy ships as possible while avoiding their attacks.");
+		alert.setContentText("Use arrow keys to move your ship back and forth and space to fire!\nYour goal is to destroy as many enemy ships as possible while avoiding their attacks. You only have 30 seconds before the boss shows up!");
 		alert.showAndWait();
 	}
 	

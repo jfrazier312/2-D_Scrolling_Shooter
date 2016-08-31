@@ -1,0 +1,21 @@
+#buttonsBox-id {
+	-fx-alignment: CENTER;
+}
+
+/* hbox.getStyleClass().add("hbox");*/
+
+.vbox {
+	-fx-background-color: black;
+}
+.hbox {
+	/*-fx-background-color: #2f2f2f; */
+	-fx-background-image: url("../../highscoreBackground.jpg");
+	-fx-background-repeat: stretch;
+	-fx-background-position: center center;
+	-fx-background-size: cover;
+}
+
+.highscoreMessage { 
+	-fx-font-size: 22px;
+/*  -fx-text=fill: */
+}
