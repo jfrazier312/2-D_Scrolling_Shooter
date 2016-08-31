@@ -17,7 +17,7 @@ public class EnemyShip extends Rectangle {
 	private boolean amAlive = true;
 	
 	public EnemyShip(int sceneWidth) {
-		enemy = new Rectangle(random.nextInt(sceneWidth) + 1, 5, ENEMY_WIDTH, ENEMY_HEIGHT);
+		enemy = new Rectangle(random.nextInt(sceneWidth) + 1 - ENEMY_WIDTH, 5, ENEMY_WIDTH, ENEMY_HEIGHT);
 		enemy.setFill(Color.BLUE);
 		stopAnimation = false;
 	}
