@@ -72,8 +72,8 @@ public class StartScreen extends Application implements GameWorld {
 //				Platform.exit();
 				
 				//bugs out because animations are still running
-//				HighScoreView highView = new HighScoreView(GameView.playerScore.get());
-//				mainStage.setScene(highView.getScene());
+				HighScoreView highView = new HighScoreView(GameView.playerScore.get());
+				mainStage.setScene(highView.getScene());
 			}
 		}));
 		timeline.play();

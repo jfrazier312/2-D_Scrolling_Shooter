@@ -120,7 +120,7 @@ public class GameView implements GameWorld {
 				lastUpdateTime.set(timestamp);
 				if (isGameOver) {
 					stopAllAnimation();
-					popupGameOverDialog();
+//					popupGameOverDialog();
 				}
 			}
 		};
