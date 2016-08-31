@@ -220,9 +220,9 @@ public class practiceCollisions extends Application {
 		checkYBounds(enemy, animation);
 
 		animation.setOnFinished(e -> {
-			if (enemy.getAnimationStop()) {
-				animation.stop();
-			}
+//			if (enemy.getAnimationStop()) {
+//				animation.stop();
+//			}
 			moveEnemyShipRight(enemy);
 		});
 		if (!enemy.getAnimationStop()) {
@@ -245,14 +245,21 @@ public class practiceCollisions extends Application {
 		enemies.add(enemy);
 		root.getChildren().add(enemy.getEnemyShip());
 		moveEnemyShipRight(enemy);
-		Timeline timeline = new Timeline(new KeyFrame(Duration.millis(random.nextInt(2000) + 1000), 
-				e -> enemyFireAnimation2(enemy)));
-		timeline.setCycleCount(Animation.INDEFINITE);
-		timeline.play();
+		Timeline timeline = new Timeline();
+		KeyFrame key1 = new KeyFrame(Duration.millis(random.nextInt(2000) + 1000),
+				e -> enemyFireAnimation2(enemy));
+		timeline.getKeyFrames().add(key1);
+		timeline.setCycleCount(1);
+		timeline.setOnFinished(e -> {
+			if(!enemy.getAnimationStop()) {
+				timeline.play();
+			}
+		});
+		timeline.play(); // TODO: HOW DO I STOP THIS ANIMATION
 	}
 	
 	public void enemyFireAnimation2(EnemyShip enemy){
-		System.out.println("new guy enemy guy");
+		System.out.println("EnemyFireAnimation Method Called");
 		enemyFire(enemy);
 	}
 
