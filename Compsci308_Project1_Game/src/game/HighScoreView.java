@@ -156,7 +156,7 @@ public class HighScoreView {
 			} else if (scoreIsHighScore()) {
 				replaceHighScoreName();
 			} else {
-				// do nothing
+				popupNotHighScoreAlert();
 				System.out.println("You suck");
 			}
 		}
@@ -167,6 +167,16 @@ public class HighScoreView {
 	
 	public Scene getScene() {
 		return scene;
+	}
+	
+	public void popupNotHighScoreAlert() {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setHeaderText("You did not get a high score");
+		alert.setContentText("You are bad at this game. Game will exit on close.");
+		alert.showAndWait();
+		alert.setOnCloseRequest(e -> {
+			Platform.exit();
+		});
 	}
 
 	public boolean scoreIsHighScore() {

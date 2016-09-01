@@ -3,7 +3,7 @@ package game;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -32,6 +32,7 @@ public class StartScreen extends Application implements GameWorld {
 		VBox titleBox = new VBox(10);
 		GAME_TITLE.getStyleClass().add("gameTitle");
 		titleBox.setAlignment(Pos.CENTER);
+		titleBox.setPadding(new Insets(60, 0, 0, 0));
 		titleBox.getChildren().add(GAME_TITLE);
 
 		GameButton startBtn = new GameButton("Start");
@@ -44,11 +45,12 @@ public class StartScreen extends Application implements GameWorld {
 		root.setCenter(selections);
 
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
+		scene.getStylesheets().add(StartScreen.class.getResource("HighScoreStyle.css").toExternalForm());
 		primaryStage.setTitle("Game Start Screen");
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		
-		//set up game screen behind scenes
+
+		// set up game screen behind scenes
 		GameView game = new GameView();
 		Scene gameScene = game.initGame();
 
@@ -63,15 +65,17 @@ public class StartScreen extends Application implements GameWorld {
 		game.animateGame();
 	}
 
-	//Doesn't work bc of animations
+	// Doesn't work bc of animations
 	public void isGameOverLost() {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000 / 60), e -> {
-			if (GameView.isGameOver) {
-//				Platform.exit();
-				
-				//bugs out because animations are still running
+			if (GameView.isGameOver && GameView.youLost) {
+				// Platform.exit();
+				// should do popup with YOU LOST
+				// bugs out because animations are still running
+			} else if (GameView.isGameOver) {
+				//take me to high score //only if I have a high score tho
 				HighScoreView highView = new HighScoreView(GameView.playerScore.get());
 				mainStage.setScene(highView.getScene());
 			}

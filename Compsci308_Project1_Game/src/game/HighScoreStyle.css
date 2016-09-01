@@ -19,3 +19,10 @@
 	-fx-font-size: 22px;
 /*  -fx-text=fill: */
 }
+
+.gameTitle {
+	-fx-font-size: 80px;
+	-fx-fill: linear-gradient(to left top, red, white);
+	-fx-stroke: black;
+	-fx-stroke-width: 2;
+}

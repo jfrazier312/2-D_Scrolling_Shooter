@@ -49,6 +49,7 @@ public class GameView implements GameWorld {
 
 	private final Random random = new Random();
 	public static boolean isGameOver = false;
+	public static boolean youLost = false;
 
 	private static final int SHIP_SPEED = 400;
 	private static final int BULLET_SPEED = 2;
@@ -301,6 +302,7 @@ public class GameView implements GameWorld {
 						gameRoot.getChildren().remove(myShip.getImageView());
 						System.out.println("You lost all of your lives");
 						isGameOver = true;
+						youLost = true;
 					}
 					animation.stop();
 				}
