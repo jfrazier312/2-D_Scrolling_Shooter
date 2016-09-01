@@ -27,13 +27,8 @@ public class StartScreen extends Application implements GameWorld {
 
 		// start, rules, cheat codes
 		VBox selections = new VBox(10);
-		selections.setAlignment(Pos.CENTER);
-
-		VBox titleBox = new VBox(10);
-		GAME_TITLE.getStyleClass().add("gameTitle");
-		titleBox.setAlignment(Pos.CENTER);
-		titleBox.setPadding(new Insets(60, 0, 0, 0));
-		titleBox.getChildren().add(GAME_TITLE);
+		VBox titleBox = new VBox(10);	
+		styleItems(titleBox, selections);	
 
 		GameButton startBtn = new GameButton("Start");
 		GameButton rulesBtn = new GameButton("Rules");
@@ -54,8 +49,10 @@ public class StartScreen extends Application implements GameWorld {
 		GameView game = new GameView();
 		Scene gameScene = game.initGame();
 
+		//init game on "start" button pressed
 		startBtn.getButton().setOnAction(e -> initMainGame(game, gameScene));
 
+		//continuously runs, called when variable GameView.isGameOver is set to true
 		isGameOverLost();
 	}
 
@@ -74,13 +71,22 @@ public class StartScreen extends Application implements GameWorld {
 				// Platform.exit();
 				// should do popup with YOU LOST
 				// bugs out because animations are still running
-			} else if (GameView.isGameOver) {
+			} else if (GameView.isGameOver) { //unneccessary if
 				//take me to high score //only if I have a high score tho
 				HighScoreView highView = new HighScoreView(GameView.playerScore.get());
 				mainStage.setScene(highView.getScene());
 			}
 		}));
 		timeline.play();
+
+	}
+	
+	public void styleItems(VBox titleBox, VBox buttons){
+		buttons.setAlignment(Pos.CENTER);
+		titleBox.setAlignment(Pos.CENTER);
+		titleBox.setPadding(new Insets(60, 0, 0, 0));
+		titleBox.getChildren().add(GAME_TITLE);
+		GAME_TITLE.getStyleClass().add("gameTitle");
 
 	}
 

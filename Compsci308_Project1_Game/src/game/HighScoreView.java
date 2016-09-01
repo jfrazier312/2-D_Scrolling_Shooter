@@ -40,7 +40,7 @@ public class HighScoreView {
 	private ObservableList<Integer> scoreList;
 
 	private static final Text INPUT_MESSAGE = new Text("Input Initials:");
-	private static final Text HIGHSCORE_MESSAGE = new Text("CONGRATULATIONS, HIGHSCORE!");
+	private static final Text HIGHSCORE_MESSAGE = new Text("HIGHSCORES");
 	private TextField field;
 	private Integer randomScore;
 	private static final int MAX_LIST_SIZE = 3;

@@ -42,15 +42,16 @@ public class GameView implements GameWorld {
 
 	// TODO: Collision with enemy ship
 	// TODO: Fix starting position with ship/enemyships
-	// TODO: Add multiple enemies at once
 
 	// Current Bugs :
+	//advantage of switch statements for key input vs if tree?
 	// How to switch stage?
 	// Starting position for ships
 	// how to stop all animation for popupdialog?
 	// should any animation be global vars? //create list of all animations, use
 	// one method to stop them all at once?
-	// firing animation is delayed
+	
+	//could extend application and make this open a new stage after closing game stage but is bad?
 
 	private final Random random = new Random();
 	public static boolean isGameOver = false;
@@ -63,7 +64,7 @@ public class GameView implements GameWorld {
 	private Ship myShip;
 
 	private int enemyNumber = 2;
-	private static final int MAX_ENEMIES = 9;
+	private static final int MAX_ENEMIES = 7;
 
 	private Scene gameScene;
 	private final Text scoreCounter = new Text();
@@ -129,9 +130,9 @@ public class GameView implements GameWorld {
 					myShip.getImageView().setTranslateX(newX);
 				}
 				lastUpdateTime.set(timestamp);
-				if (isGameOver) {
+				if (isGameOver) { //won't work because animation/layoutprocessing is still running somewhere
 					stopAllAnimation();
-					// popupGameOverDialog();
+					popupGameOverDialog();
 				}
 			}
 		};
@@ -207,21 +208,9 @@ public class GameView implements GameWorld {
 			public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
 				for (EnemyShip enemy : new ArrayList<EnemyShip>(enemies)) {
 					if (bullet.getBoundsInParent().intersects(enemy.getEnemyShip().getBoundsInParent())) {
-						System.out.println("HIT!!!!!!!!!!");
-						cleanUpEnemy(enemy);
-						animation.stop();
-						gameRoot.getChildren().remove(bullet);
-						incrementPlayerScore();
-						enemy.setAnimationStop(true);
-						if (enemyNumber % 3 == 0 && enemies.size() < MAX_ENEMIES) {
-							animateEnemy(createEnemy());
-							animateEnemy(createEnemy());
-						} else {
-							animateEnemy(createEnemy());
-						}
-						enemyNumber++;
+						handleBulletDestroyedEnemy(bullet, animation, enemy);
 					}
-				}
+				} 
 			}
 		});
 		animation.setOnFinished(e -> {
@@ -229,6 +218,22 @@ public class GameView implements GameWorld {
 			gameRoot.getChildren().remove(bullet);
 		});
 		animation.play();
+	}
+	
+	public void handleBulletDestroyedEnemy(Shape bullet, TranslateTransition animation, EnemyShip enemy) {
+		System.out.println("HIT!!!!!!!!!!");
+		cleanUpEnemy(enemy);
+		animation.stop();
+		gameRoot.getChildren().remove(bullet);
+		incrementPlayerScore();
+		enemy.setAnimationStop(true);
+		if (enemyNumber % 3 == 0 && enemies.size() < MAX_ENEMIES) {
+			animateEnemy(createEnemy());
+			animateEnemy(createEnemy());
+		} else {
+			animateEnemy(createEnemy());
+		}
+		enemyNumber++;
 	}
 
 	public void moveEnemyShip(EnemyShip enemy) {
@@ -355,6 +360,7 @@ public class GameView implements GameWorld {
 
 	public void stopAllAnimation() {
 		shipAnimation.stop();
+		scrollingBackground.stop();
 		for (TranslateTransition animation : animationList) {
 			if (animation != null)
 				animation.stop();
@@ -366,29 +372,32 @@ public class GameView implements GameWorld {
 	}
 
 	public void scrollBackground(Group group) {
-		Image im = new Image(GameView.class.getResourceAsStream("gameBackground.gif"));
-		ImageView iv = new ImageView(im);
-
-		Image im2 = new Image(GameView.class.getResourceAsStream("gameBackground2.gif"));
-		ImageView iv2 = new ImageView(im2);
+		ImageView iv = getBackgroundImageView("gameBackground.gif");
+		ImageView iv2 = getBackgroundImageView("gameBackground2.gif");
 		iv2.setY(SCENE_HEIGHT);
-		
+
 		group.getChildren().addAll(iv, iv2);
 
-		TranslateTransition animation = new TranslateTransition(Duration.seconds(5), iv);
-		animation.setFromY(0);
-		animation.setToY(-1 * SCENE_HEIGHT);
-		animation.setInterpolator(Interpolator.LINEAR);
-
-		TranslateTransition animation2 = new TranslateTransition(Duration.seconds(5), iv2);
-		animation2.setFromY(0);
-		animation2.setToY(-1 * SCENE_HEIGHT);
-		animation2.setInterpolator(Interpolator.LINEAR);
+		TranslateTransition animation = getBackgroundTransition(iv);
+		TranslateTransition animation2 = getBackgroundTransition(iv2);
 
 		scrollingBackground = new ParallelTransition(animation, animation2);
 		scrollingBackground.setCycleCount(Animation.INDEFINITE);	
 		scrollingBackground.play();
-		
+	}
+	
+	public TranslateTransition getBackgroundTransition(ImageView iv) {
+		TranslateTransition animation = new TranslateTransition(Duration.seconds(5), iv);
+		animation.setFromY(0);
+		animation.setToY(-1 * SCENE_HEIGHT);
+		animation.setInterpolator(Interpolator.LINEAR);
+		return animation;
+	}
+	
+	public ImageView getBackgroundImageView(String text) {
+		Image im = new Image(GameView.class.getResourceAsStream(text));
+		ImageView iv = new ImageView(im);
+		return iv;
 	}
 
 }
