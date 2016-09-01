@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
+import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
+import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -23,6 +26,8 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -56,7 +61,7 @@ public class GameView implements GameWorld {
 
 	private boolean spaceRepeat = false;
 	private Ship myShip;
-	
+
 	private int enemyNumber = 2;
 	private static final int MAX_ENEMIES = 9;
 
@@ -83,6 +88,10 @@ public class GameView implements GameWorld {
 		// Creates game scene
 		gameRoot = new Group();
 		gameScene = new Scene(gameRoot, SCENE_WIDTH, SCENE_HEIGHT);
+		
+		Group backgroundGroup = new Group();
+		scrollBackground(backgroundGroup);
+		gameRoot.getChildren().add(backgroundGroup);
 
 		// Creates game play timer
 		timer = new CountDownTimer(30);
@@ -121,7 +130,7 @@ public class GameView implements GameWorld {
 				lastUpdateTime.set(timestamp);
 				if (isGameOver) {
 					stopAllAnimation();
-//					popupGameOverDialog();
+					// popupGameOverDialog();
 				}
 			}
 		};
@@ -203,7 +212,7 @@ public class GameView implements GameWorld {
 						gameRoot.getChildren().remove(bullet);
 						incrementPlayerScore();
 						enemy.setAnimationStop(true);
-						if(enemyNumber % 3 == 0 && enemies.size() < MAX_ENEMIES){
+						if (enemyNumber % 3 == 0 && enemies.size() < MAX_ENEMIES) {
 							animateEnemy(createEnemy());
 							animateEnemy(createEnemy());
 						} else {
@@ -353,6 +362,32 @@ public class GameView implements GameWorld {
 			if (timeline != null)
 				timeline.stop();
 		}
+	}
+
+	public void scrollBackground(Group group) {
+		Image im = new Image(GameView.class.getResourceAsStream("gameBackground.gif"));
+		ImageView iv = new ImageView(im);
+
+		Image im2 = new Image(GameView.class.getResourceAsStream("gameBackground2.gif"));
+		ImageView iv2 = new ImageView(im2);
+		iv2.setY(SCENE_HEIGHT);
+		
+		group.getChildren().addAll(iv, iv2);
+
+		TranslateTransition animation = new TranslateTransition(Duration.seconds(5), iv);
+		animation.setFromY(0);
+		animation.setToY(-1 * SCENE_HEIGHT);
+		animation.setInterpolator(Interpolator.LINEAR);
+
+		TranslateTransition animation2 = new TranslateTransition(Duration.seconds(5), iv2);
+//		animation2.setDelay(Duration.seconds(5));
+		animation2.setFromY(0);
+		animation2.setToY(-1 * SCENE_HEIGHT);
+		animation2.setInterpolator(Interpolator.LINEAR);
+
+		ParallelTransition parallelAnimation = new ParallelTransition(animation, animation2);
+		parallelAnimation.setCycleCount(Animation.INDEFINITE);	
+		parallelAnimation.play();
 	}
 
 }
