@@ -45,14 +45,15 @@ public class GameView implements GameWorld {
 	// TODO: How to implement cheat codes without freezing other?
 
 	// Current Bugs :
-	//advantage of switch statements for key input vs if tree?
+	// advantage of switch statements for key input vs if tree?
 	// How to switch stage?
 	// Starting position for ships
 	// how to stop all animation for popupdialog?
 	// should any animation be global vars? //create list of all animations, use
 	// one method to stop them all at once?
-	
-	//could extend application and make this open a new stage after closing game stage but is bad?
+
+	// could extend application and make this open a new stage after closing
+	// game stage but is bad?
 
 	private final Random random = new Random();
 	public static boolean isGameOver = false;
@@ -89,10 +90,10 @@ public class GameView implements GameWorld {
 
 	public Scene initGame() {
 		// Creates game scene
-		
+
 		gameRoot = new Group();
 		gameScene = new Scene(gameRoot, SCENE_WIDTH, SCENE_HEIGHT);
-		
+
 		Group backgroundGroup = new Group();
 		scrollBackground(backgroundGroup);
 		gameRoot.getChildren().add(backgroundGroup);
@@ -113,7 +114,7 @@ public class GameView implements GameWorld {
 
 			@Override
 			public void handle(long timestamp) {
-				
+
 				double deltaX; // TODO: figure how to move correctly better
 								// algorithm
 				double oldX;
@@ -132,7 +133,9 @@ public class GameView implements GameWorld {
 					myShip.getImageView().setTranslateX(newX);
 				}
 				lastUpdateTime.set(timestamp);
-				if (isGameOver) { //won't work because animation/layoutprocessing is still running somewhere
+				if (isGameOver) { // won't work because
+									// animation/layoutprocessing is still
+									// running somewhere
 					stopAllAnimation();
 					popupGameOverDialog();
 				}
@@ -154,9 +157,9 @@ public class GameView implements GameWorld {
 						fireBullet(enemies);
 					}
 				} else if (event.getCode() == KeyCode.D) {
-//					cheats = new CheatCodes(gameScene, myShip, scoreCounter);
+					// cheats = new CheatCodes(gameScene, myShip, scoreCounter);
 					getInfiniteLives(myShip, scoreCounter);
-					
+					getInfiniteAmmo(myShip, scoreCounter);
 				}
 			}
 		});
@@ -183,46 +186,58 @@ public class GameView implements GameWorld {
 	}
 
 	public void setScoreCounter() {
-		scoreCounter.textProperty()
-				.bind(Bindings.concat("Score: ").concat(myShip.playerScore).concat("\nHit Points: ").concat(myShip.getHitPoints()));
+		scoreCounter.textProperty().bind(Bindings.concat("Score: ").concat(myShip.playerScore).concat("\nHit Points: ")
+				.concat(myShip.getHitPoints()).concat("\nBullets: ").concat(myShip.getAmmo()));
 		scoreCounter.setTextAlignment(TextAlignment.CENTER);
-		scoreCounter.setLayoutX(SCENE_WIDTH / 2);
+		scoreCounter.setLayoutX(SCENE_WIDTH / 2 - 43);
 		scoreCounter.setLayoutY(20);
 		scoreCounter.setFill(Color.RED);
 		gameRoot.getChildren().add(scoreCounter);
+	}
+	
+	public void updateScoreCounter() {
+		scoreCounter.textProperty().bind(Bindings.concat("Score: ").concat(myShip.playerScore).concat("\nHit Points: ")
+				.concat(myShip.getHitPoints()).concat("\nBullets: ").concat(myShip.getAmmo()));
 	}
 
 	public void fireBullet(final List<EnemyShip> enemies) {
 		// create new circle bullet at top of my ship, and send it
 		// translatetransition to
 		// top of screen
-		Shape bullet = new Circle(2.3, Color.GREENYELLOW );
-		gameRoot.getChildren().add(bullet);
-		TranslateTransition animation = new TranslateTransition(Duration.seconds(BULLET_SPEED), bullet);
-		animationList.add(animation);
-		animation.setFromX(myShip.getImageView().getTranslateX() + SHIP_WIDTH / 2);
-		animation.setFromY(SCENE_HEIGHT - myShip.getImageView().getFitHeight());
-		animation.setToX(myShip.getImageView().getTranslateX() + SHIP_WIDTH / 2);
-		animation.setToY(0);
+		Shape bullet = new Circle(2.3, Color.GREENYELLOW);
+		if (myShip.getAmmo() <= 0) {
+			//do nothing
+			System.out.println("Out of ammo!");
+		} else {
+			myShip.setAmmo(myShip.getAmmo() - 1);
+			gameRoot.getChildren().add(bullet);
+			TranslateTransition animation = new TranslateTransition(Duration.seconds(BULLET_SPEED), bullet);
+			animationList.add(animation);
+			animation.setFromX(myShip.getImageView().getTranslateX() + SHIP_WIDTH / 2);
+			animation.setFromY(SCENE_HEIGHT - myShip.getImageView().getFitHeight());
+			animation.setToX(myShip.getImageView().getTranslateX() + SHIP_WIDTH / 2);
+			animation.setToY(0);
 
-		bullet.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
+			bullet.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
 
-			@Override
-			public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
-				for (EnemyShip enemy : new ArrayList<EnemyShip>(enemies)) {
-					if (bullet.getBoundsInParent().intersects(enemy.getEnemyShip().getBoundsInParent())) {
-						handleBulletDestroyedEnemy(bullet, animation, enemy);
+				@Override
+				public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
+					for (EnemyShip enemy : new ArrayList<EnemyShip>(enemies)) {
+						if (bullet.getBoundsInParent().intersects(enemy.getEnemyShip().getBoundsInParent())) {
+							handleBulletDestroyedEnemy(bullet, animation, enemy);
+						}
 					}
-				} 
-			}
-		});
-		animation.setOnFinished(e -> {
-			animation.stop();
-			gameRoot.getChildren().remove(bullet);
-		});
-		animation.play();
+				}
+			});
+			animation.setOnFinished(e -> {
+				animation.stop();
+				gameRoot.getChildren().remove(bullet);
+			});
+			updateScoreCounter();
+			animation.play();
+		}
 	}
-	
+
 	public void handleBulletDestroyedEnemy(Shape bullet, TranslateTransition animation, EnemyShip enemy) {
 		System.out.println("HIT!!!!!!!!!!");
 		cleanUpEnemy(enemy);
@@ -262,7 +277,8 @@ public class GameView implements GameWorld {
 	}
 
 	public EnemyShip createEnemy() {
-		EnemyShip enemy = new EnemyShip("enemyShip.png"); // TODO: should be scenewidth
+		EnemyShip enemy = new EnemyShip("enemyShip.png"); // TODO: should be
+															// scenewidth
 		enemies.add(enemy);
 		gameRoot.getChildren().add(enemy.getEnemyShip());
 		return enemy;
@@ -385,10 +401,10 @@ public class GameView implements GameWorld {
 		TranslateTransition animation2 = getBackgroundTransition(iv2);
 
 		scrollingBackground = new ParallelTransition(animation, animation2);
-		scrollingBackground.setCycleCount(Animation.INDEFINITE);	
+		scrollingBackground.setCycleCount(Animation.INDEFINITE);
 		scrollingBackground.play();
 	}
-	
+
 	public TranslateTransition getBackgroundTransition(ImageView iv) {
 		TranslateTransition animation = new TranslateTransition(Duration.seconds(5), iv);
 		animation.setFromY(0);
@@ -396,22 +412,25 @@ public class GameView implements GameWorld {
 		animation.setInterpolator(Interpolator.LINEAR);
 		return animation;
 	}
-	
+
 	public ImageView getBackgroundImageView(String text) {
 		Image im = new Image(GameView.class.getResourceAsStream(text));
 		ImageView iv = new ImageView(im);
 		return iv;
 	}
-	
+
 	public void getInfiniteLives(Ship ship, Text text) {
-		ship.setHitPoints(10000);
-		text.textProperty().bind(Bindings.concat("Score: ").concat(ship.playerScore).concat("\nHit Points: ").concat(ship.getHitPoints()));
+		myShip.setHitPoints(1000);
+		updateScoreCounter();
 	}
 	
+	public void getInfiniteAmmo(Ship ship, Text text) {
+		myShip.setAmmo(1000000);
+		updateScoreCounter();
+	}
+
 	public Ship getShip() {
 		return myShip;
 	}
-	
-	
 
 }

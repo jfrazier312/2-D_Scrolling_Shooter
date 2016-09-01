@@ -8,6 +8,8 @@ public class Ship extends Sprite implements GameWorld {
 	private static final int LIVES = 3;
 	private final IntegerProperty playerHitPoints = new SimpleIntegerProperty();
 	public final IntegerProperty playerScore = new SimpleIntegerProperty();
+	private static final int AMMO_LIMIT = 10;
+	private int AMMO = AMMO_LIMIT;
 
 	
 	public Ship(String image) {
@@ -18,8 +20,16 @@ public class Ship extends Sprite implements GameWorld {
 		this.getImageView().setFitWidth(SHIP_WIDTH);
 		this.getImageView().setFitHeight(SHIP_HEIGHT);
 		this.playerHitPoints.set(LIVES);
+		
 	}
 	
+	public int getAmmo() { 
+		return AMMO;
+	}
+	
+	public void setAmmo(int i) {
+		this.AMMO = i;
+	}
 
 	public void decrementHitPoints() {
 		playerHitPoints.set(playerHitPoints.get() - 1);
