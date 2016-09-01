@@ -53,7 +53,7 @@ public class StartScreen extends Application implements GameWorld {
 		startBtn.getButton().setOnAction(e -> initMainGame(game, gameScene));
 
 		//continuously runs, called when variable GameView.isGameOver is set to true
-		isGameOverLost();
+		isGameOverLost(game);
 	}
 
 	public void initMainGame(GameView game, Scene gameScene) {
@@ -63,7 +63,7 @@ public class StartScreen extends Application implements GameWorld {
 	}
 
 	// Doesn't work bc of animations
-	public void isGameOverLost() {
+	public void isGameOverLost(GameView game) {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000 / 60), e -> {
@@ -73,7 +73,7 @@ public class StartScreen extends Application implements GameWorld {
 				// bugs out because animations are still running
 			} else if (GameView.isGameOver) { //unneccessary if
 				//take me to high score //only if I have a high score tho
-				HighScoreView highView = new HighScoreView(GameView.playerScore.get());
+				HighScoreView highView = new HighScoreView(game.getShip().playerScore.get());
 				mainStage.setScene(highView.getScene());
 			}
 		}));

@@ -7,6 +7,8 @@ public class Ship extends Sprite implements GameWorld {
 	
 	private static final int LIVES = 3;
 	private final IntegerProperty playerHitPoints = new SimpleIntegerProperty();
+	public final IntegerProperty playerScore = new SimpleIntegerProperty();
+
 	
 	public Ship(String image) {
 		super(image);
@@ -23,8 +25,16 @@ public class Ship extends Sprite implements GameWorld {
 		playerHitPoints.set(playerHitPoints.get() - 1);
 	}
 	
+	public void setHitPoints(int i) {
+		playerHitPoints.set(playerHitPoints.get() + i);
+	}
+	
 	public IntegerProperty getHitPoints() {
 		return playerHitPoints;
+	}
+	
+	public void incrementPlayerScore() {
+		playerScore.set(playerScore.get() + 1);
 	}
 
 }

@@ -42,6 +42,7 @@ public class GameView implements GameWorld {
 
 	// TODO: Collision with enemy ship
 	// TODO: Fix starting position with ship/enemyships
+	// TODO: How to implement cheat codes without freezing other?
 
 	// Current Bugs :
 	//advantage of switch statements for key input vs if tree?
@@ -57,6 +58,7 @@ public class GameView implements GameWorld {
 	public static boolean isGameOver = false;
 	public static boolean youLost = false;
 
+	private CheatCodes cheats;
 	private static final int SHIP_SPEED = 400;
 	private static final int BULLET_SPEED = 2;
 
@@ -68,7 +70,6 @@ public class GameView implements GameWorld {
 
 	private Scene gameScene;
 	private final Text scoreCounter = new Text();
-	public static IntegerProperty playerScore = new SimpleIntegerProperty();
 	private List<TranslateTransition> animationList = new ArrayList<>();
 	private List<Timeline> timelineList = new ArrayList<>();
 
@@ -88,6 +89,7 @@ public class GameView implements GameWorld {
 
 	public Scene initGame() {
 		// Creates game scene
+		
 		gameRoot = new Group();
 		gameScene = new Scene(gameRoot, SCENE_WIDTH, SCENE_HEIGHT);
 		
@@ -105,13 +107,13 @@ public class GameView implements GameWorld {
 
 		// sets score counter at top and HitPoints
 		setScoreCounter();
-
 		SimpleDoubleProperty shipXVelocity = new SimpleDoubleProperty();
 		LongProperty lastUpdateTime = new SimpleLongProperty();
 		shipAnimation = new AnimationTimer() {
 
 			@Override
 			public void handle(long timestamp) {
+				
 				double deltaX; // TODO: figure how to move correctly better
 								// algorithm
 				double oldX;
@@ -138,6 +140,7 @@ public class GameView implements GameWorld {
 		};
 
 		shipAnimation.start();
+
 		gameScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
@@ -150,6 +153,10 @@ public class GameView implements GameWorld {
 						spaceRepeat = true;
 						fireBullet(enemies);
 					}
+				} else if (event.getCode() == KeyCode.D) {
+//					cheats = new CheatCodes(gameScene, myShip, scoreCounter);
+					getInfiniteLives(myShip, scoreCounter);
+					
 				}
 			}
 		});
@@ -177,16 +184,12 @@ public class GameView implements GameWorld {
 
 	public void setScoreCounter() {
 		scoreCounter.textProperty()
-				.bind(Bindings.concat("Score: ").concat(playerScore).concat("\nHit Points: ").concat(myShip.getHitPoints()));
+				.bind(Bindings.concat("Score: ").concat(myShip.playerScore).concat("\nHit Points: ").concat(myShip.getHitPoints()));
 		scoreCounter.setTextAlignment(TextAlignment.CENTER);
 		scoreCounter.setLayoutX(SCENE_WIDTH / 2);
 		scoreCounter.setLayoutY(20);
 		scoreCounter.setFill(Color.RED);
 		gameRoot.getChildren().add(scoreCounter);
-	}
-
-	public void incrementPlayerScore() {
-		playerScore.set(playerScore.get() + 1);
 	}
 
 	public void fireBullet(final List<EnemyShip> enemies) {
@@ -225,7 +228,7 @@ public class GameView implements GameWorld {
 		cleanUpEnemy(enemy);
 		animation.stop();
 		gameRoot.getChildren().remove(bullet);
-		incrementPlayerScore();
+		myShip.incrementPlayerScore();
 		enemy.setAnimationStop(true);
 		if (enemyNumber % 3 == 0 && enemies.size() < MAX_ENEMIES) {
 			animateEnemy(createEnemy());
@@ -399,5 +402,16 @@ public class GameView implements GameWorld {
 		ImageView iv = new ImageView(im);
 		return iv;
 	}
+	
+	public void getInfiniteLives(Ship ship, Text text) {
+		ship.setHitPoints(10000);
+		text.textProperty().bind(Bindings.concat("Score: ").concat(ship.playerScore).concat("\nHit Points: ").concat(ship.getHitPoints()));
+	}
+	
+	public Ship getShip() {
+		return myShip;
+	}
+	
+	
 
 }
