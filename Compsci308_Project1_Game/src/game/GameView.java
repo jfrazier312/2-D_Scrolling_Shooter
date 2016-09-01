@@ -75,6 +75,7 @@ public class GameView implements GameWorld {
 
 	private Group gameRoot;
 	private AnimationTimer shipAnimation;
+	private ParallelTransition scrollingBackground;
 
 	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
 
@@ -101,7 +102,7 @@ public class GameView implements GameWorld {
 		myShip = new Ship("MainShip.png");
 		gameRoot.getChildren().add(myShip.getImageView());
 
-		// sets score counter at top and lives
+		// sets score counter at top and HitPoints
 		setScoreCounter();
 
 		SimpleDoubleProperty shipXVelocity = new SimpleDoubleProperty();
@@ -175,7 +176,7 @@ public class GameView implements GameWorld {
 
 	public void setScoreCounter() {
 		scoreCounter.textProperty()
-				.bind(Bindings.concat("Score: ").concat(playerScore).concat("\nLives: ").concat(myShip.getLives()));
+				.bind(Bindings.concat("Score: ").concat(playerScore).concat("\nHit Points: ").concat(myShip.getHitPoints()));
 		scoreCounter.setTextAlignment(TextAlignment.CENTER);
 		scoreCounter.setLayoutX(SCENE_WIDTH / 2);
 		scoreCounter.setLayoutY(20);
@@ -306,10 +307,10 @@ public class GameView implements GameWorld {
 				if (enemyBullet.getBoundsInParent().intersects(myShip.getImageView().getBoundsInParent())) {
 					System.out.println("ENEMY BULLET HIT ME");
 					gameRoot.getChildren().remove(enemyBullet);
-					myShip.decrementPlayerLives();
-					if (myShip.getLives().get() <= 0) {
+					myShip.decrementHitPoints();
+					if (myShip.getHitPoints().get() <= 0) {
 						gameRoot.getChildren().remove(myShip.getImageView());
-						System.out.println("You lost all of your lives");
+						System.out.println("You lost all of your HitPoints");
 						isGameOver = true;
 						youLost = true;
 					}
@@ -380,14 +381,14 @@ public class GameView implements GameWorld {
 		animation.setInterpolator(Interpolator.LINEAR);
 
 		TranslateTransition animation2 = new TranslateTransition(Duration.seconds(5), iv2);
-//		animation2.setDelay(Duration.seconds(5));
 		animation2.setFromY(0);
 		animation2.setToY(-1 * SCENE_HEIGHT);
 		animation2.setInterpolator(Interpolator.LINEAR);
 
-		ParallelTransition parallelAnimation = new ParallelTransition(animation, animation2);
-		parallelAnimation.setCycleCount(Animation.INDEFINITE);	
-		parallelAnimation.play();
+		scrollingBackground = new ParallelTransition(animation, animation2);
+		scrollingBackground.setCycleCount(Animation.INDEFINITE);	
+		scrollingBackground.play();
+		
 	}
 
 }
