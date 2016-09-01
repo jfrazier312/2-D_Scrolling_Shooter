@@ -192,7 +192,7 @@ public class GameView implements GameWorld {
 		// create new circle bullet at top of my ship, and send it
 		// translatetransition to
 		// top of screen
-		Shape bullet = new Circle(3, Color.RED);
+		Shape bullet = new Circle(2.3, Color.GREENYELLOW );
 		gameRoot.getChildren().add(bullet);
 		TranslateTransition animation = new TranslateTransition(Duration.seconds(BULLET_SPEED), bullet);
 		animationList.add(animation);
@@ -206,7 +206,7 @@ public class GameView implements GameWorld {
 			@Override
 			public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
 				for (EnemyShip enemy : new ArrayList<EnemyShip>(enemies)) {
-					if ((Shape.intersect(enemy.getEnemyShip(), bullet)).getBoundsInLocal().getWidth() != -1) {
+					if (bullet.getBoundsInParent().intersects(enemy.getEnemyShip().getBoundsInParent())) {
 						System.out.println("HIT!!!!!!!!!!");
 						cleanUpEnemy(enemy);
 						animation.stop();
@@ -254,7 +254,7 @@ public class GameView implements GameWorld {
 	}
 
 	public EnemyShip createEnemy() {
-		EnemyShip enemy = new EnemyShip(40); // TODO: should be scenewidth
+		EnemyShip enemy = new EnemyShip("enemyShip.png"); // TODO: should be scenewidth
 		enemies.add(enemy);
 		gameRoot.getChildren().add(enemy.getEnemyShip());
 		return enemy;
@@ -289,8 +289,8 @@ public class GameView implements GameWorld {
 	}
 
 	public void enemyFire(EnemyShip enemy) {
-		Rectangle ship = enemy.getEnemyShip();
-		Shape enemyBullet = new Circle(5, Color.BLUE);
+		ImageView ship = enemy.getEnemyShip();
+		Shape enemyBullet = new Circle(4, Color.RED);
 		gameRoot.getChildren().add(enemyBullet);
 		TranslateTransition animation = new TranslateTransition(Duration.seconds(random.nextInt(3) + 1), enemyBullet);
 		animationList.add(animation);
