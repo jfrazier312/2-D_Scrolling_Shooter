@@ -133,7 +133,7 @@ public class GameView implements GameWorld {
 					myShip.getImageView().setTranslateX(newX);
 				}
 				lastUpdateTime.set(timestamp);
-				if (isGameOver) { // won't work because
+				if (isGameOver) { // popup won't work because
 									// animation/layoutprocessing is still
 									// running somewhere
 					stopAllAnimation();
@@ -159,6 +159,7 @@ public class GameView implements GameWorld {
 				} else if (event.getCode() == KeyCode.D) {
 					// cheats = new CheatCodes(gameScene, myShip, scoreCounter);
 					getInfiniteLives(myShip, scoreCounter);
+				} else if (event.getCode() == KeyCode.F) {
 					getInfiniteAmmo(myShip, scoreCounter);
 				}
 			}
@@ -216,7 +217,7 @@ public class GameView implements GameWorld {
 			animation.setFromX(myShip.getImageView().getTranslateX() + SHIP_WIDTH / 2);
 			animation.setFromY(SCENE_HEIGHT - myShip.getImageView().getFitHeight());
 			animation.setToX(myShip.getImageView().getTranslateX() + SHIP_WIDTH / 2);
-			animation.setToY(0);
+			animation.setToY(-40);
 
 			bullet.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
 
@@ -277,8 +278,8 @@ public class GameView implements GameWorld {
 	}
 
 	public EnemyShip createEnemy() {
-		EnemyShip enemy = new EnemyShip("enemyShip.png"); // TODO: should be
-															// scenewidth
+		// TODO: need to randomize creation of enemies
+		EnemyShip enemy = new EnemyShip("enemyShip.png"); 
 		enemies.add(enemy);
 		gameRoot.getChildren().add(enemy.getEnemyShip());
 		return enemy;
@@ -321,7 +322,7 @@ public class GameView implements GameWorld {
 		animation.setFromX(ship.getTranslateX() + enemy.getEnemyWidth() / 2);
 		animation.setFromY(ship.getTranslateY() + enemy.getEnemyHeight());
 		animation.setToX(ship.getTranslateX() + enemy.getEnemyWidth() / 2);
-		animation.setToY(SCENE_HEIGHT);
+		animation.setToY(SCENE_HEIGHT + 40);
 		animation.play();
 
 		enemyBullet.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
@@ -420,7 +421,7 @@ public class GameView implements GameWorld {
 	}
 
 	public void getInfiniteLives(Ship ship, Text text) {
-		myShip.setHitPoints(1000);
+		myShip.setHitPoints(10000);
 		updateScoreCounter();
 	}
 	

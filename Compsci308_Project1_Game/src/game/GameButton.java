@@ -48,8 +48,9 @@ public class GameButton extends Button {
 	
 	public void popupCheatCodesDialog() {
 		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setHeaderText("Cheats");
 		alert.setTitle("Cheat Codes");
-		alert.setContentText("FIGURE OUT WHAT THE FUCK CHEAT CODES I CAN IMPLEMENT");
+		alert.setContentText("Press 'd' for infinite lives!\nPress 'f' for infinite ammo!");
 		alert.showAndWait();
 	}
 
