@@ -158,9 +158,9 @@ public class GameView implements GameWorld {
 					}
 				} else if (event.getCode() == KeyCode.D) {
 					// cheats = new CheatCodes(gameScene, myShip, scoreCounter);
-					getInfiniteLives(myShip, scoreCounter);
+					getInfiniteLives();
 				} else if (event.getCode() == KeyCode.F) {
-					getInfiniteAmmo(myShip, scoreCounter);
+					getInfiniteAmmo();
 				}
 			}
 		});
@@ -202,9 +202,7 @@ public class GameView implements GameWorld {
 	}
 
 	public void fireBullet(final List<EnemyShip> enemies) {
-		// create new circle bullet at top of my ship, and send it
-		// translatetransition to
-		// top of screen
+		//Creates circle bullet
 		Shape bullet = new Circle(2.3, Color.GREENYELLOW);
 		if (myShip.getAmmo() <= 0) {
 			//do nothing
@@ -252,6 +250,7 @@ public class GameView implements GameWorld {
 		} else {
 			animateEnemy(createEnemy());
 		}
+		addAmmoOnHit();
 		enemyNumber++;
 	}
 
@@ -420,13 +419,18 @@ public class GameView implements GameWorld {
 		return iv;
 	}
 
-	public void getInfiniteLives(Ship ship, Text text) {
+	public void getInfiniteLives() {
 		myShip.setHitPoints(10000);
 		updateScoreCounter();
 	}
 	
-	public void getInfiniteAmmo(Ship ship, Text text) {
+	public void getInfiniteAmmo() {
 		myShip.setAmmo(1000000);
+		updateScoreCounter();
+	}
+	
+	public void addAmmoOnHit() {
+		myShip.setAmmo(myShip.getAmmo() + 2);
 		updateScoreCounter();
 	}
 
