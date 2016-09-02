@@ -108,7 +108,7 @@ public class GameView implements GameWorld {
 
 		// sets score counter at top and HitPoints
 		setScoreCounter();
-		SimpleDoubleProperty shipXVelocity = new SimpleDoubleProperty();
+//		SimpleDoubleProperty shipXVelocity = new SimpleDoubleProperty();
 		LongProperty lastUpdateTime = new SimpleLongProperty();
 		shipAnimation = new AnimationTimer() {
 
@@ -122,7 +122,7 @@ public class GameView implements GameWorld {
 				if (lastUpdateTime.get() > 0) {
 					final double elapsedSeconds = (timestamp - lastUpdateTime.get()) / 1_000_000_000.0;
 					// distance moved = rate * time
-					deltaX = shipXVelocity.get() * elapsedSeconds;
+					deltaX = myShip.getShipVelocity().get() * elapsedSeconds;
 					oldX = myShip.getImageView().getTranslateX();
 					newX = Math.max(0, Math.min(SCENE_WIDTH - myShip.getImageView().getFitWidth(), oldX + deltaX));
 					myShip.getImageView().setTranslateX(newX);
@@ -148,9 +148,9 @@ public class GameView implements GameWorld {
 			@Override
 			public void handle(KeyEvent event) {
 				if (event.getCode() == KeyCode.RIGHT) {
-					shipXVelocity.set(SHIP_SPEED);
+					myShip.setShipVelocity(SHIP_SPEED);
 				} else if (event.getCode() == KeyCode.LEFT) {
-					shipXVelocity.set(-SHIP_SPEED);
+					myShip.setShipVelocity(-SHIP_SPEED);
 				} else if (event.getCode() == KeyCode.SPACE) {
 					if (!spaceRepeat && !isGameOver) {
 						spaceRepeat = true;
@@ -167,12 +167,12 @@ public class GameView implements GameWorld {
 
 		gameScene.setOnKeyReleased(e -> {
 			if (e.getCode() == KeyCode.RIGHT) {
-				if (shipXVelocity.get() > 0) {
-					shipXVelocity.set(0);
+				if (myShip.getShipVelocity().get() > 0) {
+					myShip.setShipVelocity(0);
 				}
 			} else if (e.getCode() == KeyCode.LEFT) {
-				if (shipXVelocity.get() < 0) {
-					shipXVelocity.set(0);
+				if (myShip.getShipVelocity().get() < 0) {
+					myShip.setShipVelocity(0);
 				}
 			} else if (e.getCode() == KeyCode.SPACE) {
 				spaceRepeat = false;

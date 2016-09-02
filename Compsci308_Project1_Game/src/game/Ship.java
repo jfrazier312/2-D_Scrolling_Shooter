@@ -1,6 +1,7 @@
 package game;
 
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 public class Ship extends Sprite implements GameWorld {
@@ -8,6 +9,7 @@ public class Ship extends Sprite implements GameWorld {
 	private static final int LIVES = 3;
 	private final IntegerProperty playerHitPoints = new SimpleIntegerProperty();
 	public final IntegerProperty playerScore = new SimpleIntegerProperty();
+	private final SimpleDoubleProperty shipXVelocity = new SimpleDoubleProperty();
 	private static final int AMMO_LIMIT = 20;
 	private int AMMO = AMMO_LIMIT;
 
@@ -23,6 +25,14 @@ public class Ship extends Sprite implements GameWorld {
 		
 	}
 	
+	public SimpleDoubleProperty getShipVelocity() {
+		return shipXVelocity;
+	}
+	
+	public void setShipVelocity(int i) {
+		this.shipXVelocity.set(i);
+	}
+	
 	public int getAmmo() { 
 		return AMMO;
 	}
@@ -32,11 +42,11 @@ public class Ship extends Sprite implements GameWorld {
 	}
 
 	public void decrementHitPoints() {
-		playerHitPoints.set(playerHitPoints.get() - 1);
+		this.playerHitPoints.set(playerHitPoints.get() - 1);
 	}
 	
 	public void setHitPoints(int i) {
-		playerHitPoints.set(i);
+		this.playerHitPoints.set(i);
 	}
 	
 	public IntegerProperty getHitPoints() {
@@ -44,7 +54,7 @@ public class Ship extends Sprite implements GameWorld {
 	}
 	
 	public void incrementPlayerScore() {
-		playerScore.set(playerScore.get() + 1);
+		this.playerScore.set(playerScore.get() + 1);
 	}
 
 }
