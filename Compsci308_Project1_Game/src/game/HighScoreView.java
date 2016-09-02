@@ -124,7 +124,7 @@ public class HighScoreView {
 		root.setBottom(buttonsBox);
 
 		scene = new Scene(root, 600, 550);
-		scene.getStylesheets().add(HighScoreView.class.getResource("HighScoreStyle.css").toExternalForm());
+		scene.getStylesheets().add(HighScoreView.class.getResource("GameStyle.css").toExternalForm());
 
 		field.setAlignment(Pos.CENTER);
 

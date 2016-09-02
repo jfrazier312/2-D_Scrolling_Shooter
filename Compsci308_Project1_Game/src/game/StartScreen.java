@@ -40,7 +40,7 @@ public class StartScreen extends Application implements GameWorld {
 		root.setCenter(selections);
 
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
-		scene.getStylesheets().add(StartScreen.class.getResource("HighScoreStyle.css").toExternalForm());
+		scene.getStylesheets().add(StartScreen.class.getResource("GameStyle.css").toExternalForm());
 		primaryStage.setTitle("Game Start Screen");
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -62,7 +62,7 @@ public class StartScreen extends Application implements GameWorld {
 		game.animateGame();
 	}
 
-	// Doesn't work bc of animations
+	// Doesn't work bc of animations still running
 	public void isGameOverLost(GameView game) {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
