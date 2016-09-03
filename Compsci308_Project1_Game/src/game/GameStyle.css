@@ -9,7 +9,7 @@
 }
 .hbox {
 	/*-fx-background-color: #2f2f2f; */
-	-fx-background-image: url("../../highscoreBackground.jpg");
+	-fx-background-image: url("highscoreBackground.jpg");
 	-fx-background-repeat: stretch;
 	-fx-background-position: center center;
 	-fx-background-size: cover;
@@ -25,4 +25,11 @@
 	-fx-fill: linear-gradient(to left top, red, white);
 	-fx-stroke: black;
 	-fx-stroke-width: 2;
+}
+
+.startScreen {
+	-fx-background-image: url("startBackground.jpg");
+	-fx-background-image: stretch;
+	-fx-background-position: center center;
+	-fx-background-size: cover;
 }

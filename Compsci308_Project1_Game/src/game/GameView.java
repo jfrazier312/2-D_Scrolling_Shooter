@@ -42,7 +42,6 @@ public class GameView implements GameWorld {
 
 	// TODO: Collision with enemy ship
 	// TODO: Fix starting position with ship/enemyships
-	// TODO: How to implement cheat codes without freezing other?
 
 	// Current Bugs :
 	// advantage of switch statements for key input vs if tree?
@@ -54,6 +53,9 @@ public class GameView implements GameWorld {
 
 	// could extend application and make this open a new stage after closing
 	// game stage but is bad?
+	
+	//Should be able to go back to main screen after death or high score list
+	//right now, game just closes so a new instance of high scores is created every time. 
 
 	private final Random random = new Random();
 	public static boolean isGameOver = false;
@@ -99,7 +101,7 @@ public class GameView implements GameWorld {
 		gameRoot.getChildren().add(backgroundGroup);
 
 		// Creates game play timer
-		timer = new CountDownTimer(30);
+		timer = new CountDownTimer(10, myShip, true);
 		gameRoot.getChildren().add(timer.getLabel());
 
 		// Creates your ship
@@ -108,7 +110,7 @@ public class GameView implements GameWorld {
 
 		// sets score counter at top and HitPoints
 		setScoreCounter();
-//		SimpleDoubleProperty shipXVelocity = new SimpleDoubleProperty();
+		// SimpleDoubleProperty shipXVelocity = new SimpleDoubleProperty();
 		LongProperty lastUpdateTime = new SimpleLongProperty();
 		shipAnimation = new AnimationTimer() {
 
@@ -133,11 +135,11 @@ public class GameView implements GameWorld {
 					myShip.getImageView().setTranslateX(newX);
 				}
 				lastUpdateTime.set(timestamp);
-				if (isGameOver) { // popup won't work because
+				if (isGameOver || CountDownTimer.countDownOver) { // popup won't work because
 									// animation/layoutprocessing is still
 									// running somewhere
 					stopAllAnimation();
-					popupGameOverDialog();
+					// popupGameOverDialog();
 				}
 			}
 		};
@@ -195,17 +197,17 @@ public class GameView implements GameWorld {
 		scoreCounter.setFill(Color.RED);
 		gameRoot.getChildren().add(scoreCounter);
 	}
-	
+
 	public void updateScoreCounter() {
 		scoreCounter.textProperty().bind(Bindings.concat("Score: ").concat(myShip.playerScore).concat("\nHit Points: ")
 				.concat(myShip.getHitPoints()).concat("\nBullets: ").concat(myShip.getAmmo()));
 	}
 
 	public void fireBullet(final List<EnemyShip> enemies) {
-		//Creates circle bullet
+		// Creates circle bullet
 		Shape bullet = new Circle(2.3, Color.GREENYELLOW);
 		if (myShip.getAmmo() <= 0) {
-			//do nothing
+			// do nothing
 			System.out.println("Out of ammo!");
 		} else {
 			myShip.setAmmo(myShip.getAmmo() - 1);
@@ -278,7 +280,7 @@ public class GameView implements GameWorld {
 
 	public EnemyShip createEnemy() {
 		// TODO: need to randomize creation of enemies
-		EnemyShip enemy = new EnemyShip("enemyShip.png"); 
+		EnemyShip enemy = new EnemyShip("enemyShip.png");
 		enemies.add(enemy);
 		gameRoot.getChildren().add(enemy.getEnemyShip());
 		return enemy;
@@ -423,12 +425,12 @@ public class GameView implements GameWorld {
 		myShip.setHitPoints(10000);
 		updateScoreCounter();
 	}
-	
+
 	public void getInfiniteAmmo() {
 		myShip.setAmmo(1000000);
 		updateScoreCounter();
 	}
-	
+
 	public void addAmmoOnHit() {
 		myShip.setAmmo(myShip.getAmmo() + 2);
 		updateScoreCounter();

@@ -145,7 +145,7 @@ public class HighScoreView {
 
 	public void handleOkButtonInput(int playerScore) {
 		// Random method to get a high score, replaced by actual high score
-		Random rand = new Random();
+//		Random rand = new Random();
 		// randomScore = rand.nextInt(101);
 		randomScore = playerScore;
 
@@ -157,11 +157,11 @@ public class HighScoreView {
 				replaceHighScoreName();
 			} else {
 				popupNotHighScoreAlert();
-				System.out.println("You suck");
 			}
 		}
 		field.clear();
 		field.requestFocus();
+		field.setDisable(true);
 
 	}
 	
@@ -243,8 +243,7 @@ public class HighScoreView {
 	}
 
 	public void actuallyAddToTheList() {
-		// should be doing a clear or remove all and instantiating in global
-		// field
+		// should be doing a clear or remove all and instantiating in global?
 		nameList = FXCollections.observableArrayList();
 		scoreList = FXCollections.observableArrayList();
 
@@ -255,6 +254,7 @@ public class HighScoreView {
 
 		nameView.setItems(nameList);
 		scoreView.setItems(scoreList);
+		
 	}
 
 	public void showIncorrectInputErrorAlert() {

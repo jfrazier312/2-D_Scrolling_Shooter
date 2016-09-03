@@ -1,0 +1,39 @@
+Jordan Frazier (jrf30)
+
+Genre: 
+	A shooting scroller similar to Galaga.
+Name: 
+	Galactic Ace
+	You are the last line of defense and the last hope against the invading aliens.
+	Humanity's only chance for survival is if you can manage to survive the wave of 
+	enemies and reach the invader's mothership and destroy it. Ammunition is low,
+	so you must destroy as many enemy ships as you can in order to salvage their
+	components and use them to create more bullets.
+	
+	I've always enjoyed scrolling shooter games and have spent hours playing
+	Galaga back when I used to go to arcades. The main differences between
+	Galactic Ace and Galaga will be the ammunition limit, hit points instead of lives,
+	and a boss level where the gameplay mechanics differ.
+Goal: 
+	Destroy as many enemy ships as possible with your bullets while avoiding enemy fire.
+	There is a time limit until your ship reaches the mothership, so be sure to destroy
+	as many enemy ships as possible on your way, or it may be more difficult to
+	defeat the boss!
+Basic Mechanics:
+	Main:
+	Spacebar: Shoot 
+	Left/Right arrow keys: Move
+	
+	Boss:
+	Use the arrow keys to repeat the pattern shown
+	
+	Cheat Codes:
+	Press 'd' for infinite lives
+	Press 'f' for infinite ammo
+	Press 'b' to automatically input the correct missile launch sequence for boss
+	
+Modes:
+	Main shooting mode: very similar to Galaga type games. 
+	Boss battle: A memory style scene where you will be shown a missile launch sequence 
+				and instructed to input the exact command into your ship to launch it 
+				successfully.
