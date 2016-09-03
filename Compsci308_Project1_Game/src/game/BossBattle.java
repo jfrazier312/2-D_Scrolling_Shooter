@@ -6,16 +6,15 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javafx.application.Application;
-import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 public class BossBattle implements GameWorld {
 
@@ -27,25 +26,30 @@ public class BossBattle implements GameWorld {
 	private List<Text> inputList = new ArrayList<>();
 	private int inputNum = 0;
 	private boolean launch = true;
-	private static final int SEQUENCE_LENGTH = 5;
+	private static final int SEQUENCE_LENGTH = 6;
 	private int launchCounter = 0;
 	private List<KeyCode> inputs;
+	
+	//TODO: handle win and lose
 
 	public BossBattle() {
 		BorderPane root = new BorderPane();
-		bossScene = new Scene(root, 600, 500);
+		root.getStyleClass().add("bossBackground");
+		bossScene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
+		bossScene.getStylesheets().add(BossBattle.class.getResource("GameStyle.css").toExternalForm());
 
+		//Fills lists with dialog and launch sequence instructions
 		fillTextList();
 		fillInputList();
-		inputList.add(new Text("Input the Launch Sequence now!"));
 
 		Button continueBtn = new Button("Continue");
 		Button nextBtn = new Button("Next");
-		Button okBtn = new Button("Let's fuckin do this");
-		vbox = new VBox(5);
+		Button okBtn = new Button("Let's do this");
+		vbox = new VBox(10);
+		vbox.setPadding(new Insets(50, 0, 70, 0));
 		vbox.setAlignment(Pos.CENTER);
 		vbox.getChildren().addAll(textList.get(textNum), continueBtn);
-		root.setCenter(vbox);
+		root.setBottom(vbox);
 		
 		/*
 		 * Used setOnMouseClicked instead of setOnAction because user might be pressing space
@@ -89,6 +93,7 @@ public class BossBattle implements GameWorld {
 		if (!launch) {
 			System.out.println("You lose");
 			timer.cancel();
+			
 		} else if (launchCounter == SEQUENCE_LENGTH) {
 			System.out.println("You win!");
 			timer.cancel();
@@ -136,8 +141,12 @@ public class BossBattle implements GameWorld {
 	public void fillInputList() {
 		for (int i = 0; i < SEQUENCE_LENGTH; i++) {
 			Text direction = getRandomDirection();
+			direction.setFill(Color.CADETBLUE);
 			inputList.add(direction);
 		}
+		Text last = new Text("Input the Launch Sequence now!");
+		last.setFill(Color.RED);
+		inputList.add(last);
 	}
 
 	public void fillTextList() {
@@ -146,6 +155,9 @@ public class BossBattle implements GameWorld {
 		textList.add(new Text("That means we only have one chance to do this!"));
 		textList.add(new Text("You must memorize the launch sequence as I transmit it and input it into the ship..."));
 		textList.add(new Text("Good luck, and Godspeed."));
+		for(Text txt : textList) {
+			txt.setFill(Color.ORANGERED);
+		}
 	}
 
 	public Text getRandomDirection() {

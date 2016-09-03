@@ -33,3 +33,11 @@
 	-fx-background-position: center center;
 	-fx-background-size: cover;
 }
+
+.bossBackground {
+	-fx-background-image: url("bossShip.png");
+	-fx-background-color: black;
+	-fx-background-image: stretch;
+	-fx-background-position: center top;
+	-fx-background-repeat: no-repeat;
+}

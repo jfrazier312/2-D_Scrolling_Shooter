@@ -53,13 +53,13 @@ public class GameView implements GameWorld {
 
 	// could extend application and make this open a new stage after closing
 	// game stage but is bad?
-	
-	//Should be able to go back to main screen after death or high score list
-	//right now, game just closes so a new instance of high scores is created every time. 
+
+	// Should be able to go back to main screen after death or high score list
+	// right now, game just closes so a new instance of high scores is created
+	// every time.
 
 	private final Random random = new Random();
 	public static boolean isGameOver = false;
-	public static boolean youLost = false;
 
 	private CheatCodes cheats;
 	private static final int SHIP_SPEED = 400;
@@ -81,6 +81,7 @@ public class GameView implements GameWorld {
 	private Group gameRoot;
 	private AnimationTimer shipAnimation;
 	private ParallelTransition scrollingBackground;
+	private static final int GAME_TIME = 30;
 
 	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
 
@@ -101,7 +102,7 @@ public class GameView implements GameWorld {
 		gameRoot.getChildren().add(backgroundGroup);
 
 		// Creates game play timer
-		timer = new CountDownTimer(3, myShip, true);
+		timer = new CountDownTimer(GAME_TIME, myShip, true);
 		gameRoot.getChildren().add(timer.getLabel());
 
 		// Creates your ship
@@ -135,9 +136,7 @@ public class GameView implements GameWorld {
 					myShip.getImageView().setTranslateX(newX);
 				}
 				lastUpdateTime.set(timestamp);
-				if (isGameOver || CountDownTimer.countDownOver) { // popup won't work because
-									// animation/layoutprocessing is still
-									// running somewhere
+				if (isGameOver || CountDownTimer.countDownOver) {
 					stopAllAnimation();
 					// popupGameOverDialog();
 				}
@@ -159,7 +158,6 @@ public class GameView implements GameWorld {
 						fireBullet(enemies);
 					}
 				} else if (event.getCode() == KeyCode.D) {
-					// cheats = new CheatCodes(gameScene, myShip, scoreCounter);
 					getInfiniteLives();
 				} else if (event.getCode() == KeyCode.F) {
 					getInfiniteAmmo();
@@ -180,7 +178,6 @@ public class GameView implements GameWorld {
 				spaceRepeat = false;
 			}
 		});
-
 		return gameScene;
 	}
 
@@ -338,7 +335,6 @@ public class GameView implements GameWorld {
 						gameRoot.getChildren().remove(myShip.getImageView());
 						System.out.println("You lost all of your HitPoints");
 						isGameOver = true;
-						youLost = true;
 					}
 					animation.stop();
 				}

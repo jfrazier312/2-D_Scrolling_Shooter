@@ -7,13 +7,13 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -31,7 +31,7 @@ public class StartScreen extends Application implements GameWorld {
 		mainStage = primaryStage;
 		root = new BorderPane();
 		
-		// start, rules, cheat codes
+		// start, rules, cheat codes buttons
 		VBox selections = new VBox(10);
 		VBox titleBox = new VBox(10);	
 		styleItems(titleBox, selections);	
@@ -81,10 +81,9 @@ public class StartScreen extends Application implements GameWorld {
 				stage.show();
 				mainStage.close();
 
-			} else if (GameView.isGameOver) { //unneccessary if
-				//take me to high score //only if I have a high score tho
+			} else if (GameView.isGameOver) { 
 				timeline.stop();
-				createGameOverWon(game);
+				createGameOverLost();
 			}
 		}));
 		timeline.play();
@@ -98,18 +97,24 @@ public class StartScreen extends Application implements GameWorld {
 		stage.show();
 	}
 	
-	//create game over scene TODO
 	public void createGameOverLost() {
-		 mainStage.close();
 		 Stage stage = new Stage();
-		 Group newRoot = new Group();
+		 BorderPane newRoot = new BorderPane();
+		 newRoot.setStyle("	-fx-background-color: black;");
 		 stage.setScene(new Scene(newRoot, SCENE_WIDTH, SCENE_HEIGHT));
 		 
-		 Label lbl = new Label("You have died and the world is doomed");
-		 lbl.setAlignment(Pos.CENTER);
+		 Text text = new Text("You have died and thus the world is doomed");
+		 text.setTextAlignment(TextAlignment.CENTER);
+		 text.setFill(Color.GHOSTWHITE);
 		 
-		 newRoot.getChildren().add(lbl);
+		 Button btn = new Button("Close");
+		 btn.setOnAction(e -> Platform.exit());
+		 
+		 newRoot.setCenter(text);
+		 newRoot.setBottom(btn);
+		 BorderPane.setAlignment(btn, Pos.BOTTOM_CENTER);
 		 stage.show();
+		 mainStage.close();
 	}
 	
 	public void styleItems(VBox titleBox, VBox buttons){
