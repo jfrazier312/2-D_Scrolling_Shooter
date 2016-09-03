@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -29,6 +30,8 @@ public class BossBattle implements GameWorld {
 	private static final int SEQUENCE_LENGTH = 6;
 	private int launchCounter = 0;
 	private List<KeyCode> inputs;
+	
+	public static boolean gameOverWon = false;
 	
 	//TODO: handle win and lose
 
@@ -93,11 +96,17 @@ public class BossBattle implements GameWorld {
 		if (!launch) {
 			System.out.println("You lose");
 			timer.cancel();
+			Platform.exit();
 			
 		} else if (launchCounter == SEQUENCE_LENGTH) {
 			System.out.println("You win!");
 			timer.cancel();
+			gameOverWon = true;
 		}
+	}
+	
+	public void handleGameWon() {
+		
 	}
 
 	public void handleLaunchInput() {
