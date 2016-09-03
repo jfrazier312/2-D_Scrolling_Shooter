@@ -101,7 +101,7 @@ public class GameView implements GameWorld {
 		gameRoot.getChildren().add(backgroundGroup);
 
 		// Creates game play timer
-		timer = new CountDownTimer(10, myShip, true);
+		timer = new CountDownTimer(3, myShip, true);
 		gameRoot.getChildren().add(timer.getLabel());
 
 		// Creates your ship

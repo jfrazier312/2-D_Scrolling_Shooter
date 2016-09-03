@@ -42,7 +42,7 @@ public class GameButton extends Button {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("How to Play");
 		alert.setHeaderText("Rules");
-		alert.setContentText("Use arrow keys to move your ship back and forth and space to fire!\nYour goal is to destroy as many enemy ships as possible while avoiding their attacks.\nYou only have 30 seconds before the enemy boss shows up!\n(Watch out for your ammo limit, you get two extra bullets on each successful hit)");
+		alert.setContentText("Use arrow keys to move your ship back and forth and space to fire!\nYour goal is to destroy as many enemy ships as possible while avoiding their attacks.\nYou only have 30 seconds before the enemy boss shows up!\n(Watch out for your ammo limit, you get two extra bullets on each successful hit)\nIn Boss fight, click on the continue button with the mouse to further the instructions.");
 		alert.showAndWait();
 	}
 	

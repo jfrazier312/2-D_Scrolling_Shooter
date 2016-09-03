@@ -46,8 +46,12 @@ public class BossBattle implements GameWorld {
 		vbox.setAlignment(Pos.CENTER);
 		vbox.getChildren().addAll(textList.get(textNum), continueBtn);
 		root.setCenter(vbox);
-
-		continueBtn.setOnAction(e -> {
+		
+		/*
+		 * Used setOnMouseClicked instead of setOnAction because user might be pressing space
+		 * to fire, and accidentally toggle through dialog too quickly.
+		 */
+		continueBtn.setOnMouseClicked(e -> {
 			vbox.getChildren().removeAll(textList.get(textNum), continueBtn);
 			textNum++;
 			if (textNum < textList.size()) {
@@ -57,7 +61,7 @@ public class BossBattle implements GameWorld {
 			}
 		});
 
-		nextBtn.setOnAction(e -> {
+		nextBtn.setOnMouseClicked(e -> {
 			vbox.getChildren().removeAll(inputList.get(inputNum), nextBtn);
 			inputNum++;
 			if (inputNum < inputList.size() - 1) {
@@ -66,12 +70,12 @@ public class BossBattle implements GameWorld {
 				vbox.getChildren().addAll(inputList.get(inputNum), okBtn);
 			}
 		});
-
-		okBtn.setOnAction(e -> {
+		
+		okBtn.setOnMouseClicked(e -> {
 			vbox.getChildren().removeAll(inputList.get(inputNum), okBtn);
 			handleLaunchInput();
 		});
-
+		
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
