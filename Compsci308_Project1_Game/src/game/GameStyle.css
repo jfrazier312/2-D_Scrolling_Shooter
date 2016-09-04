@@ -36,7 +36,7 @@
 
 .bossBackground {
 	-fx-background-image: url("images/bossShip.png");
-	-fx-background-color: black;
+	-fx-background-color: rgba(49, 39, 39);
 	-fx-background-image: stretch;
 	-fx-background-position: center top;
 	-fx-background-repeat: no-repeat;
