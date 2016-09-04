@@ -100,7 +100,7 @@ public class GameView implements GameWorld {
 		gameRoot.getChildren().add(timer.getLabel());
 
 		// Creates your ship
-		myShip = new Ship("MainShip.png");
+		myShip = new Ship("images/MainShip.png");
 		gameRoot.getChildren().add(myShip.getImageView());
 
 		// sets score counter at top and HitPoints
@@ -271,7 +271,7 @@ public class GameView implements GameWorld {
 
 	public EnemyShip createEnemy() {
 		// TODO: need to randomize creation of enemies
-		EnemyShip enemy = new EnemyShip("enemyShip.png");
+		EnemyShip enemy = new EnemyShip("images/enemyShip.png");
 		enemies.add(enemy);
 		gameRoot.getChildren().add(enemy.getEnemyShip());
 		return enemy;
@@ -383,8 +383,8 @@ public class GameView implements GameWorld {
 	}
 
 	public void scrollBackground(Group group) {
-		ImageView iv = getBackgroundImageView("gameBackground.gif");
-		ImageView iv2 = getBackgroundImageView("gameBackground2.gif");
+		ImageView iv = getBackgroundImageView("images/gameBackground.gif");
+		ImageView iv2 = getBackgroundImageView("images/gameBackground2.gif");
 		iv2.setY(SCENE_HEIGHT);
 
 		group.getChildren().addAll(iv, iv2);

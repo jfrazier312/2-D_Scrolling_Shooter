@@ -9,7 +9,7 @@
 }
 .hbox {
 	/*-fx-background-color: #2f2f2f; */
-	-fx-background-image: url("highscoreBackground.jpg");
+	-fx-background-image: url("images/highscoreBackground.jpg");
 	-fx-background-repeat: stretch;
 	-fx-background-position: center center;
 	-fx-background-size: cover;
@@ -28,14 +28,14 @@
 }
 
 .startScreen {
-	-fx-background-image: url("startBackground.jpg");
+	-fx-background-image: url("images/startBackground.jpg");
 	-fx-background-image: stretch;
 	-fx-background-position: center center;
 	-fx-background-size: cover;
 }
 
 .bossBackground {
-	-fx-background-image: url("bossShip.png");
+	-fx-background-image: url("images/bossShip.png");
 	-fx-background-color: black;
 	-fx-background-image: stretch;
 	-fx-background-position: center top;
