@@ -42,6 +42,7 @@ public class GameView implements GameWorld {
 
 	// TODO: Collision with enemy ship
 	// TODO: Fix starting position with ship/enemyships
+	// TODO: Create missile launch animation
 
 	// Current Bugs :
 	// advantage of switch statements for key input vs if tree?

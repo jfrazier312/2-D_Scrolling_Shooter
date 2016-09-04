@@ -48,9 +48,9 @@ public class Main extends Application implements GameWorld {
 
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
 		scene.getStylesheets().add(Main.class.getResource("GameStyle.css").toExternalForm());
-		primaryStage.setTitle("Game Start Screen");
-		primaryStage.setScene(scene);
-		primaryStage.show();
+		mainStage.setTitle("Game Start Screen");
+		mainStage.setScene(scene);
+		mainStage.show();
 
 		// set up game screen behind scenes
 		GameView game = new GameView();
@@ -73,6 +73,7 @@ public class Main extends Application implements GameWorld {
 			if (BossBattle.gameOverWon) {
 				timeline.stop();
 				HighScoreView hsview = new HighScoreView(game.getShip().playerScore.get());
+				mainStage.setTitle("High Scores");
 				createGameOverWon(game, hsview);
 			}
 		}));
@@ -92,9 +93,12 @@ public class Main extends Application implements GameWorld {
 			if (CountDownTimer.countDownOver) {
 				timeline.stop();
 				mainStage.setScene(boss.getScene());
+				mainStage.setTitle("Boss Battle!");
+
 			} else if (GameView.isGameOver) {
 				timeline.stop();
 				createGameOverLost();
+				mainStage.setTitle("Game Over!");
 			}
 		}));
 		timeline.play();
