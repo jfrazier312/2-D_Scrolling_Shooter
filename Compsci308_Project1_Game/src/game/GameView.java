@@ -75,7 +75,7 @@ public class GameView implements GameWorld {
 	private Group gameRoot;
 	private AnimationTimer shipAnimation;
 	private ParallelTransition scrollingBackground;
-	private static final int GAME_TIME = 30;
+	private static final int GAME_TIME = 3;
 
 	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
 

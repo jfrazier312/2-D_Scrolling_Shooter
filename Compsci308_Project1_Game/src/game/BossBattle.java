@@ -27,7 +27,7 @@ public class BossBattle implements GameWorld {
 	private List<Text> inputList = new ArrayList<>();
 	private int inputNum = 0;
 	private boolean launch = true;
-	private static final int SEQUENCE_LENGTH = 6;
+	private static final int SEQUENCE_LENGTH = 1;
 	private int launchCounter = 0;
 	private List<KeyCode> inputs;
 	

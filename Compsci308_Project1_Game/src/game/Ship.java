@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 
 public class Ship extends Sprite implements GameWorld {
 	
-	private static final int LIVES = 3;
+	private static final int LIVES = 1;
 	private final IntegerProperty playerHitPoints = new SimpleIntegerProperty();
 	public final IntegerProperty playerScore = new SimpleIntegerProperty();
 	private final SimpleDoubleProperty shipXVelocity = new SimpleDoubleProperty();

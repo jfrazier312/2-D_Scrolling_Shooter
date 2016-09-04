@@ -18,7 +18,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class StartScreen extends Application implements GameWorld {
+public class Main extends Application implements GameWorld {
 
 	private BorderPane root;
 	private Stage mainStage;
@@ -47,7 +47,7 @@ public class StartScreen extends Application implements GameWorld {
 		root.setCenter(selections);
 
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
-		scene.getStylesheets().add(StartScreen.class.getResource("GameStyle.css").toExternalForm());
+		scene.getStylesheets().add(Main.class.getResource("GameStyle.css").toExternalForm());
 		primaryStage.setTitle("Game Start Screen");
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -73,9 +73,7 @@ public class StartScreen extends Application implements GameWorld {
 			if (BossBattle.gameOverWon) {
 				timeline.stop();
 				HighScoreView hsview = new HighScoreView(game.getShip().playerScore.get());
-				Stage stage = new Stage();
-				stage.setScene(hsview.getScene());
-				stage.show();
+				createGameOverWon(game, hsview);
 			}
 		}));
 		timeline.play();
@@ -93,10 +91,7 @@ public class StartScreen extends Application implements GameWorld {
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000 / 60), e -> {
 			if (CountDownTimer.countDownOver) {
 				timeline.stop();
-				Stage stage = new Stage();
-				stage.setScene(boss.getScene());
-				stage.show();
-				mainStage.close();
+				mainStage.setScene(boss.getScene());
 			} else if (GameView.isGameOver) {
 				timeline.stop();
 				createGameOverLost();
@@ -105,19 +100,14 @@ public class StartScreen extends Application implements GameWorld {
 		timeline.play();
 	}
 
-	public void createGameOverWon(GameView game) {
-		HighScoreView highView = new HighScoreView(game.getShip().playerScore.get());
-		mainStage.close();
-		Stage stage = new Stage();
-		stage.setScene(highView.getScene());
-		stage.show();
+	public void createGameOverWon(GameView game, HighScoreView highView) {
+		mainStage.setScene(highView.getScene());
 	}
 
 	public void createGameOverLost() {
-		Stage stage = new Stage();
 		BorderPane newRoot = new BorderPane();
-		newRoot.setStyle("	-fx-background-color: black;");
-		stage.setScene(new Scene(newRoot, SCENE_WIDTH, SCENE_HEIGHT));
+		newRoot.setStyle("-fx-background-color: black;");
+		mainStage.setScene(new Scene(newRoot, SCENE_WIDTH, SCENE_HEIGHT));
 
 		Text text = new Text("You have died and thus the world is doomed");
 		text.setTextAlignment(TextAlignment.CENTER);
@@ -129,8 +119,6 @@ public class StartScreen extends Application implements GameWorld {
 		newRoot.setCenter(text);
 		newRoot.setBottom(btn);
 		BorderPane.setAlignment(btn, Pos.BOTTOM_CENTER);
-		stage.show();
-		mainStage.close();
 	}
 
 	public void styleItems(VBox titleBox, VBox buttons) {
