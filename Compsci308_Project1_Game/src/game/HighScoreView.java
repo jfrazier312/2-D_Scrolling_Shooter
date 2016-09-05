@@ -146,8 +146,6 @@ public class HighScoreView {
 		}
 		field.clear();
 		field.requestFocus();
-		field.setDisable(true);
-
 	}
 	
 	public Scene getScene() {
@@ -235,7 +233,7 @@ public class HighScoreView {
 
 		nameView.setItems(nameList);
 		scoreView.setItems(scoreList);
-		
+		field.setDisable(true);	
 	}
 
 	public void showIncorrectInputErrorAlert() {

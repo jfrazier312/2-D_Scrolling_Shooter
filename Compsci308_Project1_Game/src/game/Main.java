@@ -135,8 +135,10 @@ public class Main extends Application implements GameWorld {
 
 	public void createGameOverLost(GameButton startBtn) {
 		BorderPane newRoot = new BorderPane();
-		newRoot.setStyle("-fx-background-color: black;");
+		newRoot.getStyleClass().add("gameOverLost");
+		newRoot.setStyle("-fx-background-color: black");
 		mainStage.setScene(new Scene(newRoot, SCENE_WIDTH, SCENE_HEIGHT));
+//		mainStage.getScene().getStylesheets().add(Main.class.getResource("GameStyle.css").toExternalForm());
 		mainStage.setTitle("Game Over!");
 
 		Text text = new Text("You have died and thus the world is doomed");

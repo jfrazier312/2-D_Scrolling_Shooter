@@ -42,18 +42,8 @@ public class GameView implements GameWorld {
 
 	// Current Bugs :
 	// advantage of switch statements for key input vs if tree?
-	// How to switch stage?
 	// Starting position for ships
-	// how to stop all animation for popupdialog?
-	// should any animation be global vars? //create list of all animations, use
-	// one method to stop them all at once?
-
-	// could extend application and make this open a new stage after closing
-	// game stage but is bad?
-
-	// Should be able to go back to main screen after death or high score list
-	// right now, game just closes so a new instance of high scores is created
-	// every time.
+	// should any animation be global vars? 
 
 	private final Random random = new Random();
 	public static boolean isGameOver = false;

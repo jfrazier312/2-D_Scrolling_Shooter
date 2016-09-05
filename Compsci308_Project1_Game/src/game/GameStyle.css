@@ -41,3 +41,10 @@
 	-fx-background-position: center top;
 	-fx-background-repeat: no-repeat;
 }
+
+.gameOverLost {
+	-fx-background-image: url("images/startBackground.jpg");
+	-fx-background-image: stretch;
+	-fx-background-position: center center;
+	-fx-background-size: cover;
+}
