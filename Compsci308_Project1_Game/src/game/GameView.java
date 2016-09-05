@@ -111,7 +111,6 @@ public class GameView implements GameWorld {
 			public void handle(long timestamp) {
 
 				double deltaX; // TODO: figure how to move correctly better
-								// algorithm
 				double oldX;
 				double newX;
 				if (lastUpdateTime.get() > 0) {
@@ -252,7 +251,7 @@ public class GameView implements GameWorld {
 		animationList.add(animation);
 		animation.setFromX(enemy.getEnemyShip().getTranslateX());
 		animation.setFromY(enemy.getEnemyShip().getTranslateY());
-		animation.setToX(random.nextInt(SCENE_WIDTH));
+		animation.setToX(random.nextInt(SCENE_WIDTH) - SHIP_WIDTH);
 		animation.setToY(enemy.getEnemyShip().getTranslateY() + random.nextInt(100) + 40);
 
 		checkYBounds(enemy);
@@ -269,7 +268,7 @@ public class GameView implements GameWorld {
 	}
 
 	public EnemyShip createEnemy() {
-		// TODO: need to randomize creation of enemies
+		// TODO: need to randomize creation of enemy position
 		EnemyShip enemy = new EnemyShip("images/enemyShip.png");
 		enemies.add(enemy);
 		gameRoot.getChildren().add(enemy.getEnemyShip());
@@ -355,14 +354,14 @@ public class GameView implements GameWorld {
 		enemies.remove(enemy);
 		gameRoot.getChildren().remove(enemy.getEnemyShip());
 	}
-
+	
+	//Not using
 	public void popupGameOverDialog() {
 		Alert alert = new Alert(AlertType.WARNING);
 		alert.setHeaderText("You Died!");
 		alert.setContentText("You have died, and thus the world is doomed");
 		alert.showAndWait();
 		alert.setOnCloseRequest(e -> {
-			// how do I switch my stage scene to start screen now? TODO:
 			Platform.exit();
 			// lol
 		});

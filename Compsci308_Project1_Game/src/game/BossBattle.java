@@ -79,10 +79,11 @@ public class BossBattle implements GameWorld {
 				vbox.getChildren().addAll(inputList.get(inputNum), okBtn);
 			}
 		});
+		Timer timer = new Timer();
 
 		okBtn.setOnMouseClicked(e -> {
 			vbox.getChildren().removeAll(inputList.get(inputNum), okBtn);
-			handleLaunchInput();
+			handleLaunchInput(timer);
 		});
 
 		bossScene.setOnKeyPressed(e -> {
@@ -91,7 +92,6 @@ public class BossBattle implements GameWorld {
 			}
 		});
 
-		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
@@ -110,7 +110,7 @@ public class BossBattle implements GameWorld {
 		}
 	}
 
-	public void handleLaunchInput() {
+	public void handleLaunchInput(Timer timer) {
 		inputs = translateInputListToKeyCodes();
 		final SimpleBooleanProperty boo = new SimpleBooleanProperty();
 		boo.set(true);
@@ -121,6 +121,7 @@ public class BossBattle implements GameWorld {
 					launchCounter++;
 				} else if (boo.get() && e.getCode() != KeyCode.B) {
 					boo.set(false);
+					timer.cancel();
 					Button btn = new Button("Accept fate");
 					Text text = new Text("Missile Malfunction! Missile exploding before launching!");
 					text.setFill(Color.GHOSTWHITE);
