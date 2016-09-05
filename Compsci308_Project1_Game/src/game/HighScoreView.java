@@ -55,11 +55,11 @@ public class HighScoreView {
 		VBox vbox = new VBox();
 		vbox.setSpacing(5.0);
 		vbox.getStyleClass().add("vbox");
-
-		field = new TextField() { // restricts all copy paste and numbers, does
-									// not
-									// allow you to delete or any other things
-			// first method to restrict input
+		
+		// restricts all copy paste and numbers, does not
+		// allow you to delete or any other things
+		// first method to restrict input
+		field = new TextField() { 
 			@Override
 			public void replaceText(int start, int end, String text) {
 				if (text.matches("[a-zA-Z]")) {

@@ -6,7 +6,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -33,7 +33,7 @@ public class BossBattle implements GameWorld {
 	public static boolean gameOverLost = false;
 	public static boolean gameOverWon = false;
 	private boolean cheatCodeActive = false;
-	
+
 	public BossBattle() {
 		gameOverLost = false;
 		gameOverWon = false;
@@ -42,7 +42,7 @@ public class BossBattle implements GameWorld {
 		bossScene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
 		bossScene.getStylesheets().add(BossBattle.class.getResource("GameStyle.css").toExternalForm());
 
-		//Fills lists with dialog and launch sequence instructions
+		// Fills lists with dialog and launch sequence instructions
 		fillTextList();
 		fillInputList();
 
@@ -54,10 +54,11 @@ public class BossBattle implements GameWorld {
 		vbox.setAlignment(Pos.CENTER);
 		vbox.getChildren().addAll(textList.get(textNum), continueBtn);
 		root.setBottom(vbox);
-		
+
 		/*
-		 * Used setOnMouseClicked instead of setOnAction because user might be pressing space
-		 * to fire, and accidentally toggle through dialog too quickly.
+		 * Used setOnMouseClicked instead of setOnAction because user might be
+		 * pressing space to fire, and accidentally toggle through dialog too
+		 * quickly.
 		 */
 		continueBtn.setOnMouseClicked(e -> {
 			vbox.getChildren().removeAll(textList.get(textNum), continueBtn);
@@ -78,18 +79,18 @@ public class BossBattle implements GameWorld {
 				vbox.getChildren().addAll(inputList.get(inputNum), okBtn);
 			}
 		});
-		
+
 		okBtn.setOnMouseClicked(e -> {
 			vbox.getChildren().removeAll(inputList.get(inputNum), okBtn);
 			handleLaunchInput();
 		});
-		
+
 		bossScene.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.B) {
 				cheatCodeActive = true;
 			}
 		});
-		
+
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -101,7 +102,7 @@ public class BossBattle implements GameWorld {
 
 	public void checkLaunchBoolean(Timer timer) {
 		if (!launch) {
-//			gameOverLost = true;
+			// gameOverLost = true;
 		} else if (launchCounter == SEQUENCE_LENGTH || cheatCodeActive) {
 			System.out.println("You win!");
 			timer.cancel();
@@ -111,19 +112,22 @@ public class BossBattle implements GameWorld {
 
 	public void handleLaunchInput() {
 		inputs = translateInputListToKeyCodes();
+		final SimpleBooleanProperty boo = new SimpleBooleanProperty();
+		boo.set(true);
 		bossScene.setOnKeyPressed(e -> {
 			if (launchCounter < SEQUENCE_LENGTH) {
 				if (e.getCode() == inputs.get(launchCounter)) {
 					launch = true;
 					launchCounter++;
-				} else {
+				} else if (boo.get() && e.getCode() != KeyCode.B) {
+					boo.set(false);
 					Button btn = new Button("Accept fate");
 					Text text = new Text("Missile Malfunction! Missile exploding before launching!");
 					text.setFill(Color.GHOSTWHITE);
 					vbox.getChildren().addAll(text, btn);
 					System.out.println("You lose");
 					btn.setOnAction(event -> {
-						gameOverLost  = true;
+						gameOverLost = true;
 					});
 					launch = false;
 				}
@@ -172,7 +176,7 @@ public class BossBattle implements GameWorld {
 		textList.add(new Text("That means we only have one chance to do this!"));
 		textList.add(new Text("You must memorize the launch sequence as I transmit it and input it into the ship..."));
 		textList.add(new Text("Good luck, and Godspeed."));
-		for(Text txt : textList) {
+		for (Text txt : textList) {
 			txt.setFill(Color.ORANGERED);
 		}
 	}
@@ -198,7 +202,7 @@ public class BossBattle implements GameWorld {
 		}
 		return text;
 	}
-	
+
 	public Scene getScene() {
 		return bossScene;
 	}

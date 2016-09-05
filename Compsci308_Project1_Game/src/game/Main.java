@@ -144,7 +144,7 @@ public class Main extends Application implements GameWorld {
 		text.setFill(Color.GHOSTWHITE);
 
 		Button btn = new Button("Close");
-		btn.setOnAction(e -> Main.initGame(startBtn));
+		btn.setOnMouseClicked(e -> Main.initGame(startBtn));
 
 		newRoot.setCenter(text);
 		newRoot.setBottom(btn);

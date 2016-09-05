@@ -45,6 +45,10 @@ public class CountDownTimer {
 	public void startCountDown() {
 		timeline.playFromStart();
 	}
+	
+	public void stopCountDown() {
+		timeline.stop();
+	}
 
 	public void goToBossBattle(Ship myShip) {
 		System.out.println("Going to boss battle");
