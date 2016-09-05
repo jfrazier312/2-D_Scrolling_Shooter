@@ -1,6 +1,5 @@
 package game;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -12,7 +11,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -95,6 +93,7 @@ public class HighScoreView {
 	    closeBtn = new Button("Close");
 		HBox buttonsBox = new HBox();
 		buttonsBox.setId("buttonsBox-id");
+		buttonsBox.setStyle("-fx-background-color: black");
 		buttonsBox.getChildren().addAll(okBtn, closeBtn);
 
 		view = new ListView<NameScore>();
@@ -107,7 +106,7 @@ public class HighScoreView {
 
 		HBox hbox = new HBox();
 		hbox.setAlignment(Pos.CENTER);
-		hbox.setPadding(new Insets(110, 50, 230, 50));
+		hbox.setPadding(new Insets(90, 50, 230, 50));
 		hbox.getStyleClass().add("hbox");
 		hbox.getChildren().addAll(nameView, scoreView);
 
@@ -158,11 +157,8 @@ public class HighScoreView {
 	public void popupNotHighScoreAlert() {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setHeaderText("You did not get a high score");
-		alert.setContentText("You are bad at this game. Game will exit on close.");
+		alert.setContentText("Select close to try again.");
 		alert.showAndWait();
-		alert.setOnCloseRequest(e -> {
-			Platform.exit();
-		});
 	}
 
 	public boolean scoreIsHighScore() {

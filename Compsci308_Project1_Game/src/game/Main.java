@@ -143,7 +143,7 @@ public class Main extends Application implements GameWorld {
 		text.setTextAlignment(TextAlignment.CENTER);
 		text.setFill(Color.GHOSTWHITE);
 
-		Button btn = new Button("Close");
+		Button btn = new Button("Retry");
 		btn.setOnMouseClicked(e -> Main.initGame(startBtn));
 
 		newRoot.setCenter(text);
