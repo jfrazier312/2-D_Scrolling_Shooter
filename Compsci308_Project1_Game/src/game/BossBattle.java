@@ -32,6 +32,7 @@ public class BossBattle implements GameWorld {
 	private List<KeyCode> inputs;
 	public static boolean gameOverLost = false;
 	public static boolean gameOverWon = false;
+	private boolean cheatCodeActive = false;
 	
 	public BossBattle() {
 		gameOverLost = false;
@@ -83,6 +84,12 @@ public class BossBattle implements GameWorld {
 			handleLaunchInput();
 		});
 		
+		bossScene.setOnKeyPressed(e -> {
+			if (e.getCode() == KeyCode.B) {
+				cheatCodeActive = true;
+			}
+		});
+		
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -94,11 +101,8 @@ public class BossBattle implements GameWorld {
 
 	public void checkLaunchBoolean(Timer timer) {
 		if (!launch) {
-			System.out.println("You lose");
-			timer.cancel();
-			gameOverLost  = true;
-			
-		} else if (launchCounter == SEQUENCE_LENGTH) {
+//			gameOverLost = true;
+		} else if (launchCounter == SEQUENCE_LENGTH || cheatCodeActive) {
 			System.out.println("You win!");
 			timer.cancel();
 			gameOverWon = true;
@@ -113,6 +117,14 @@ public class BossBattle implements GameWorld {
 					launch = true;
 					launchCounter++;
 				} else {
+					Button btn = new Button("Accept fate");
+					Text text = new Text("Missile Malfunction! Missile exploding before launching!");
+					text.setFill(Color.GHOSTWHITE);
+					vbox.getChildren().addAll(text, btn);
+					System.out.println("You lose");
+					btn.setOnAction(event -> {
+						gameOverLost  = true;
+					});
 					launch = false;
 				}
 			}

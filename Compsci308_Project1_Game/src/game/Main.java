@@ -21,9 +21,6 @@ import javafx.util.Duration;
 
 public class Main extends Application implements GameWorld {
 
-	// TODO: Figure out how to go back to main screen after game over to save
-	// high scores
-
 	private static BorderPane root;
 	private static Stage mainStage;
 	private static Scene scene;

@@ -50,7 +50,7 @@ public class GameButton extends Button {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setHeaderText("Cheats");
 		alert.setTitle("Cheat Codes");
-		alert.setContentText("Press 'd' for infinite lives!\nPress 'f' for infinite ammo!");
+		alert.setContentText("Press 'd' for infinite lives\nPress 'f' for infinite ammo\nPress 'b' to automatically input missile launch sequence");
 		alert.showAndWait();
 	}
 
