@@ -13,10 +13,7 @@ import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -32,7 +29,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -80,6 +76,13 @@ public class GameView implements GameWorld {
 
 	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
 
+	public GameView() {
+		isGameOver = false;
+		// Creates game play timer
+		timer = new CountDownTimer(GAME_TIME, myShip, true);
+		gameRoot = new Group();
+	}
+
 	public void animateGame() {
 		timer.startCountDown();
 		EnemyShip enemy = createEnemy();
@@ -88,16 +91,11 @@ public class GameView implements GameWorld {
 
 	public Scene initGame() {
 		// Creates game scene
-
-		gameRoot = new Group();
 		gameScene = new Scene(gameRoot, SCENE_WIDTH, SCENE_HEIGHT);
 
 		Group backgroundGroup = new Group();
 		scrollBackground(backgroundGroup);
 		gameRoot.getChildren().add(backgroundGroup);
-
-		// Creates game play timer
-		timer = new CountDownTimer(GAME_TIME, myShip, true);
 		gameRoot.getChildren().add(timer.getLabel());
 
 		// Creates your ship
@@ -106,7 +104,6 @@ public class GameView implements GameWorld {
 
 		// sets score counter at top and HitPoints
 		setScoreCounter();
-		// SimpleDoubleProperty shipXVelocity = new SimpleDoubleProperty();
 		LongProperty lastUpdateTime = new SimpleLongProperty();
 		shipAnimation = new AnimationTimer() {
 
@@ -133,7 +130,6 @@ public class GameView implements GameWorld {
 				lastUpdateTime.set(timestamp);
 				if (isGameOver || CountDownTimer.countDownOver) {
 					stopAllAnimation();
-					// popupGameOverDialog();
 				}
 			}
 		};
@@ -181,8 +177,9 @@ public class GameView implements GameWorld {
 	}
 
 	public void setScoreCounter() {
+		// Creates score counter, hit points, and ammunition counter
 		scoreCounter.textProperty().bind(Bindings.concat("Score: ").concat(myShip.playerScore).concat("\nHit Points: ")
-				.concat(myShip.getHitPoints()).concat("\nBullets: ").concat(myShip.getAmmo()));
+				.concat(myShip.getHitPoints()).concat("\nBullets: ").concat(myShip.getAmmo()).concat("\n"));
 		scoreCounter.setTextAlignment(TextAlignment.CENTER);
 		scoreCounter.setLayoutX(SCENE_WIDTH / 2 - 43);
 		scoreCounter.setLayoutY(20);
@@ -232,18 +229,19 @@ public class GameView implements GameWorld {
 	}
 
 	public void handleBulletDestroyedEnemy(Shape bullet, TranslateTransition animation, EnemyShip enemy) {
-		System.out.println("HIT!!!!!!!!!!");
+		System.out.println("HIT ENEMY!");
 		cleanUpEnemy(enemy);
+		enemy.setAnimationStop(true);
 		animation.stop();
 		gameRoot.getChildren().remove(bullet);
-		myShip.incrementPlayerScore();
-		enemy.setAnimationStop(true);
 		if (enemyNumber % 3 == 0 && enemies.size() < MAX_ENEMIES) {
-			animateEnemy(createEnemy());
-			animateEnemy(createEnemy());
+			for (int i = 0; i < 2; i++) {
+				animateEnemy(createEnemy());
+			}
 		} else {
 			animateEnemy(createEnemy());
 		}
+		myShip.incrementPlayerScore();
 		addAmmoOnHit();
 		enemyNumber++;
 	}

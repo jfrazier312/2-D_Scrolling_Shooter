@@ -27,15 +27,15 @@ public class BossBattle implements GameWorld {
 	private List<Text> inputList = new ArrayList<>();
 	private int inputNum = 0;
 	private boolean launch = true;
-	private static final int SEQUENCE_LENGTH = 1;
+	private static final int SEQUENCE_LENGTH = 5;
 	private int launchCounter = 0;
 	private List<KeyCode> inputs;
-	
+	public static boolean gameOverLost = false;
 	public static boolean gameOverWon = false;
 	
-	//TODO: handle win and lose
-
 	public BossBattle() {
+		gameOverLost = false;
+		gameOverWon = false;
 		BorderPane root = new BorderPane();
 		root.getStyleClass().add("bossBackground");
 		bossScene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
@@ -96,17 +96,13 @@ public class BossBattle implements GameWorld {
 		if (!launch) {
 			System.out.println("You lose");
 			timer.cancel();
-			Platform.exit();
+			gameOverLost  = true;
 			
 		} else if (launchCounter == SEQUENCE_LENGTH) {
 			System.out.println("You win!");
 			timer.cancel();
 			gameOverWon = true;
 		}
-	}
-	
-	public void handleGameWon() {
-		
 	}
 
 	public void handleLaunchInput() {

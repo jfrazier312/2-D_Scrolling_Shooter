@@ -25,7 +25,7 @@ import javafx.scene.text.Text;
 
 public class HighScoreView {
 
-	private BorderPane root;
+	private static BorderPane root;
 
 	private ListView<NameScore> view;
 	private ListView<String> nameView;
@@ -35,15 +35,20 @@ public class HighScoreView {
 	private ObservableList<Integer> scoreList;
 
 	private static final Text INPUT_MESSAGE = new Text("Input Initials:");
-	private static final Text HIGHSCORE_MESSAGE = new Text("HIGHSCORES");
+	private static final Text HIGHSCORE_MESSAGE = new Text("Congratulations! You defeated the boss!");
+	private static final Text HIGH_SCORES = new Text("Highscores");
 	private TextField field;
 	private Integer randomScore;
 	private static final int MAX_LIST_SIZE = 3;
 	private boolean isValid;
 	
-	private Scene scene;
+	private static Scene highScene;
 
-	public HighScoreView(int playerScore) {
+	private Button closeBtn;
+	private Button okBtn;
+	
+	public HighScoreView() {
+		field = new TextField();
 
 		root = new BorderPane();
 
@@ -72,15 +77,6 @@ public class HighScoreView {
 		// second method to restrict input (third is to add listener)
 		field.addEventFilter(KeyEvent.KEY_TYPED, restrictInitialMaxLength(3));
 
-		// third method
-		/*
-		 * field.textProperty().addListener((obs, oldText, newText) -> {
-		 * if(newText.matches("[a-z]")){ field.setText(newText); } else {
-		 * field.setText(oldText); } });
-		 */
-
-		// fourth method is to use textformatter (look it up)
-
 		field.setMaxWidth(100);
 
 		HIGHSCORE_MESSAGE.getStyleClass().add("highscoreMessage");
@@ -90,12 +86,13 @@ public class HighScoreView {
 						new Stop(0.57, Color.web("#be4af7")), new Stop(0.71, Color.web("#ed5fc2")),
 						new Stop(0.85, Color.web("#ef504c")), new Stop(1, Color.web("#f2660f")), }));
 		INPUT_MESSAGE.setFill(Color.GHOSTWHITE);
-		vbox.getChildren().addAll(HIGHSCORE_MESSAGE, INPUT_MESSAGE, field);
+		HIGH_SCORES.setFill(Color.GHOSTWHITE);
+		vbox.getChildren().addAll(HIGHSCORE_MESSAGE, HIGH_SCORES, INPUT_MESSAGE, field);
 		vbox.setPadding(new Insets(15));
 		vbox.setAlignment(Pos.CENTER);
 
-		Button okBtn = new Button("Enter");
-		Button closeBtn = new Button("Close");
+		okBtn = new Button("Enter");
+	    closeBtn = new Button("Close");
 		HBox buttonsBox = new HBox();
 		buttonsBox.setId("buttonsBox-id");
 		buttonsBox.getChildren().addAll(okBtn, closeBtn);
@@ -118,32 +115,26 @@ public class HighScoreView {
 		root.setCenter(hbox);
 		root.setBottom(buttonsBox);
 
-		scene = new Scene(root, 600, 550);
-		scene.getStylesheets().add(HighScoreView.class.getResource("GameStyle.css").toExternalForm());
+		highScene = new Scene(root, 600, 550);
+		highScene.getStylesheets().add(HighScoreView.class.getResource("GameStyle.css").toExternalForm());
 
 		field.setAlignment(Pos.CENTER);
-
-		scene.setOnKeyPressed(e -> {
-			if (e.getCode() == KeyCode.ENTER) {
-				handleOkButtonInput(playerScore);
-			}
-		});
-
-		okBtn.setOnAction(e -> {
-			handleOkButtonInput(playerScore);
-		});
-
-		closeBtn.setOnAction(e -> {
-			Platform.exit();
-		});
+	}
+	
+	public Button getOkButton() {
+		return okBtn;
+	}
+	
+	public Button getCloseButton() {
+		return closeBtn;
+	}
+	
+	public TextField getTextField() {
+		return field;
 	}
 
 	public void handleOkButtonInput(int playerScore) {
-		// Random method to get a high score, replaced by actual high score
-//		Random rand = new Random();
-		// randomScore = rand.nextInt(101);
 		randomScore = playerScore;
-
 		isValid = checkIfValidInitialsInput(field.getText());
 		if (isValid) {
 			if (view.getItems().size() < MAX_LIST_SIZE) {
@@ -161,7 +152,7 @@ public class HighScoreView {
 	}
 	
 	public Scene getScene() {
-		return scene;
+		return highScene;
 	}
 	
 	public void popupNotHighScoreAlert() {
@@ -206,7 +197,6 @@ public class HighScoreView {
 	}
 
 	public void addHighScoreName() {
-
 		// should probably allow duplicate names
 		if (isValid) {// && !nameView.getItems().contains(text)) {
 			ObservableList<NameScore> list = view.getItems();

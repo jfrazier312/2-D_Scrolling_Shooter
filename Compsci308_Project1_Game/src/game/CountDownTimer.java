@@ -15,9 +15,10 @@ public class CountDownTimer {
 	private Label countdownLbl = new Label();
 	private Integer START_TIME;
 	private IntegerProperty countdownSeconds;
-	public static boolean countDownOver = false;
+	public static boolean countDownOver;
 
 	public CountDownTimer(int startTime, Ship myShip, boolean bossBattle) {
+		countDownOver = false;
 		START_TIME = startTime;
 		countdownSeconds = new SimpleIntegerProperty(START_TIME);
 
@@ -35,9 +36,12 @@ public class CountDownTimer {
 				}
 			});
 		}, new KeyValue(countdownSeconds, 0)));
-
 	}
 
+	public int getSeconds() {
+		return countdownSeconds.get();
+	}
+	
 	public void startCountDown() {
 		timeline.playFromStart();
 	}
