@@ -29,8 +29,8 @@ public class BossBattle implements GameWorld {
 	private static final int SEQUENCE_LENGTH = 5;
 	private int launchCounter = 0;
 	private List<KeyCode> inputs;
-	private static boolean gameOverLost = false;
-	private static boolean gameOverWon = false;
+	private boolean gameOverLost = false;
+	private boolean gameOverWon = false;
 	private boolean cheatCodeActive = false;
 
 	public BossBattle() {
@@ -210,10 +210,10 @@ public class BossBattle implements GameWorld {
 		return text;
 	}
 	
-	public static boolean getGameOverLost() {
+	public boolean getGameOverLost() {
 		return gameOverLost;
 	}
-	public static boolean getGameOverWon() {
+	public boolean getGameOverWon() {
 		return gameOverWon;
 	}
 

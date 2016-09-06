@@ -8,6 +8,7 @@ import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
@@ -37,7 +38,7 @@ import javafx.util.Duration;
 public class GameView implements GameWorld {
 
 	private final Random random = new Random();
-	private static boolean isGameOver = false;
+	private boolean isGameOver = false;
 	private CheatCodes cheats;
 	private static final int SHIP_SPEED = 400;
 	private static final int BULLET_SPEED = 2;
@@ -54,8 +55,8 @@ public class GameView implements GameWorld {
 	private Group gameRoot;
 	private AnimationTimer shipAnimation;
 	private ParallelTransition scrollingBackground;
-	//Use this to change how long the timer lasts before boss battle triggered
-	private static final int GAME_TIME = 30;
+	// Use this to change how long the timer lasts before boss battle triggered
+	private static final int GAME_TIME = 3000;
 
 	public GameView() {
 		isGameOver = false;
@@ -83,26 +84,27 @@ public class GameView implements GameWorld {
 
 		// sets score counter at top and HitPoints
 		createScoreCounter();
-		
+
 		LongProperty lastUpdateTime = new SimpleLongProperty();
 		shipAnimation = new AnimationTimer() {
 
 			@Override
 			public void handle(long timestamp) {
-				// TODO: Figure out better algorithm that works spawning in middle of screen
+				// TODO: Figure out better algorithm that works spawning in
+				// middle of screen
 				handleShipMovement(lastUpdateTime, timestamp);
 			}
 		};
 
 		shipAnimation.start();
 
-		//TODO: Move key inputs to new class?
+		// TODO: Move key inputs to new class?
 		handleKeyPressed();
 		handleKeyReleased();
-		
+
 		return gameScene;
 	}
-	
+
 	public void handleShipMovement(LongProperty lastUpdateTime, long timestamp) {
 		double deltaX;
 		double oldX;
@@ -122,7 +124,7 @@ public class GameView implements GameWorld {
 			stopAllAnimation();
 		}
 	}
-	
+
 	public void handleKeyPressed() {
 		gameScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
@@ -144,7 +146,7 @@ public class GameView implements GameWorld {
 			}
 		});
 	}
-	
+
 	public void handleKeyReleased() {
 		gameScene.setOnKeyReleased(e -> {
 			if (e.getCode() == KeyCode.RIGHT) {
@@ -185,7 +187,8 @@ public class GameView implements GameWorld {
 		Shape bullet = new Circle(2.3, Color.GREENYELLOW);
 		if (myShip.getAmmo() <= 0) {
 			// do nothing
-			if(Main.DEBUG) System.out.println("Out of ammo!");
+			if (Main.DEBUG)
+				System.out.println("Out of ammo!");
 		} else {
 			myShip.setAmmo(myShip.getAmmo() - 1);
 			gameRoot.getChildren().add(bullet);
@@ -217,11 +220,13 @@ public class GameView implements GameWorld {
 	}
 
 	public void handleBulletDestroyedEnemy(Shape bullet, TranslateTransition animation, EnemyShip enemy) {
-		if(Main.DEBUG) System.out.println("Hit enemy!");
+		if (Main.DEBUG)
+			System.out.println("Hit enemy!");
 		cleanUpEnemy(enemy);
 		animation.stop();
 		gameRoot.getChildren().remove(bullet);
-		// Creates two enemies on hit every three hits (offset by 2 to start) and # enemies < MAX_ENEMIES
+		// Creates two enemies on hit every three hits (offset by 2 to start)
+		// and # enemies < MAX_ENEMIES
 		if (enemyNumber % 3 == 0 && enemies.size() < MAX_ENEMIES) {
 			for (int i = 0; i < 2; i++) {
 				animateEnemy(createEnemy());
@@ -240,7 +245,8 @@ public class GameView implements GameWorld {
 		animationList.add(animation);
 		animation.setFromX(enemy.getEnemyShip().getTranslateX());
 		animation.setFromY(enemy.getEnemyShip().getTranslateY());
-		animation.setToX(random.nextInt(SCENE_WIDTH) - SHIP_WIDTH);
+		int rand = random.nextInt(SCENE_WIDTH - (int) enemy.getEnemyWidth());
+		animation.setToX(rand);
 		animation.setToY(enemy.getEnemyShip().getTranslateY() + random.nextInt(100) + 40);
 
 		checkYBounds(enemy);
@@ -256,6 +262,33 @@ public class GameView implements GameWorld {
 		}
 	}
 
+	public void moveEnemyShip2(EnemyShip enemy) {
+		Timeline timeline = new Timeline();
+		timelineList.add(timeline);
+		
+		KeyFrame end = new KeyFrame(Duration.seconds(random.nextInt(2) + 1),
+                new KeyValue(enemy.getEnemyShip().xProperty(), random.nextInt(SCENE_WIDTH - (int)enemy.getEnemyWidth())),
+                new KeyValue(enemy.getEnemyShip().yProperty(), (int) enemy.getEnemyShip().getY() + random.nextInt(100) + 20));
+		
+		timeline.getKeyFrames().add(end);
+		timeline.setCycleCount(1);
+		timeline.setOnFinished(e -> {
+			checkYBounds(enemy);
+
+			if (enemy.getAnimationStop()) {
+				timeline.stop();
+			}
+			timeline.getKeyFrames().remove(0);
+			timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(random.nextInt(2) + 1), 
+					new KeyValue(enemy.getEnemyShip().xProperty(), random.nextInt(SCENE_WIDTH - (int)enemy.getEnemyWidth())),
+	                new KeyValue(enemy.getEnemyShip().yProperty(), (int) enemy.getEnemyShip().getY() + random.nextInt(100) + 40)));
+			timeline.playFromStart();
+		});
+		if (!enemy.getAnimationStop()) {
+			timeline.playFromStart();
+		}
+	}
+
 	public EnemyShip createEnemy() {
 		// TODO: need to randomize creation of enemy position
 		EnemyShip enemy = new EnemyShip("images/enemyShip.png");
@@ -265,11 +298,11 @@ public class GameView implements GameWorld {
 	}
 
 	public void animateEnemy(EnemyShip enemy) {
-		moveEnemyShip(enemy);
+		moveEnemyShip2(enemy);
 		Timeline timeline = new Timeline();
 		timelineList.add(timeline);
 		KeyFrame key1 = new KeyFrame(Duration.millis(random.nextInt(2000) + 1000),
-				e -> enemyFireAnimation2(timeline, enemy));
+				e -> enemyFireAnimation(timeline, enemy));
 		timeline.getKeyFrames().add(key1);
 		timeline.setCycleCount(1);
 		timeline.setOnFinished(e -> {
@@ -282,8 +315,9 @@ public class GameView implements GameWorld {
 		timeline.play();
 	}
 
-	public void enemyFireAnimation2(Timeline timeline, EnemyShip enemy) {
-		if(Main.DEBUG) System.out.println("EnemyFireAnimation Method Called");
+	public void enemyFireAnimation(Timeline timeline, EnemyShip enemy) {
+		if (Main.DEBUG)
+			System.out.println("EnemyFireAnimation Method Called");
 		if (enemy.getAnimationStop()) {
 			timeline.stop();
 		} else {
@@ -293,13 +327,13 @@ public class GameView implements GameWorld {
 
 	public void enemyFire(EnemyShip enemy) {
 		ImageView ship = enemy.getEnemyShip();
-		Shape enemyBullet = new Circle(4, Color.RED);
+		Shape enemyBullet = new Circle(4, Color.ORANGERED);
 		gameRoot.getChildren().add(enemyBullet);
 		TranslateTransition animation = new TranslateTransition(Duration.seconds(random.nextInt(3) + 1), enemyBullet);
 		animationList.add(animation);
-		animation.setFromX(ship.getTranslateX() + enemy.getEnemyWidth() / 2);
-		animation.setFromY(ship.getTranslateY() + enemy.getEnemyHeight());
-		animation.setToX(ship.getTranslateX() + enemy.getEnemyWidth() / 2);
+		animation.setFromX(ship.getX() + enemy.getEnemyWidth() / 2);
+		animation.setFromY(ship.getY() + enemy.getEnemyHeight());
+		animation.setToX(ship.getX() + enemy.getEnemyWidth() / 2);
 		animation.setToY(SCENE_HEIGHT + 40);
 		animation.play();
 
@@ -308,12 +342,14 @@ public class GameView implements GameWorld {
 			@Override
 			public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
 				if (enemyBullet.getBoundsInParent().intersects(myShip.getImageView().getBoundsInParent())) {
-					if(Main.DEBUG) System.out.println("Enemy bullet hit me");
+					if (Main.DEBUG)
+						System.out.println("Enemy bullet hit me");
 					gameRoot.getChildren().remove(enemyBullet);
 					myShip.decrementHitPoints();
 					if (myShip.getHitPoints().get() <= 0) {
 						gameRoot.getChildren().remove(myShip.getImageView());
-						if(Main.DEBUG) System.out.println("You lost all of your HitPoints");
+						if (Main.DEBUG)
+							System.out.println("You lost all of your HitPoints");
 						isGameOver = true;
 					}
 					animation.stop();
@@ -330,7 +366,8 @@ public class GameView implements GameWorld {
 
 	public void checkYBounds(EnemyShip enemy) {
 		if (enemy.getEnemyShip().getTranslateY() >= (SCENE_HEIGHT)) {
-			if(Main.DEBUG) System.out.println("Removed enemy ship at bottom of screen");
+			if (Main.DEBUG)
+				System.out.println("Removed enemy ship at bottom of screen");
 			cleanUpEnemy(enemy);
 			EnemyShip en = createEnemy();
 			animateEnemy(en);
@@ -342,8 +379,8 @@ public class GameView implements GameWorld {
 		enemies.remove(enemy);
 		gameRoot.getChildren().remove(enemy.getEnemyShip());
 	}
-	
-	//Not used currently
+
+	// Not used currently
 	public void popupGameOverDialog() {
 		Alert alert = new Alert(AlertType.WARNING);
 		alert.setHeaderText("You Died!");
@@ -415,12 +452,12 @@ public class GameView implements GameWorld {
 	public Ship getShip() {
 		return myShip;
 	}
-	
+
 	public CountDownTimer getTimer() {
 		return timer;
 	}
-	
-	public static boolean getGameOver() {
+
+	public boolean getGameOver() {
 		return isGameOver;
 	}
 

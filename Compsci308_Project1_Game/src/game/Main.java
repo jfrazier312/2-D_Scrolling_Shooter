@@ -85,14 +85,14 @@ public class Main extends Application implements GameWorld {
 	 * @param hsView - static high score view
 	 * @param startBtn
 	 */
-	public void isGameWon(GameView game, HighScoreView hsView, GameButton startBtn) {
+	public void isGameWon(GameView game, HighScoreView hsView, GameButton startBtn, BossBattle boss) {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000 / 60), e -> {
-			if (BossBattle.getGameOverWon()) {
+			if (boss.getGameOverWon()) {
 				timeline.stop();
 				createGameOverWon(game, hsView, startBtn);
-			} else if (BossBattle.getGameOverLost()) {
+			} else if (boss.getGameOverLost()) {
 				timeline.stop();
 				createGameOverLost(startBtn);
 			}
@@ -122,8 +122,8 @@ public class Main extends Application implements GameWorld {
 				timeline.stop();
 				mainStage.setScene(boss.getScene());
 				mainStage.setTitle("Boss Battle!");
-				isGameWon(game, hsView, startBtn);
-			} else if (GameView.getGameOver()) {
+				isGameWon(game, hsView, startBtn, boss);
+			} else if (game.getGameOver()) {
 				timeline.stop();
 				createGameOverLost(startBtn);
 			}
