@@ -15,9 +15,9 @@ public class CountDownTimer {
 	private Label countdownLbl = new Label();
 	private Integer START_TIME;
 	private IntegerProperty countdownSeconds;
-	public static boolean countDownOver;
+	private static boolean countDownOver;
 
-	public CountDownTimer(int startTime, Ship myShip, boolean bossBattle) {
+	public CountDownTimer(int startTime, Ship myShip) {
 		countDownOver = false;
 		START_TIME = startTime;
 		countdownSeconds = new SimpleIntegerProperty(START_TIME);
@@ -29,13 +29,13 @@ public class CountDownTimer {
 		timeline = new Timeline();
 		timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(START_TIME), e -> {
 			timeline.setOnFinished(event -> {
-				if(bossBattle){ 
-					goToBossBattle(myShip);
-				} else {
-					//handle key input? 
-				}
+					if(myShip.getHitPoints().get() > 0) goToBossBattle(myShip);
 			});
 		}, new KeyValue(countdownSeconds, 0)));
+	}
+	
+	public boolean getTimerDone() {
+		return countDownOver;
 	}
 
 	public int getSeconds() {

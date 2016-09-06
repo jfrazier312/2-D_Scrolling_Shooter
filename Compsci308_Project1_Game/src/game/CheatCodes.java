@@ -21,12 +21,12 @@ public class CheatCodes extends GameView {
 	
 	public void getInfiniteLives(Ship ship, Text text) {
 		ship.setHitPoints(10000);
-		text.textProperty().bind(Bindings.concat("Score: ").concat(ship.playerScore).concat("\nHit Points: ").concat(ship.getHitPoints()));
+		text.textProperty().bind(Bindings.concat("Score: ").concat(ship.getScore()).concat("\nHit Points: ").concat(ship.getHitPoints()));
 	}
 	
 	public void getInfiniteAmmo(Ship ship, Text text) {
 		ship.setHitPoints(10000);
-		text.textProperty().bind(Bindings.concat("Score: ").concat(ship.playerScore).concat("\nHit Points: ").concat(ship.getHitPoints()));
+		text.textProperty().bind(Bindings.concat("Score: ").concat(ship.getScore()).concat("\nHit Points: ").concat(ship.getHitPoints()));
 	}
 	
 }

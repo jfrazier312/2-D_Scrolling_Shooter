@@ -1,5 +1,6 @@
 package game;
 
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -25,6 +26,8 @@ public class Main extends Application implements GameWorld {
 	private static Stage mainStage;
 	private static Scene scene;
 	private static HighScoreView hsView;
+	private static Main main = new Main();
+
 
 	public static void main(String[] args) {
 		launch(args);
@@ -60,10 +63,10 @@ public class Main extends Application implements GameWorld {
 		GameView game = new GameView();
 		Scene gameScene = game.initGame();
 		BossBattle boss = new BossBattle();
-		Main main = new Main();
 		
 		// init game on "start" button pressed
 		startBtn.getButton().setOnAction(e -> main.initMainGame(game, gameScene));
+		
 		// continuously runs, called when variable GameView.isGameOver is set to
 		// true
 		main.isGameOver(game, boss, hsView, startBtn);
@@ -95,9 +98,9 @@ public class Main extends Application implements GameWorld {
 
 	public void isGameOver(GameView game, BossBattle boss, HighScoreView hsView, GameButton startBtn) {
 		Timeline timeline = new Timeline();
-		timeline.setCycleCount(Timeline.INDEFINITE);
+		timeline.setCycleCount(Animation.INDEFINITE);
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000 / 60), e -> {
-			if (CountDownTimer.countDownOver) {
+			if (game.getTimer().getTimerDone()) {
 				System.out.println("Timeline over");
 				timeline.stop();
 				mainStage.setScene(boss.getScene());
@@ -116,12 +119,12 @@ public class Main extends Application implements GameWorld {
 
 		hsView.getScene().setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.ENTER) {
-				hsView.handleOkButtonInput(game.getShip().playerScore.get());
+				hsView.handleOkButtonInput(game.getShip().getScore().get());
 			}
 		});
 
 		hsView.getOkButton().setOnAction(e -> {
-			hsView.handleOkButtonInput(game.getShip().playerScore.get());
+			hsView.handleOkButtonInput(game.getShip().getScore().get());
 		});
 
 		hsView.getCloseButton().setOnAction(e -> {

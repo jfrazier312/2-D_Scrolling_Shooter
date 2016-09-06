@@ -36,15 +36,6 @@ import javafx.util.Duration;
 
 public class GameView implements GameWorld {
 
-	// TODO: Collision with enemy ship
-	// TODO: Fix starting position with ship/enemyships
-	// TODO: Create missile launch animation
-
-	// Current Bugs :
-	// advantage of switch statements for key input vs if tree?
-	// Starting position for ships
-	// should any animation be global vars? 
-
 	private final Random random = new Random();
 	public static boolean isGameOver = false;
 	private CheatCodes cheats;
@@ -62,14 +53,17 @@ public class GameView implements GameWorld {
 	private Group gameRoot;
 	private AnimationTimer shipAnimation;
 	private ParallelTransition scrollingBackground;
-	private static final int GAME_TIME = 3;
+	
+	//Use this to change how long the timer lasts before boss battle triggered
+	private static final int GAME_TIME = 10;
 
 	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
 
 	public GameView() {
 		isGameOver = false;
 		// Creates game play timer
-		timer = new CountDownTimer(GAME_TIME, myShip, true);
+		myShip = new Ship("images/MainShip.png");
+		timer = new CountDownTimer(GAME_TIME, myShip);
 		gameRoot = new Group();
 	}
 
@@ -88,8 +82,6 @@ public class GameView implements GameWorld {
 		gameRoot.getChildren().add(backgroundGroup);
 		gameRoot.getChildren().add(timer.getLabel());
 
-		// Creates your ship
-		myShip = new Ship("images/MainShip.png");
 		gameRoot.getChildren().add(myShip.getImageView());
 
 		// sets score counter at top and HitPoints
@@ -117,7 +109,7 @@ public class GameView implements GameWorld {
 					myShip.getImageView().setTranslateX(newX);
 				}
 				lastUpdateTime.set(timestamp);
-				if (isGameOver || CountDownTimer.countDownOver) {
+				if (isGameOver || timer.getTimerDone()) {
 					stopAllAnimation();
 				}
 			}
@@ -167,7 +159,7 @@ public class GameView implements GameWorld {
 
 	public void setScoreCounter() {
 		// Creates score counter, hit points, and ammunition counter
-		scoreCounter.textProperty().bind(Bindings.concat("Score: ").concat(myShip.playerScore).concat("\nHit Points: ")
+		scoreCounter.textProperty().bind(Bindings.concat("Score: ").concat(myShip.getScore()).concat("\nHit Points: ")
 				.concat(myShip.getHitPoints()).concat("\nBullets: ").concat(myShip.getAmmo()).concat("\n"));
 		scoreCounter.setTextAlignment(TextAlignment.CENTER);
 		scoreCounter.setLayoutX(SCENE_WIDTH / 2 - 43);
@@ -177,7 +169,7 @@ public class GameView implements GameWorld {
 	}
 
 	public void updateScoreCounter() {
-		scoreCounter.textProperty().bind(Bindings.concat("Score: ").concat(myShip.playerScore).concat("\nHit Points: ")
+		scoreCounter.textProperty().bind(Bindings.concat("Score: ").concat(myShip.getScore()).concat("\nHit Points: ")
 				.concat(myShip.getHitPoints()).concat("\nBullets: ").concat(myShip.getAmmo()));
 	}
 
@@ -416,6 +408,10 @@ public class GameView implements GameWorld {
 
 	public Ship getShip() {
 		return myShip;
+	}
+	
+	public CountDownTimer getTimer() {
+		return timer;
 	}
 
 }

@@ -26,7 +26,6 @@ public class BossBattle implements GameWorld {
 	private int textNum = 0;
 	private List<Text> inputList = new ArrayList<>();
 	private int inputNum = 0;
-	private boolean launch = true;
 	private static final int SEQUENCE_LENGTH = 5;
 	private int launchCounter = 0;
 	private List<KeyCode> inputs;
@@ -104,9 +103,7 @@ public class BossBattle implements GameWorld {
 	}
 
 	public void checkLaunchBoolean(Timer timer) {
-		if (!launch) {
-			// Do nothing, handled by launchCounter logic now
-		} else if (launchCounter == SEQUENCE_LENGTH || cheatCodeActive) {
+		if (launchCounter == SEQUENCE_LENGTH || cheatCodeActive) {
 			System.out.println("You win!");
 			timer.cancel();
 			gameOverWon = true;
@@ -115,12 +112,15 @@ public class BossBattle implements GameWorld {
 
 	public void handleLaunchInput(Timer timer) {
 		inputs = translateInputListToKeyCodes();
+		
+		// Used to ensure multiple incorrect keys don't trigger incorrectLaunchInput()
+		// more than once
 		final SimpleBooleanProperty boo = new SimpleBooleanProperty();
 		boo.set(true);
+		
 		bossScene.setOnKeyPressed(e -> {
 			if (launchCounter < SEQUENCE_LENGTH) {
 				if (e.getCode() == inputs.get(launchCounter)) {
-					launch = true;
 					launchCounter++;
 				} else if (boo.get() && e.getCode() != KeyCode.B) {
 					boo.set(false);
@@ -137,10 +137,9 @@ public class BossBattle implements GameWorld {
 		text.setFill(Color.GHOSTWHITE);
 		vbox.getChildren().addAll(text, btn);
 		System.out.println("You lose");
-		btn.setOnAction(event -> {
+		btn.setOnAction(e -> {
 			gameOverLost = true;
 		});
-		launch = false;
 	}
 
 	public List<KeyCode> translateInputListToKeyCodes() {
