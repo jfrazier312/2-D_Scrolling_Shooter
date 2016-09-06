@@ -57,7 +57,6 @@ public class GameView implements GameWorld {
 	//Use this to change how long the timer lasts before boss battle triggered
 	private static final int GAME_TIME = 30;
 
-
 	public GameView() {
 		isGameOver = false;
 		// Creates game play timer
@@ -90,33 +89,41 @@ public class GameView implements GameWorld {
 
 			@Override
 			public void handle(long timestamp) {
-
-				double deltaX; // TODO: figure how to move correctly better
-				double oldX;
-				double newX;
-				if (lastUpdateTime.get() > 0) {
-					final double elapsedSeconds = (timestamp - lastUpdateTime.get()) / 1_000_000_000.0;
-					// distance moved = rate * time
-					deltaX = myShip.getShipVelocity().get() * elapsedSeconds;
-					oldX = myShip.getImageView().getTranslateX();
-					newX = Math.max(0, Math.min(SCENE_WIDTH - myShip.getImageView().getFitWidth(), oldX + deltaX));
-					myShip.getImageView().setTranslateX(newX);
-				} else {
-					deltaX = 0;
-					oldX = 0;
-					newX = 0;
-					myShip.getImageView().setTranslateX(newX);
-				}
-				lastUpdateTime.set(timestamp);
-				if (isGameOver || timer.getTimerDone()) {
-					stopAllAnimation();
-				}
+				// TODO: Figure out better algorithm that works spawning in middle of screen
+				handleShipMovement(lastUpdateTime, timestamp);
 			}
 		};
 
 		shipAnimation.start();
 
-		//TODO: Move key inputs to new class for concise code?
+		//TODO: Move key inputs to new class?
+		handleKeyPressed();
+		handleKeyReleased();
+		
+		return gameScene;
+	}
+	
+	public void handleShipMovement(LongProperty lastUpdateTime, long timestamp) {
+		double deltaX;
+		double oldX;
+		double newX;
+		if (lastUpdateTime.get() > 0) {
+			final double elapsedSeconds = (timestamp - lastUpdateTime.get()) / 1_000_000_000.0;
+			// distance moved = rate * time
+			deltaX = myShip.getShipVelocity().get() * elapsedSeconds;
+			oldX = myShip.getImageView().getTranslateX();
+			newX = Math.max(0, Math.min(SCENE_WIDTH - myShip.getImageView().getFitWidth(), oldX + deltaX));
+			myShip.getImageView().setTranslateX(newX);
+		} else {
+			myShip.getImageView().setTranslateX(0);
+		}
+		lastUpdateTime.set(timestamp);
+		if (isGameOver || timer.getTimerDone()) {
+			stopAllAnimation();
+		}
+	}
+	
+	public void handleKeyPressed() {
 		gameScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
@@ -136,7 +143,9 @@ public class GameView implements GameWorld {
 				}
 			}
 		});
-
+	}
+	
+	public void handleKeyReleased() {
 		gameScene.setOnKeyReleased(e -> {
 			if (e.getCode() == KeyCode.RIGHT) {
 				if (myShip.getShipVelocity().get() > 0) {
@@ -150,7 +159,6 @@ public class GameView implements GameWorld {
 				spaceRepeat = false;
 			}
 		});
-		return gameScene;
 	}
 
 	public Scene getGameScene() {
