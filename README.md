@@ -1,3 +1,4 @@
+README
 Jordan Frazier (jrf30)
 
 A basic javaFX game. Design.txt located in Compsci308_Project1_Game/src/game.
@@ -9,3 +10,9 @@ TODO: Create missile launch animation for boss scene
 TODO: Move all key inputs to new class
 TODO: Create static class in GameView to keep track of GameState (instead of using so many fields)
 TODO: General clean up of comments, prints
+
+
+Images from:
+http://www.desktopwallpaperhd.net/wallpapers/18/5/space-wallpaper-earth-background-cool-mania-186853.jpg
+filmconnoisseur.blogspot.com
+millionthvector.blogspot.com
