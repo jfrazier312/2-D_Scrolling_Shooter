@@ -41,14 +41,15 @@ public class GameView implements GameWorld {
 	private CheatCodes cheats;
 	private static final int SHIP_SPEED = 400;
 	private static final int BULLET_SPEED = 2;
+	private static final int MAX_ENEMIES = 7;
 	private boolean spaceRepeat = false;
 	private Ship myShip;
 	private int enemyNumber = 2;
-	private static final int MAX_ENEMIES = 7;
 	private Scene gameScene;
 	private final Text scoreCounter = new Text();
 	private List<TranslateTransition> animationList = new ArrayList<>();
 	private List<Timeline> timelineList = new ArrayList<>();
+	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
 	private CountDownTimer timer;
 	private Group gameRoot;
 	private AnimationTimer shipAnimation;
@@ -56,7 +57,6 @@ public class GameView implements GameWorld {
 	//Use this to change how long the timer lasts before boss battle triggered
 	private static final int GAME_TIME = 30;
 
-	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
 
 	public GameView() {
 		isGameOver = false;
