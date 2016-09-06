@@ -74,7 +74,6 @@ public class GameView implements GameWorld {
 	}
 
 	public Scene initGame() {
-		// Creates game scene
 		gameScene = new Scene(gameRoot, SCENE_WIDTH, SCENE_HEIGHT);
 
 		Group backgroundGroup = new Group();
@@ -117,6 +116,7 @@ public class GameView implements GameWorld {
 
 		shipAnimation.start();
 
+		//TODO: Move key inputs to new class for concise code?
 		gameScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
@@ -174,7 +174,6 @@ public class GameView implements GameWorld {
 	}
 
 	public void fireBullet(final List<EnemyShip> enemies) {
-		// Creates circle bullet
 		Shape bullet = new Circle(2.3, Color.GREENYELLOW);
 		if (myShip.getAmmo() <= 0) {
 			// do nothing
@@ -212,9 +211,9 @@ public class GameView implements GameWorld {
 	public void handleBulletDestroyedEnemy(Shape bullet, TranslateTransition animation, EnemyShip enemy) {
 		System.out.println("HIT ENEMY!");
 		cleanUpEnemy(enemy);
-		enemy.setAnimationStop(true);
 		animation.stop();
 		gameRoot.getChildren().remove(bullet);
+		// Creates two enemies on hit every three hits (offset by 2 to start) and # enemies < MAX_ENEMIES
 		if (enemyNumber % 3 == 0 && enemies.size() < MAX_ENEMIES) {
 			for (int i = 0; i < 2; i++) {
 				animateEnemy(createEnemy());
@@ -259,7 +258,6 @@ public class GameView implements GameWorld {
 
 	public void animateEnemy(EnemyShip enemy) {
 		moveEnemyShip(enemy);
-		// this method fires even once after enemy dies. how to fix
 		Timeline timeline = new Timeline();
 		timelineList.add(timeline);
 		KeyFrame key1 = new KeyFrame(Duration.millis(random.nextInt(2000) + 1000),
@@ -324,8 +322,7 @@ public class GameView implements GameWorld {
 
 	public void checkYBounds(EnemyShip enemy) {
 		if (enemy.getEnemyShip().getTranslateY() >= (SCENE_HEIGHT)) {
-			System.out.println("REMOVED ENEMY SHIP AT BOTTOM OF SCREEN");
-			enemy.setAnimationStop(true);
+			System.out.println("Removed enemy ship at bottom of screen");
 			cleanUpEnemy(enemy);
 			EnemyShip en = createEnemy();
 			animateEnemy(en);
@@ -333,11 +330,12 @@ public class GameView implements GameWorld {
 	}
 
 	public void cleanUpEnemy(EnemyShip enemy) {
+		enemy.setAnimationStop(true);
 		enemies.remove(enemy);
 		gameRoot.getChildren().remove(enemy.getEnemyShip());
 	}
 	
-	//Not using
+	//Not used currently
 	public void popupGameOverDialog() {
 		Alert alert = new Alert(AlertType.WARNING);
 		alert.setHeaderText("You Died!");
