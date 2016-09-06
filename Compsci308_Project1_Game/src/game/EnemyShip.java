@@ -11,10 +11,8 @@ public class EnemyShip extends Sprite implements GameWorld {
 	private static final double ENEMY_HEIGHT = 30;
 	private boolean stopAnimation;
 	
-	//TODO: Set enemies to randomly spawn
 	public EnemyShip(String image) {
 		super(image);
-//		this.getImageView().setX(0);
 		this.getImageView().setX(random.nextInt(SCENE_WIDTH - (int)ENEMY_WIDTH)); 
 		this.getImageView().setY(0);
 		this.getImageView().setFitWidth(ENEMY_WIDTH);

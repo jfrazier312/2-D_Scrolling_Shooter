@@ -9,7 +9,7 @@ public class Ship extends Sprite implements GameWorld {
 	private final IntegerProperty playerHitPoints = new SimpleIntegerProperty();
 	private final IntegerProperty playerScore = new SimpleIntegerProperty();
 	private final SimpleDoubleProperty shipXVelocity = new SimpleDoubleProperty();
-	private static final int AMMO_LIMIT = 45;
+	private static final int AMMO_LIMIT = 40;
 	private static final int LIVES = 3;
 	private int AMMO = AMMO_LIMIT;
 

@@ -42,7 +42,7 @@ public class GameView implements GameWorld {
 	private CheatCodes cheats;
 	private static final int SHIP_SPEED = 400;
 	private static final int BULLET_SPEED = 2;
-	private static final int MAX_ENEMIES = 7;
+	private static final int MAX_ENEMIES = 9;
 	private boolean spaceRepeat = false;
 	private Ship myShip;
 	private int enemyNumber = 2;
@@ -56,7 +56,7 @@ public class GameView implements GameWorld {
 	private AnimationTimer shipAnimation;
 	private ParallelTransition scrollingBackground;
 	// Use this to change how long the timer lasts before boss battle triggered
-	private static final int GAME_TIME = 3000;
+	private static final int GAME_TIME = 40;
 
 	public GameView() {
 		isGameOver = false;
@@ -238,7 +238,8 @@ public class GameView implements GameWorld {
 		addAmmoOnHit();
 		enemyNumber++;
 	}
-
+	
+	@Deprecated
 	public void moveEnemyShip(EnemyShip enemy) {
 		TranslateTransition animation = new TranslateTransition(Duration.seconds(random.nextInt(2) + 1),
 				enemy.getEnemyShip());
@@ -266,7 +267,7 @@ public class GameView implements GameWorld {
 		Timeline timeline = new Timeline();
 		timelineList.add(timeline);
 		
-		KeyFrame end = new KeyFrame(Duration.seconds(random.nextInt(2) + 1),
+		KeyFrame end = new KeyFrame(Duration.millis(random.nextInt(2300) + 1000),
                 new KeyValue(enemy.getEnemyShip().xProperty(), random.nextInt(SCENE_WIDTH - (int)enemy.getEnemyWidth())),
                 new KeyValue(enemy.getEnemyShip().yProperty(), (int) enemy.getEnemyShip().getY() + random.nextInt(100) + 20));
 		
@@ -279,7 +280,7 @@ public class GameView implements GameWorld {
 				timeline.stop();
 			}
 			timeline.getKeyFrames().remove(0);
-			timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(random.nextInt(2) + 1), 
+			timeline.getKeyFrames().add(new KeyFrame(Duration.millis(random.nextInt(2300) + 1000), 
 					new KeyValue(enemy.getEnemyShip().xProperty(), random.nextInt(SCENE_WIDTH - (int)enemy.getEnemyWidth())),
 	                new KeyValue(enemy.getEnemyShip().yProperty(), (int) enemy.getEnemyShip().getY() + random.nextInt(100) + 40)));
 			timeline.playFromStart();
