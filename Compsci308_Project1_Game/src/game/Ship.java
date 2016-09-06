@@ -6,14 +6,14 @@ import javafx.beans.property.SimpleIntegerProperty;
 
 public class Ship extends Sprite implements GameWorld {
 	
-	private static final int LIVES = 1;
 	private final IntegerProperty playerHitPoints = new SimpleIntegerProperty();
 	private final IntegerProperty playerScore = new SimpleIntegerProperty();
 	private final SimpleDoubleProperty shipXVelocity = new SimpleDoubleProperty();
-	private static final int AMMO_LIMIT = 50;
+	private static final int AMMO_LIMIT = 45;
+	private static final int LIVES = 3;
 	private int AMMO = AMMO_LIMIT;
 
-	
+	//TODO: Set ship to spawn in middle of screen
 	public Ship(String image) {
 		super(image);
 		this.getImageView().setX(0);

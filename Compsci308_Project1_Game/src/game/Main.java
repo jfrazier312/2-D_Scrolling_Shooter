@@ -22,12 +22,14 @@ import javafx.util.Duration;
 
 public class Main extends Application implements GameWorld {
 
+	// Static in order to keep across new instances of gameview/bossbattle
 	private static BorderPane root;
 	private static Stage mainStage;
 	private static Scene scene;
 	private static HighScoreView hsView;
 	private static Main main = new Main();
-
+	//public debug, set to true to see print statements in console
+	public static boolean DEBUG = false;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -60,21 +62,29 @@ public class Main extends Application implements GameWorld {
 	}
 
 	public static void initGame(GameButton startBtn) {
+		// Loads new scenes in background while on start screen
 		GameView game = new GameView();
 		Scene gameScene = game.initGame();
 		BossBattle boss = new BossBattle();
-		
-		// init game on "start" button pressed
+
+		// init main game scene on "start" button pressed
 		startBtn.getButton().setOnAction(e -> main.initMainGame(game, gameScene));
-		
+
 		// continuously runs, called when variable GameView.isGameOver is set to
 		// true
 		main.isGameOver(game, boss, hsView, startBtn);
-		
+
 		mainStage.setScene(scene);
 		mainStage.show();
 	}
 
+	/** 
+	 * Continuously checks whether the boss battle has been won
+	 * Starts running after boss battle is started
+	 * @param game - main game instance
+	 * @param hsView - static high score view
+	 * @param startBtn
+	 */
 	public void isGameWon(GameView game, HighScoreView hsView, GameButton startBtn) {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
@@ -95,18 +105,25 @@ public class Main extends Application implements GameWorld {
 		mainStage.show();
 		game.animateGame();
 	}
-
+	
+	/**
+	 * Continuously runs in main game scene, checks if you die or timer stops first.
+	 * @param game
+	 * @param boss
+	 * @param hsView
+	 * @param startBtn
+	 */
 	public void isGameOver(GameView game, BossBattle boss, HighScoreView hsView, GameButton startBtn) {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Animation.INDEFINITE);
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000 / 60), e -> {
 			if (game.getTimer().getTimerDone()) {
-				System.out.println("Timeline over");
+				if(DEBUG) System.out.println("Timer done");
 				timeline.stop();
 				mainStage.setScene(boss.getScene());
 				mainStage.setTitle("Boss Battle!");
 				isGameWon(game, hsView, startBtn);
-			} else if (GameView.isGameOver) {
+			} else if (GameView.getGameOver()) {
 				timeline.stop();
 				createGameOverLost(startBtn);
 			}
@@ -114,6 +131,12 @@ public class Main extends Application implements GameWorld {
 		timeline.play();
 	}
 
+	/**
+	 * Takes you to the high scores view
+	 * @param game
+	 * @param hsView
+	 * @param startBtn
+	 */
 	public void createGameOverWon(GameView game, HighScoreView hsView, GameButton startBtn) {
 		mainStage.setTitle("High Scores");
 
@@ -141,7 +164,7 @@ public class Main extends Application implements GameWorld {
 		newRoot.getStyleClass().add("gameOverLost");
 		newRoot.setStyle("-fx-background-color: black");
 		mainStage.setScene(new Scene(newRoot, SCENE_WIDTH, SCENE_HEIGHT));
-//		mainStage.getScene().getStylesheets().add(Main.class.getResource("GameStyle.css").toExternalForm());
+		// mainStage.getScene().getStylesheets().add(Main.class.getResource("GameStyle.css").toExternalForm());
 		mainStage.setTitle("Game Over!");
 
 		Text text = new Text("You have died and thus the world is doomed");

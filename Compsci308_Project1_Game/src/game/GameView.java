@@ -37,7 +37,7 @@ import javafx.util.Duration;
 public class GameView implements GameWorld {
 
 	private final Random random = new Random();
-	public static boolean isGameOver = false;
+	private static boolean isGameOver = false;
 	private CheatCodes cheats;
 	private static final int SHIP_SPEED = 400;
 	private static final int BULLET_SPEED = 2;
@@ -53,9 +53,8 @@ public class GameView implements GameWorld {
 	private Group gameRoot;
 	private AnimationTimer shipAnimation;
 	private ParallelTransition scrollingBackground;
-	
 	//Use this to change how long the timer lasts before boss battle triggered
-	private static final int GAME_TIME = 10;
+	private static final int GAME_TIME = 30;
 
 	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
 
@@ -84,7 +83,8 @@ public class GameView implements GameWorld {
 		gameRoot.getChildren().add(myShip.getImageView());
 
 		// sets score counter at top and HitPoints
-		setScoreCounter();
+		createScoreCounter();
+		
 		LongProperty lastUpdateTime = new SimpleLongProperty();
 		shipAnimation = new AnimationTimer() {
 
@@ -157,7 +157,7 @@ public class GameView implements GameWorld {
 		return gameScene;
 	}
 
-	public void setScoreCounter() {
+	public void createScoreCounter() {
 		// Creates score counter, hit points, and ammunition counter
 		scoreCounter.textProperty().bind(Bindings.concat("Score: ").concat(myShip.getScore()).concat("\nHit Points: ")
 				.concat(myShip.getHitPoints()).concat("\nBullets: ").concat(myShip.getAmmo()).concat("\n"));
@@ -177,7 +177,7 @@ public class GameView implements GameWorld {
 		Shape bullet = new Circle(2.3, Color.GREENYELLOW);
 		if (myShip.getAmmo() <= 0) {
 			// do nothing
-			System.out.println("Out of ammo!");
+			if(Main.DEBUG) System.out.println("Out of ammo!");
 		} else {
 			myShip.setAmmo(myShip.getAmmo() - 1);
 			gameRoot.getChildren().add(bullet);
@@ -209,7 +209,7 @@ public class GameView implements GameWorld {
 	}
 
 	public void handleBulletDestroyedEnemy(Shape bullet, TranslateTransition animation, EnemyShip enemy) {
-		System.out.println("HIT ENEMY!");
+		if(Main.DEBUG) System.out.println("Hit enemy!");
 		cleanUpEnemy(enemy);
 		animation.stop();
 		gameRoot.getChildren().remove(bullet);
@@ -275,7 +275,7 @@ public class GameView implements GameWorld {
 	}
 
 	public void enemyFireAnimation2(Timeline timeline, EnemyShip enemy) {
-		System.out.println("EnemyFireAnimation Method Called");
+		if(Main.DEBUG) System.out.println("EnemyFireAnimation Method Called");
 		if (enemy.getAnimationStop()) {
 			timeline.stop();
 		} else {
@@ -300,12 +300,12 @@ public class GameView implements GameWorld {
 			@Override
 			public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
 				if (enemyBullet.getBoundsInParent().intersects(myShip.getImageView().getBoundsInParent())) {
-					System.out.println("ENEMY BULLET HIT ME");
+					if(Main.DEBUG) System.out.println("Enemy bullet hit me");
 					gameRoot.getChildren().remove(enemyBullet);
 					myShip.decrementHitPoints();
 					if (myShip.getHitPoints().get() <= 0) {
 						gameRoot.getChildren().remove(myShip.getImageView());
-						System.out.println("You lost all of your HitPoints");
+						if(Main.DEBUG) System.out.println("You lost all of your HitPoints");
 						isGameOver = true;
 					}
 					animation.stop();
@@ -322,7 +322,7 @@ public class GameView implements GameWorld {
 
 	public void checkYBounds(EnemyShip enemy) {
 		if (enemy.getEnemyShip().getTranslateY() >= (SCENE_HEIGHT)) {
-			System.out.println("Removed enemy ship at bottom of screen");
+			if(Main.DEBUG) System.out.println("Removed enemy ship at bottom of screen");
 			cleanUpEnemy(enemy);
 			EnemyShip en = createEnemy();
 			animateEnemy(en);
@@ -410,6 +410,10 @@ public class GameView implements GameWorld {
 	
 	public CountDownTimer getTimer() {
 		return timer;
+	}
+	
+	public static boolean getGameOver() {
+		return isGameOver;
 	}
 
 }

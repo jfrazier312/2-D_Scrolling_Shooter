@@ -1,16 +1,14 @@
 package game;
 
-import java.util.Random;
-
 import javafx.scene.image.ImageView;
 
 public class EnemyShip extends Sprite implements GameWorld {
 	
-	private final Random random = new Random();
 	private static final double ENEMY_WIDTH = 30;
 	private static final double ENEMY_HEIGHT = 30;
 	private boolean stopAnimation;
 	
+	//TODO: Set enemies to randomly spawn
 	public EnemyShip(String image) {
 		super(image);
 		this.getImageView().setX(0);
@@ -36,8 +34,8 @@ public class EnemyShip extends Sprite implements GameWorld {
 		return stopAnimation;
 	}
 	
-	public void setAnimationStop(boolean boo) {
-		this.stopAnimation = boo;
+	public void setAnimationStop(boolean stop) {
+		this.stopAnimation = stop;
 	}
 	
 

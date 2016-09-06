@@ -29,11 +29,12 @@ public class CountDownTimer {
 		timeline = new Timeline();
 		timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(START_TIME), e -> {
 			timeline.setOnFinished(event -> {
-					if(myShip.getHitPoints().get() > 0) goToBossBattle(myShip);
+				if (myShip.getHitPoints().get() > 0)
+					goToBossBattle(myShip);
 			});
 		}, new KeyValue(countdownSeconds, 0)));
 	}
-	
+
 	public boolean getTimerDone() {
 		return countDownOver;
 	}
@@ -41,17 +42,17 @@ public class CountDownTimer {
 	public int getSeconds() {
 		return countdownSeconds.get();
 	}
-	
+
 	public void startCountDown() {
 		timeline.playFromStart();
 	}
-	
+
 	public void stopCountDown() {
 		timeline.stop();
 	}
 
 	public void goToBossBattle(Ship myShip) {
-		System.out.println("Going to boss battle");
+		if (Main.DEBUG) System.out.println("Going to boss battle");
 		countDownOver = true;
 	}
 

@@ -34,7 +34,7 @@ public class BossBattle implements GameWorld {
 	private boolean cheatCodeActive = false;
 
 	public BossBattle() {
-		// Must reset to false so Main.isGameWon timelinw on Main does not get triggered prematurely
+		// Must reset to false so Main.isGameWon timeline on Main does not get triggered prematurely
 		gameOverLost = false;
 		gameOverWon = false;
 		
@@ -57,7 +57,7 @@ public class BossBattle implements GameWorld {
 		root.setBottom(vbox);
 
 		/*
-		 * Used setOnMouseClicked instead of setOnAction because user might be
+		 * Uses setOnMouseClicked instead of setOnAction because user might be
 		 * pressing space to fire, and accidentally toggle through dialog too
 		 * quickly.
 		 */
@@ -80,8 +80,15 @@ public class BossBattle implements GameWorld {
 				vbox.getChildren().addAll(inputList.get(inputNum), okBtn);
 			}
 		});
+		//Create timer to check launch boolean every frame
 		Timer timer = new Timer();
-
+		timer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				checkLaunchBoolean(timer);
+			}
+		}, 1000 / 60, 1000 / 60);
+		
 		okBtn.setOnMouseClicked(e -> {
 			vbox.getChildren().removeAll(inputList.get(inputNum), okBtn);
 			handleLaunchInput(timer);
@@ -93,18 +100,11 @@ public class BossBattle implements GameWorld {
 				cheatCodeActive = true;
 			}
 		});
-
-		timer.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				checkLaunchBoolean(timer);
-			}
-		}, 1000 / 60, 1000 / 60);
 	}
 
 	public void checkLaunchBoolean(Timer timer) {
 		if (launchCounter == SEQUENCE_LENGTH || cheatCodeActive) {
-			System.out.println("You win!");
+			if (Main.DEBUG) System.out.println("You win!");
 			timer.cancel();
 			gameOverWon = true;
 		}
@@ -136,7 +136,7 @@ public class BossBattle implements GameWorld {
 		Text text = new Text("Missile Malfunction! Missile exploding before launching!");
 		text.setFill(Color.GHOSTWHITE);
 		vbox.getChildren().addAll(text, btn);
-		System.out.println("You lose");
+		if (Main.DEBUG) System.out.println("You lose");
 		btn.setOnAction(e -> {
 			gameOverLost = true;
 		});
