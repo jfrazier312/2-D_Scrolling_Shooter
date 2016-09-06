@@ -76,10 +76,10 @@ public class Main extends Application implements GameWorld {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000 / 60), e -> {
-			if (BossBattle.gameOverWon) {
+			if (BossBattle.getGameOverWon()) {
 				timeline.stop();
 				createGameOverWon(game, hsView, startBtn);
-			} else if (BossBattle.gameOverLost) {
+			} else if (BossBattle.getGameOverLost()) {
 				timeline.stop();
 				createGameOverLost(startBtn);
 			}

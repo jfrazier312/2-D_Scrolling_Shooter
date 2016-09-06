@@ -30,13 +30,15 @@ public class BossBattle implements GameWorld {
 	private static final int SEQUENCE_LENGTH = 5;
 	private int launchCounter = 0;
 	private List<KeyCode> inputs;
-	public static boolean gameOverLost = false;
-	public static boolean gameOverWon = false;
+	private static boolean gameOverLost = false;
+	private static boolean gameOverWon = false;
 	private boolean cheatCodeActive = false;
 
 	public BossBattle() {
+		// Must reset to false so Main.isGameWon timelinw on Main does not get triggered prematurely
 		gameOverLost = false;
 		gameOverWon = false;
+		
 		BorderPane root = new BorderPane();
 		root.getStyleClass().add("bossBackground");
 		bossScene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
@@ -86,6 +88,7 @@ public class BossBattle implements GameWorld {
 			handleLaunchInput(timer);
 		});
 
+		// If 'b' is pressed, cheat code is activated and triggers automatic win
 		bossScene.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.B) {
 				cheatCodeActive = true;
@@ -102,7 +105,7 @@ public class BossBattle implements GameWorld {
 
 	public void checkLaunchBoolean(Timer timer) {
 		if (!launch) {
-			// gameOverLost = true;
+			// Do nothing, handled by launchCounter logic now
 		} else if (launchCounter == SEQUENCE_LENGTH || cheatCodeActive) {
 			System.out.println("You win!");
 			timer.cancel();
@@ -122,18 +125,22 @@ public class BossBattle implements GameWorld {
 				} else if (boo.get() && e.getCode() != KeyCode.B) {
 					boo.set(false);
 					timer.cancel();
-					Button btn = new Button("Accept fate");
-					Text text = new Text("Missile Malfunction! Missile exploding before launching!");
-					text.setFill(Color.GHOSTWHITE);
-					vbox.getChildren().addAll(text, btn);
-					System.out.println("You lose");
-					btn.setOnAction(event -> {
-						gameOverLost = true;
-					});
-					launch = false;
+					incorrectLaunchInput();
 				}
 			}
 		});
+	}
+	
+	public void incorrectLaunchInput() {
+		Button btn = new Button("Accept fate");
+		Text text = new Text("Missile Malfunction! Missile exploding before launching!");
+		text.setFill(Color.GHOSTWHITE);
+		vbox.getChildren().addAll(text, btn);
+		System.out.println("You lose");
+		btn.setOnAction(event -> {
+			gameOverLost = true;
+		});
+		launch = false;
 	}
 
 	public List<KeyCode> translateInputListToKeyCodes() {
@@ -202,6 +209,13 @@ public class BossBattle implements GameWorld {
 			text = new Text();
 		}
 		return text;
+	}
+	
+	public static boolean getGameOverLost() {
+		return gameOverLost;
+	}
+	public static boolean getGameOverWon() {
+		return gameOverWon;
 	}
 
 	public Scene getScene() {
