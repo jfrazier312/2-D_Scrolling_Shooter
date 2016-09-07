@@ -15,6 +15,7 @@ import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -39,6 +40,7 @@ public class GameView implements GameWorld {
 
 	private final Random random = new Random();
 	private boolean isGameOver = false;
+	private boolean skipBattle = false;
 	private CheatCodes cheats;
 	private static final int SHIP_SPEED = 400;
 	private static final int BULLET_SPEED = 2;
@@ -142,6 +144,8 @@ public class GameView implements GameWorld {
 					getInfiniteLives();
 				} else if (event.getCode() == KeyCode.F) {
 					getInfiniteAmmo();
+				} else if (event.getCode() == KeyCode.S) {
+					skipBattle = true;
 				}
 			}
 		});
@@ -462,6 +466,10 @@ public class GameView implements GameWorld {
 
 	public CountDownTimer getTimer() {
 		return timer;
+	}
+
+	public boolean isSkipBattle() {
+		return skipBattle;
 	}
 
 	public boolean getGameOver() {

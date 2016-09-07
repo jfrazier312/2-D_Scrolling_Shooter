@@ -26,7 +26,8 @@ public class BossBattle implements GameWorld {
 	private int textNum = 0;
 	private List<Text> inputList = new ArrayList<>();
 	private int inputNum = 0;
-	private static final int SEQUENCE_LENGTH = 5;
+	private static final int SEQUENCE_LENGTH = 6;
+	private int currentSequence = 2;
 	private int launchCounter = 0;
 	private List<KeyCode> inputs;
 	private boolean gameOverLost = false;
@@ -34,19 +35,19 @@ public class BossBattle implements GameWorld {
 	private boolean cheatCodeActive = false;
 
 	public BossBattle() {
-		// Must reset to false so Main.isGameWon timeline on Main does not get triggered prematurely
+		// Must reset to false so Main.isGameWon timeline on Main does not get
+		// triggered prematurely
 		gameOverLost = false;
 		gameOverWon = false;
-		
+
 		BorderPane root = new BorderPane();
 		root.getStyleClass().add("bossBackground");
 		bossScene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
 		bossScene.getStylesheets().add(BossBattle.class.getResource("GameStyle.css").toExternalForm());
 
-		// Fills lists with dialog and launch sequence instructions
+		// Fills lists with dialog
 		fillTextList();
-		fillInputList();
-
+		
 		Button continueBtn = new Button("Continue");
 		Button nextBtn = new Button("Next");
 		Button okBtn = new Button("Let's do this");
@@ -67,6 +68,9 @@ public class BossBattle implements GameWorld {
 			if (textNum < textList.size()) {
 				vbox.getChildren().addAll(textList.get(textNum), continueBtn);
 			} else {
+				// Fill list with launch sequence
+				fillInputList(currentSequence);
+				inputs = translateInputListToKeyCodes();
 				vbox.getChildren().addAll(inputList.get(inputNum), nextBtn);
 			}
 		});
@@ -80,7 +84,7 @@ public class BossBattle implements GameWorld {
 				vbox.getChildren().addAll(inputList.get(inputNum), okBtn);
 			}
 		});
-		//Create timer to check launch boolean every frame
+		// Create timer to check launch boolean every frame
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -88,10 +92,10 @@ public class BossBattle implements GameWorld {
 				checkLaunchBoolean(timer);
 			}
 		}, 1000 / 60, 1000 / 60);
-		
+
 		okBtn.setOnMouseClicked(e -> {
 			vbox.getChildren().removeAll(inputList.get(inputNum), okBtn);
-			handleLaunchInput(timer);
+			handleLaunchInput(timer, nextBtn);
 		});
 
 		// If 'b' is pressed, cheat code is activated and triggers automatic win
@@ -104,24 +108,36 @@ public class BossBattle implements GameWorld {
 
 	public void checkLaunchBoolean(Timer timer) {
 		if (launchCounter == SEQUENCE_LENGTH || cheatCodeActive) {
-			if (Main.DEBUG) System.out.println("You win!");
+			if (Main.DEBUG)
+				System.out.println("You win!");
 			timer.cancel();
 			gameOverWon = true;
 		}
 	}
-
-	public void handleLaunchInput(Timer timer) {
+	
+	public void resetInputList(Button nextBtn) {	
+		launchCounter = 0;
+		currentSequence++;
+		inputNum = 0;
+		fillInputList(currentSequence);
 		inputs = translateInputListToKeyCodes();
-		
-		// Used to ensure multiple incorrect keys don't trigger incorrectLaunchInput()
+		vbox.getChildren().addAll(inputList.get(inputNum), nextBtn);
+	}
+
+	public void handleLaunchInput(Timer timer, Button nextBtn) {
+		// Used to ensure multiple incorrect keys don't trigger
+		// incorrectLaunchInput()
 		// more than once
 		final SimpleBooleanProperty boo = new SimpleBooleanProperty();
 		boo.set(true);
-		
+
 		bossScene.setOnKeyPressed(e -> {
 			if (launchCounter < SEQUENCE_LENGTH) {
 				if (e.getCode() == inputs.get(launchCounter)) {
 					launchCounter++;
+					if(launchCounter == currentSequence && launchCounter != SEQUENCE_LENGTH) {
+						resetInputList(nextBtn);
+					}
 				} else if (boo.get() && e.getCode() != KeyCode.B) {
 					boo.set(false);
 					timer.cancel();
@@ -130,13 +146,14 @@ public class BossBattle implements GameWorld {
 			}
 		});
 	}
-	
+
 	public void incorrectLaunchInput() {
 		Button btn = new Button("Accept fate");
 		Text text = new Text("Missile Malfunction! Missile exploding before launching!");
 		text.setFill(Color.GHOSTWHITE);
 		vbox.getChildren().addAll(text, btn);
-		if (Main.DEBUG) System.out.println("You lose");
+		if (Main.DEBUG)
+			System.out.println("You lose");
 		btn.setOnAction(e -> {
 			gameOverLost = true;
 		});
@@ -166,8 +183,9 @@ public class BossBattle implements GameWorld {
 		return input;
 	}
 
-	public void fillInputList() {
-		for (int i = 0; i < SEQUENCE_LENGTH; i++) {
+	public void fillInputList(int len) {
+		inputList.clear();
+		for (int i = 0; i < len; i++) {
 			Text direction = getRandomDirection();
 			direction.setFill(Color.CADETBLUE);
 			inputList.add(direction);
@@ -209,10 +227,11 @@ public class BossBattle implements GameWorld {
 		}
 		return text;
 	}
-	
+
 	public boolean getGameOverLost() {
 		return gameOverLost;
 	}
+
 	public boolean getGameOverWon() {
 		return gameOverWon;
 	}

@@ -4,13 +4,11 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -117,7 +115,7 @@ public class Main extends Application implements GameWorld {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Animation.INDEFINITE);
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000 / 60), e -> {
-			if (game.getTimer().getTimerDone()) {
+			if (game.getTimer().getTimerDone() || game.isSkipBattle()) {
 				if(DEBUG) System.out.println("Timer done");
 				timeline.stop();
 				mainStage.setScene(boss.getScene());
