@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -47,7 +48,7 @@ public class BossBattle implements GameWorld {
 
 		// Fills lists with dialog
 		fillTextList();
-		
+
 		Button continueBtn = new Button("Continue");
 		Button nextBtn = new Button("Next");
 		Button okBtn = new Button("Let's do this");
@@ -87,9 +88,12 @@ public class BossBattle implements GameWorld {
 		// Create timer to check launch boolean every frame
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
-			@Override
 			public void run() {
-				checkLaunchBoolean(timer);
+				Platform.runLater(new Runnable() {
+					public void run() {
+						checkLaunchBoolean(timer);
+					}
+				});
 			}
 		}, 1000 / 60, 1000 / 60);
 
@@ -111,11 +115,19 @@ public class BossBattle implements GameWorld {
 			if (Main.DEBUG)
 				System.out.println("You win!");
 			timer.cancel();
-			gameOverWon = true;
+			Text text = new Text("Missile sequence accepted. Launching missile!");
+			text.setFill(Color.GHOSTWHITE);
+			Button btn = new Button("Fire");
+			vbox.getChildren().remove(0, vbox.getChildren().size());
+			vbox.getChildren().addAll(text, btn);
+			btn.setOnAction(e -> {
+				gameOverWon = true;
+			});
+
 		}
 	}
-	
-	public void resetInputList(Button nextBtn) {	
+
+	public void resetInputList(Button nextBtn) {
 		launchCounter = 0;
 		currentSequence++;
 		inputNum = 0;
@@ -132,10 +144,12 @@ public class BossBattle implements GameWorld {
 		boo.set(true);
 
 		bossScene.setOnKeyPressed(e -> {
-			if (launchCounter < SEQUENCE_LENGTH) {
+			if (e.getCode() == KeyCode.B) {
+				cheatCodeActive = true;
+			} else if (launchCounter < SEQUENCE_LENGTH) {
 				if (e.getCode() == inputs.get(launchCounter)) {
 					launchCounter++;
-					if(launchCounter == currentSequence && launchCounter != SEQUENCE_LENGTH) {
+					if (launchCounter == currentSequence && launchCounter != SEQUENCE_LENGTH) {
 						resetInputList(nextBtn);
 					}
 				} else if (boo.get() && e.getCode() != KeyCode.B) {
