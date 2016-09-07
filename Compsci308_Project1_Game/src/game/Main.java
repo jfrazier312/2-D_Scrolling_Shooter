@@ -26,7 +26,7 @@ public class Main extends Application implements GameWorld {
 	private static Scene scene;
 	private static HighScoreView hsView;
 	private static Main main = new Main();
-	//public debug, set to true to see print statements in console
+	// public debug, set to true to see print statements in console
 	public static boolean DEBUG = false;
 
 	public static void main(String[] args) {
@@ -76,11 +76,14 @@ public class Main extends Application implements GameWorld {
 		mainStage.show();
 	}
 
-	/** 
-	 * Continuously checks whether the boss battle has been won
-	 * Starts running after boss battle is started
-	 * @param game - main game instance
-	 * @param hsView - static high score view
+	/**
+	 * Continuously checks whether the boss battle has been won Starts running
+	 * after boss battle is started
+	 * 
+	 * @param game
+	 *            - main game instance
+	 * @param hsView
+	 *            - static high score view
 	 * @param startBtn
 	 */
 	public void isGameWon(GameView game, HighScoreView hsView, GameButton startBtn, BossBattle boss) {
@@ -103,9 +106,11 @@ public class Main extends Application implements GameWorld {
 		mainStage.show();
 		game.animateGame();
 	}
-	
+
 	/**
-	 * Continuously runs in main game scene, checks if you die or timer stops first.
+	 * Continuously runs in main game scene, checks if you die or timer stops
+	 * first.
+	 * 
 	 * @param game
 	 * @param boss
 	 * @param hsView
@@ -116,7 +121,8 @@ public class Main extends Application implements GameWorld {
 		timeline.setCycleCount(Animation.INDEFINITE);
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000 / 60), e -> {
 			if (game.getTimer().getTimerDone() || game.isSkipBattle()) {
-				if(DEBUG) System.out.println("Timer done");
+				if (DEBUG)
+					System.out.println("Timer done");
 				timeline.stop();
 				mainStage.setScene(boss.getScene());
 				mainStage.setTitle("Boss Battle!");
@@ -131,6 +137,7 @@ public class Main extends Application implements GameWorld {
 
 	/**
 	 * Takes you to the high scores view
+	 * 
 	 * @param game
 	 * @param hsView
 	 * @param startBtn
@@ -145,11 +152,15 @@ public class Main extends Application implements GameWorld {
 		});
 
 		hsView.getOkButton().setOnAction(e -> {
-			hsView.handleOkButtonInput(game.getShip().getScore().get());
+			if (hsView.getTextField().isDisabled()) {
+				hsView.getTextField().setDisable(false);
+				Main.initGame(startBtn);
+			} else {
+				hsView.handleOkButtonInput(game.getShip().getScore().get());
+			}
 		});
 
 		hsView.getCloseButton().setOnAction(e -> {
-			hsView.getTextField().requestFocus();
 			hsView.getTextField().setDisable(false);
 			Main.initGame(startBtn);
 		});
