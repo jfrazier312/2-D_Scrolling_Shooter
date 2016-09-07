@@ -238,7 +238,7 @@ public class GameView implements GameWorld {
 		addAmmoOnHit();
 		enemyNumber++;
 	}
-	
+
 	@Deprecated
 	public void moveEnemyShip(EnemyShip enemy) {
 		TranslateTransition animation = new TranslateTransition(Duration.seconds(random.nextInt(2) + 1),
@@ -266,11 +266,13 @@ public class GameView implements GameWorld {
 	public void moveEnemyShip2(EnemyShip enemy) {
 		Timeline timeline = new Timeline();
 		timelineList.add(timeline);
-		
+
 		KeyFrame end = new KeyFrame(Duration.millis(random.nextInt(2300) + 1000),
-                new KeyValue(enemy.getEnemyShip().xProperty(), random.nextInt(SCENE_WIDTH - (int)enemy.getEnemyWidth())),
-                new KeyValue(enemy.getEnemyShip().yProperty(), (int) enemy.getEnemyShip().getY() + random.nextInt(100) + 20));
-		
+				new KeyValue(enemy.getEnemyShip().xProperty(),
+						random.nextInt(SCENE_WIDTH - (int) enemy.getEnemyWidth())),
+				new KeyValue(enemy.getEnemyShip().yProperty(),
+						(int) enemy.getEnemyShip().getY() + random.nextInt(100) + 20));
+
 		timeline.getKeyFrames().add(end);
 		timeline.setCycleCount(1);
 		timeline.setOnFinished(e -> {
@@ -278,12 +280,16 @@ public class GameView implements GameWorld {
 
 			if (enemy.getAnimationStop()) {
 				timeline.stop();
+			} else {
+				timeline.getKeyFrames().remove(0);
+				timeline.getKeyFrames()
+						.add(new KeyFrame(Duration.millis(random.nextInt(2300) + 1000),
+								new KeyValue(enemy.getEnemyShip().xProperty(),
+										random.nextInt(SCENE_WIDTH - (int) enemy.getEnemyWidth())),
+								new KeyValue(enemy.getEnemyShip().yProperty(),
+										(int) enemy.getEnemyShip().getY() + random.nextInt(100) + 40)));
+				timeline.playFromStart();
 			}
-			timeline.getKeyFrames().remove(0);
-			timeline.getKeyFrames().add(new KeyFrame(Duration.millis(random.nextInt(2300) + 1000), 
-					new KeyValue(enemy.getEnemyShip().xProperty(), random.nextInt(SCENE_WIDTH - (int)enemy.getEnemyWidth())),
-	                new KeyValue(enemy.getEnemyShip().yProperty(), (int) enemy.getEnemyShip().getY() + random.nextInt(100) + 40)));
-			timeline.playFromStart();
 		});
 		if (!enemy.getAnimationStop()) {
 			timeline.playFromStart();
@@ -366,7 +372,7 @@ public class GameView implements GameWorld {
 	}
 
 	public void checkYBounds(EnemyShip enemy) {
-		if (enemy.getEnemyShip().getTranslateY() >= (SCENE_HEIGHT)) {
+		if (enemy.getEnemyShip().getY() >= (SCENE_HEIGHT)) {
 			if (Main.DEBUG)
 				System.out.println("Removed enemy ship at bottom of screen");
 			cleanUpEnemy(enemy);
