@@ -90,7 +90,7 @@ public class HighScoreView {
 		vbox.setAlignment(Pos.CENTER);
 
 		okBtn = new Button("Enter");
-	    closeBtn = new Button("Close");
+	    closeBtn = new Button("Retry");
 		HBox buttonsBox = new HBox();
 		buttonsBox.setId("buttonsBox-id");
 		buttonsBox.setStyle("-fx-background-color: black");
