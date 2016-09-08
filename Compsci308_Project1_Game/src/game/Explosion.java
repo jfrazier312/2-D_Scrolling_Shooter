@@ -15,19 +15,6 @@ public class Explosion {
 	
 	public Explosion(double x, double y) {
 		path = new Path();
-
-//		path.getElements().add(new MoveTo(x, y));
-//		path.getElements().add(new LineTo(110.0f, 130.0f));
-//		path.getElements().add(new LineTo(120.0f, 100.0f));
-//		path.getElements().add(new LineTo(135.0f, 107.0f));
-//		path.getElements().add(new LineTo(120.0f, 85.0f));
-//		path.getElements().add(new LineTo(133.0f, 75.0f));
-//		path.getElements().add(new LineTo(120.0f, 60.0f));
-//		path.getElements().add(new LineTo(115.0f, 40.0f));
-//		path.getElements().add(new LineTo(100.0f, 50.0f));
-//		path.getElements().add(new LineTo(110.0f, 60.0f));
-//		path.getElements().add(new LineTo(80.0f, 80.0f));
-//		path.getElements().add(new LineTo(100.0f, 100.0f));
 		
 		path.getElements().add(new MoveTo(55, 0));
 		path.getElements().add(new LineTo(67, 36));
