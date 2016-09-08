@@ -24,6 +24,7 @@ import javafx.scene.text.Text;
 public class HighScoreView {
 
 	private static BorderPane root;
+	private static Scene highScene;
 
 	private ListView<NameScore> view;
 	private ListView<String> nameView;
@@ -35,13 +36,12 @@ public class HighScoreView {
 	private static final Text INPUT_MESSAGE = new Text("Input Initials:");
 	private static final Text HIGHSCORE_MESSAGE = new Text("Congratulations! You defeated the boss!");
 	private static final Text HIGH_SCORES = new Text("Highscores");
+	private static final int MAX_LIST_SIZE = 3;
+
 	private TextField field;
 	private Integer randomScore;
-	private static final int MAX_LIST_SIZE = 3;
 	private boolean isValid;
-	
-	private static Scene highScene;
-
+		
 	private Button closeBtn;
 	private Button okBtn;
 	
@@ -119,19 +119,11 @@ public class HighScoreView {
 
 		field.setAlignment(Pos.CENTER);
 	}
-	
-	public Button getOkButton() {
-		return okBtn;
-	}
-	
-	public Button getCloseButton() {
-		return closeBtn;
-	}
-	
-	public TextField getTextField() {
-		return field;
-	}
 
+	/**
+	 * Handles when initials are entered into high score view
+	 * @param playerScore
+	 */
 	public void handleOkButtonInput(int playerScore) {
 		randomScore = playerScore;
 		isValid = checkIfValidInitialsInput(field.getText());
@@ -148,18 +140,15 @@ public class HighScoreView {
 		field.requestFocus();
 	}
 	
-	public Scene getScene() {
-		return highScene;
-	}
-	
-	public void popupNotHighScoreAlert() {
+
+	private void popupNotHighScoreAlert() {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setHeaderText("You did not get a high score");
 		alert.setContentText("Select close to try again.");
 		alert.showAndWait();
 	}
 
-	public boolean scoreIsHighScore() {
+	private boolean scoreIsHighScore() {
 		for (Integer elem : scoreView.getItems()) {
 			if (randomScore > elem) {
 				return true;
@@ -168,7 +157,7 @@ public class HighScoreView {
 		return false;
 	}
 
-	public void replaceHighScoreName() {
+	private void replaceHighScoreName() {
 		if (isValid) {
 			int min = 0;
 			int index = 0;
@@ -190,7 +179,7 @@ public class HighScoreView {
 		}
 	}
 
-	public void addHighScoreName() {
+	private void addHighScoreName() {
 		// should probably allow duplicate names
 		if (isValid) {// && !nameView.getItems().contains(text)) {
 			ObservableList<NameScore> list = view.getItems();
@@ -203,7 +192,7 @@ public class HighScoreView {
 		}
 	}
 
-	public boolean checkIfValidInitialsInput(String textName) {
+	private boolean checkIfValidInitialsInput(String textName) {
 		if (textName.length() < 1 || textName.length() > 3) {
 			showIncorrectInputErrorAlert();
 			return false;
@@ -221,7 +210,7 @@ public class HighScoreView {
 		return true;
 	}
 
-	public void actuallyAddToTheList() {
+	private void actuallyAddToTheList() {
 		// should be doing a clear or remove all and instantiating in global?
 		nameList = FXCollections.observableArrayList();
 		scoreList = FXCollections.observableArrayList();
@@ -236,14 +225,14 @@ public class HighScoreView {
 		field.setDisable(true);	
 	}
 
-	public void showIncorrectInputErrorAlert() {
+	private void showIncorrectInputErrorAlert() {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setHeaderText("Incorrect Input");
 		alert.setContentText("Please input one to three initials");
 		alert.showAndWait();
 	}
 
-	public EventHandler<KeyEvent> restrictInitialMaxLength(final Integer i) {
+	private EventHandler<KeyEvent> restrictInitialMaxLength(final Integer i) {
 		return new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent e) {
@@ -253,6 +242,22 @@ public class HighScoreView {
 				}
 			}
 		};
+	}
+	
+	public Button getOkButton() {
+		return okBtn;
+	}
+	
+	public Button getCloseButton() {
+		return closeBtn;
+	}
+	
+	public TextField getTextField() {
+		return field;
+	}
+
+	public Scene getScene() {
+		return highScene;
 	}
 
 }

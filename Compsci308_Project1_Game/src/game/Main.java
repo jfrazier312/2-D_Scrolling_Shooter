@@ -20,14 +20,15 @@ import javafx.util.Duration;
 
 public class Main extends Application implements GameWorld {
 
+	// public debug, set to true to see print statements in console
+	public static boolean DEBUG = false;
+
 	// Static in order to keep across new instances of gameview/bossbattle
 	private static BorderPane root;
 	private static Stage mainStage;
 	private static Scene scene;
 	private static HighScoreView hsView;
 	private static Main main = new Main();
-	// public debug, set to true to see print statements in console
-	public static boolean DEBUG = false;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -59,7 +60,7 @@ public class Main extends Application implements GameWorld {
 		initGame(startBtn);
 	}
 
-	public static void initGame(GameButton startBtn) {
+	private static void initGame(GameButton startBtn) {
 		// Loads new scenes in background while on start screen
 		GameView game = new GameView();
 		Scene gameScene = game.initGame();
@@ -86,7 +87,7 @@ public class Main extends Application implements GameWorld {
 	 *            - static high score view
 	 * @param startBtn
 	 */
-	public void isGameWon(GameView game, HighScoreView hsView, GameButton startBtn, BossBattle boss) {
+	private void isGameWon(GameView game, HighScoreView hsView, GameButton startBtn, BossBattle boss) {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000 / 60), e -> {
@@ -101,7 +102,13 @@ public class Main extends Application implements GameWorld {
 		timeline.play();
 	}
 
-	public void initMainGame(GameView game, Scene gameScene) {
+	/**
+	 * Animates a new game
+	 * 
+	 * @param game
+	 * @param gameScene
+	 */
+	private void initMainGame(GameView game, Scene gameScene) {
 		mainStage.setScene(gameScene);
 		mainStage.show();
 		game.animateGame();
@@ -116,7 +123,7 @@ public class Main extends Application implements GameWorld {
 	 * @param hsView
 	 * @param startBtn
 	 */
-	public void isGameOver(GameView game, BossBattle boss, HighScoreView hsView, GameButton startBtn) {
+	private void isGameOver(GameView game, BossBattle boss, HighScoreView hsView, GameButton startBtn) {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Animation.INDEFINITE);
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000 / 60), e -> {
@@ -142,7 +149,7 @@ public class Main extends Application implements GameWorld {
 	 * @param hsView
 	 * @param startBtn
 	 */
-	public void createGameOverWon(GameView game, HighScoreView hsView, GameButton startBtn) {
+	private void createGameOverWon(GameView game, HighScoreView hsView, GameButton startBtn) {
 		mainStage.setTitle("High Scores");
 
 		hsView.getScene().setOnKeyPressed(e -> {
@@ -168,7 +175,7 @@ public class Main extends Application implements GameWorld {
 		mainStage.setScene(hsView.getScene());
 	}
 
-	public void createGameOverLost(GameButton startBtn) {
+	private void createGameOverLost(GameButton startBtn) {
 		BorderPane newRoot = new BorderPane();
 		newRoot.getStyleClass().add("gameOverLost");
 		newRoot.setStyle("-fx-background-color: black");
@@ -188,7 +195,7 @@ public class Main extends Application implements GameWorld {
 		BorderPane.setAlignment(btn, Pos.BOTTOM_CENTER);
 	}
 
-	public void styleItems(VBox titleBox, VBox buttons) {
+	private void styleItems(VBox titleBox, VBox buttons) {
 		buttons.setAlignment(Pos.CENTER);
 		titleBox.setAlignment(Pos.CENTER);
 		titleBox.setPadding(new Insets(60, 0, 0, 0));

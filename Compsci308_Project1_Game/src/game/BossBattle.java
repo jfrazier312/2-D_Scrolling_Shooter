@@ -31,23 +31,23 @@ public class BossBattle implements GameWorld {
 	private int currentSequence = 2;
 	private int launchCounter = 0;
 	private List<KeyCode> inputs;
+	private BorderPane root;
 	private boolean gameOverLost = false;
 	private boolean gameOverWon = false;
 	private boolean cheatCodeActive = false;
 
 	public BossBattle() {
-		// Must reset to false so Main.isGameWon timeline on Main does not get
+		// Must reset to false so Main.isGameWon() timeline on Main does not get
 		// triggered prematurely
 		gameOverLost = false;
 		gameOverWon = false;
 
-		BorderPane root = new BorderPane();
+		root = new BorderPane();
 		root.getStyleClass().add("bossBackground");
 		bossScene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
 		bossScene.getStylesheets().add(BossBattle.class.getResource("GameStyle.css").toExternalForm());
 
-		// Fills lists with dialog
-		fillTextList();
+		fillDialogList();
 
 		Button continueBtn = new Button("Continue");
 		Button nextBtn = new Button("Next");
@@ -115,6 +115,8 @@ public class BossBattle implements GameWorld {
 			if (Main.DEBUG)
 				System.out.println("You win!");
 			timer.cancel();
+			Explosion explosion = new Explosion(SCENE_WIDTH / 2 - 40, 50);
+			root.getChildren().add(explosion.getPath());
 			Text text = new Text("Missile sequence accepted. Launching missile!");
 			text.setFill(Color.GHOSTWHITE);
 			Button btn = new Button("Fire");
@@ -209,7 +211,7 @@ public class BossBattle implements GameWorld {
 		inputList.add(last);
 	}
 
-	public void fillTextList() {
+	public void fillDialogList() {
 		textList.add(new Text("The enemy boss is here!"));
 		textList.add(new Text("We only have one missile strong enough to defeat the mothership..."));
 		textList.add(new Text("That means we only have one chance to do this!"));
