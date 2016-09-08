@@ -16,16 +16,18 @@ public class Explosion {
 	public Explosion(double x, double y) {
 		path = new Path();
 		
-		path.getElements().add(new MoveTo(55, 0));
-		path.getElements().add(new LineTo(67, 36));
-		path.getElements().add(new LineTo(109, 36));
-		path.getElements().add(new LineTo(73, 54));
-		path.getElements().add(new LineTo(83, 96));
-		path.getElements().add(new LineTo(55, 72));
-		path.getElements().add(new LineTo(27, 96));
-		path.getElements().add(new LineTo(37, 54));
-		path.getElements().add(new LineTo(1, 36));
-		path.getElements().add(new LineTo(43, 36));
+		path.getElements().add(new MoveTo(x, y));
+		path.getElements().add(new LineTo(x + 67, y + 36));
+		path.getElements().add(new LineTo(x + 109, y + 36));
+		path.getElements().add(new LineTo(x + 73, y + 54));
+		path.getElements().add(new LineTo(x + 83, y + 96));
+		path.getElements().add(new LineTo(x + 55, y + 72));
+		path.getElements().add(new LineTo(x + 27, y + 96));
+		path.getElements().add(new LineTo(x + 37, y + 54));
+		path.getElements().add(new LineTo(x + 1, y + 36));
+		path.getElements().add(new LineTo(x + 43, 36));
+		path.setScaleX(.2);
+		path.setScaleY(.2);
 		
 		
 		path.setFill(Color.ORANGERED);
@@ -33,11 +35,10 @@ public class Explosion {
 		
 		Timeline timeline;
 		timeline = new Timeline();
-		timeline.setCycleCount(Timeline.INDEFINITE);
-		timeline.setAutoReverse(true);
+		timeline.setCycleCount(1);
 
-		KeyValue keyValueX = new KeyValue(path.scaleXProperty(), 2);
-		KeyValue keyValueY = new KeyValue(path.scaleYProperty(), 2);
+		KeyValue keyValueX = new KeyValue(path.scaleXProperty(), 3);
+		KeyValue keyValueY = new KeyValue(path.scaleYProperty(), 3);
 
 		KeyFrame keyFrame = new KeyFrame(Duration.millis(2000), keyValueX, keyValueY);
 		timeline.getKeyFrames().add(keyFrame);

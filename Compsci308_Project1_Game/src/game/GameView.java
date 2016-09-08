@@ -15,16 +15,17 @@ import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -357,10 +358,17 @@ public class GameView implements GameWorld {
 					gameRoot.getChildren().remove(enemyBullet);
 					myShip.decrementHitPoints();
 					if (myShip.getHitPoints().get() <= 0) {
+//						Explosion explosion = new Explosion(ship.getTranslateX(), ship.getTranslateY());
+//						gameRoot.getChildren().add(explosion.getPath());
 						gameRoot.getChildren().remove(myShip.getImageView());
+//						Button button = new Button("End");
+//						button.setAlignment(Pos.BASELINE_CENTER);
+//						gameRoot.getChildren().add(button);
 						if (Main.DEBUG)
 							System.out.println("You lost all of your HitPoints");
-						isGameOver = true;
+//						button.setOnAction(e -> {
+							isGameOver = true;
+//						});
 					}
 					animation.stop();
 				}

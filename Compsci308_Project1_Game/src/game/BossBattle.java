@@ -115,8 +115,6 @@ public class BossBattle implements GameWorld {
 			if (Main.DEBUG)
 				System.out.println("You win!");
 			timer.cancel();
-			Explosion explosion = new Explosion(SCENE_WIDTH / 2 - 40, 50);
-			root.getChildren().add(explosion.getPath());
 			Text text = new Text("Missile sequence accepted. Launching missile!");
 			text.setFill(Color.GHOSTWHITE);
 			Button btn = new Button("Fire");
