@@ -50,7 +50,7 @@ public class GameButton extends Button {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setHeaderText("Cheats");
 		alert.setTitle("Cheat Codes");
-		alert.setContentText("Press 'd' for infinite lives\nPress 'f' for infinite ammo\nPress 's' to skip to boss battle\nPress 'b' to automatically input missile launch sequence");
+		alert.setContentText("Press 'd' for infinite lives\nPress 'f' for infinite ammo\nPress 's' to skip to boss battle\nPress 'a' to automatically die lol\nPress 'b' to automatically input missile launch sequence");
 		alert.showAndWait();
 	}
 

@@ -39,14 +39,13 @@ import javafx.util.Duration;
 
 public class GameView implements GameWorld {
 
-
 	// Use this to change how long the timer lasts before boss battle triggered
 	private static final int GAME_TIME = 40;
-	
+
 	private final Random random = new Random();
 	private boolean isGameOver = false;
 	private boolean skipBattle = false;
-//	private CheatCodes cheats;
+	// private CheatCodes cheats;
 	private static final int SHIP_SPEED = 400;
 	private static final int BULLET_SPEED = 2;
 	private static final int MAX_ENEMIES = 9;
@@ -149,6 +148,9 @@ public class GameView implements GameWorld {
 					getInfiniteAmmo();
 				} else if (event.getCode() == KeyCode.S) {
 					skipBattle = true;
+				} else if (event.getCode() == KeyCode.A) {
+					myShip.setHitPoints(0);
+					checkHitPoints();
 				}
 			}
 		});
@@ -169,7 +171,6 @@ public class GameView implements GameWorld {
 			}
 		});
 	}
-
 
 	private void createScoreCounter() {
 		// Creates score counter, hit points, and ammunition counter
@@ -357,19 +358,7 @@ public class GameView implements GameWorld {
 						System.out.println("Enemy bullet hit me");
 					gameRoot.getChildren().remove(enemyBullet);
 					myShip.decrementHitPoints();
-					if (myShip.getHitPoints().get() <= 0) {
-//						Explosion explosion = new Explosion(ship.getTranslateX(), ship.getTranslateY());
-//						gameRoot.getChildren().add(explosion.getPath());
-						gameRoot.getChildren().remove(myShip.getImageView());
-//						Button button = new Button("End");
-//						button.setAlignment(Pos.BASELINE_CENTER);
-//						gameRoot.getChildren().add(button);
-						if (Main.DEBUG)
-							System.out.println("You lost all of your HitPoints");
-//						button.setOnAction(e -> {
-							isGameOver = true;
-//						});
-					}
+					checkHitPoints();
 					animation.stop();
 				}
 			}
@@ -389,6 +378,15 @@ public class GameView implements GameWorld {
 			cleanUpEnemy(enemy);
 			EnemyShip en = createEnemy();
 			animateEnemy(en);
+		}
+	}
+
+	private void checkHitPoints() {
+		if (myShip.getHitPoints().get() <= 0) {
+			gameRoot.getChildren().remove(myShip.getImageView());
+			if (Main.DEBUG)
+				System.out.println("You lost all of your HitPoints");
+			isGameOver = true;
 		}
 	}
 
@@ -486,5 +484,6 @@ public class GameView implements GameWorld {
 	public Scene getGameScene() {
 		return gameScene;
 	}
+
 
 }
