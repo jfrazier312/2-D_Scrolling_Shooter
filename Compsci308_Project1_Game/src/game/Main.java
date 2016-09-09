@@ -4,7 +4,6 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -20,7 +19,7 @@ import javafx.util.Duration;
 
 public class Main extends Application implements GameWorld {
 
-	// public debug, set to true to see print statements in console
+	// public static debug, set to true to see print statements in console when playing
 	public static boolean DEBUG = false;
 
 	// Static in order to keep across new instances of gameview/bossbattle
@@ -143,10 +142,10 @@ public class Main extends Application implements GameWorld {
 	}
 
 	/**
-	 * Takes you to the high scores view
+	 * Takes you to the high scores view and sets behavior of the buttons
 	 * 
-	 * @param game
-	 * @param hsView
+	 * @param game current game instance
+	 * @param hsView high score view (preloaded)
 	 * @param startBtn
 	 */
 	private void createGameOverWon(GameView game, HighScoreView hsView, GameButton startBtn) {

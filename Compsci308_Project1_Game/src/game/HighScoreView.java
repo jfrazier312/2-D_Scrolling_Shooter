@@ -21,6 +21,12 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Text;
 
+/**
+ * This class creates a high scores view and is called when the player defeats 
+ * the boss
+ * @author Jordan Frazier (jrf30)
+ *
+ */
 public class HighScoreView {
 
 	private static BorderPane root;
@@ -122,6 +128,7 @@ public class HighScoreView {
 
 	/**
 	 * Handles when initials are entered into high score view
+	 * Is called by the Main class
 	 * @param playerScore
 	 */
 	public void handleOkButtonInput(int playerScore) {

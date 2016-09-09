@@ -27,10 +27,6 @@ public class GameButton extends Button {
 		}
 	}
 	
-	public Button getButton() {
-		return button;
-	}
-	
 	@Deprecated
 	public void initGame() {
 		System.out.println("start the game");
@@ -38,7 +34,7 @@ public class GameButton extends Button {
 		game.initGame();
 	}
 	
-	public void popupRulesDialog() {
+	private void popupRulesDialog() {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("How to Play");
 		alert.setHeaderText("Rules");
@@ -46,12 +42,17 @@ public class GameButton extends Button {
 		alert.showAndWait();
 	}
 	
-	public void popupCheatCodesDialog() {
+	private void popupCheatCodesDialog() {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setHeaderText("Cheats");
 		alert.setTitle("Cheat Codes");
 		alert.setContentText("Press 'd' for infinite lives\nPress 'f' for infinite ammo\nPress 's' to skip to boss battle\nPress 'a' to automatically die lol\nPress 'b' to automatically input missile launch sequence");
 		alert.showAndWait();
+	}
+	
+	
+	public Button getButton() {
+		return button;
 	}
 
 }

@@ -20,12 +20,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -394,18 +392,6 @@ public class GameView implements GameWorld {
 		enemy.setAnimationStop(true);
 		enemies.remove(enemy);
 		gameRoot.getChildren().remove(enemy.getEnemyShip());
-	}
-
-	// Not used currently
-	private void popupGameOverDialog() {
-		Alert alert = new Alert(AlertType.WARNING);
-		alert.setHeaderText("You Died!");
-		alert.setContentText("You have died, and thus the world is doomed");
-		alert.showAndWait();
-		alert.setOnCloseRequest(e -> {
-			Platform.exit();
-			// lol
-		});
 	}
 
 	private void stopAllAnimation() {
