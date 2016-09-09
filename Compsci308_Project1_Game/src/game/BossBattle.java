@@ -128,6 +128,32 @@ public class BossBattle implements GameWorld {
 	private void setButtonActions(Button nextBtn, Button okBtn, Button continueBtn, Timer timer,
 			SimpleIntegerProperty launchCounter) {
 		
+		setNextButtonActions(nextBtn, okBtn);
+
+		setContinueButtonActions(nextBtn, continueBtn);
+
+		setOkButtonActions(nextBtn, okBtn, timer, launchCounter);
+		
+		// If 'b' is pressed, cheat code is activated and triggers automatic win
+		setCheatCodeAction();
+	}
+
+	private void setCheatCodeAction() {
+		bossScene.setOnKeyPressed(e -> {
+			if (e.getCode() == KeyCode.B) {
+				cheatCodeActive = true;
+			}
+		});
+	}
+
+	private void setOkButtonActions(Button nextBtn, Button okBtn, Timer timer, SimpleIntegerProperty launchCounter) {
+		okBtn.setOnMouseClicked(e -> {
+			vbox.getChildren().removeAll(inputList.get(inputNum), okBtn);
+			handleLaunchInput(timer, nextBtn, launchCounter);
+		});
+	}
+
+	private void setNextButtonActions(Button nextBtn, Button okBtn) {
 		nextBtn.setOnMouseClicked(e -> {
 			vbox.getChildren().removeAll(inputList.get(inputNum), nextBtn);
 			inputNum++;
@@ -137,7 +163,9 @@ public class BossBattle implements GameWorld {
 				vbox.getChildren().addAll(inputList.get(inputNum), okBtn);
 			}
 		});
+	}
 
+	private void setContinueButtonActions(Button nextBtn, Button continueBtn) {
 		continueBtn.setOnMouseClicked(e -> {
 			vbox.getChildren().removeAll(textList.get(textNum), continueBtn);
 			textNum++;
@@ -148,18 +176,6 @@ public class BossBattle implements GameWorld {
 				fillInputList(currentSequence);
 				inputs = translateInputListToKeyCodes();
 				vbox.getChildren().addAll(inputList.get(inputNum), nextBtn);
-			}
-		});
-
-		okBtn.setOnMouseClicked(e -> {
-			vbox.getChildren().removeAll(inputList.get(inputNum), okBtn);
-			handleLaunchInput(timer, nextBtn, launchCounter);
-		});
-
-		// If 'b' is pressed, cheat code is activated and triggers automatic win
-		bossScene.setOnKeyPressed(e -> {
-			if (e.getCode() == KeyCode.B) {
-				cheatCodeActive = true;
 			}
 		});
 	}
@@ -179,7 +195,7 @@ public class BossBattle implements GameWorld {
 	/**
 	 * Creates text and button for missile firing
 	 * 
-	 * @return
+	 * @return button
 	 */
 	private Button createMissileFiringDialog() {
 		Text text = new Text("Missile sequence accepted. Launching missile!");
