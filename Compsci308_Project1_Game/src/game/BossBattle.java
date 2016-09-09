@@ -222,10 +222,9 @@ public class BossBattle implements GameWorld {
 			if (e.getCode() == KeyCode.B) {
 				cheatCodeActive = true;
 			} else if (launchCounter.get() < SEQUENCE_LENGTH) {
-				int counter = launchCounter.get();
-				if (e.getCode() == inputs.get(counter)) {
-					launchCounter.set(counter + 1);
-					if ((counter == currentSequence) && (counter != SEQUENCE_LENGTH)) {
+				if (e.getCode() == inputs.get(launchCounter.get())) {
+					launchCounter.set(launchCounter.get() + 1);
+					if ((launchCounter.get() == currentSequence) && (launchCounter.get() != SEQUENCE_LENGTH)) {
 						resetInputList(nextBtn, launchCounter);
 					}
 				} else if (boo.get() && e.getCode() != KeyCode.B) {

@@ -39,6 +39,20 @@ public class Main extends Application implements GameWorld {
 		root = new BorderPane();
 
 		// start, rules, cheat codes buttons
+		GameButton startBtn = createButtons();
+
+		scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
+		scene.getStylesheets().add(Main.class.getResource("GameStyle.css").toExternalForm());
+		mainStage.setTitle("Game Start Screen");
+		hsView = new HighScoreView();
+		initGame(startBtn);
+	}
+
+	/**
+	 * Creates buttons and sets them as children of root
+	 * @return gamebutton that starts main game
+	 */
+	private GameButton createButtons() {
 		VBox selections = new VBox(10);
 		VBox titleBox = new VBox(10);
 		styleItems(titleBox, selections);
@@ -51,12 +65,7 @@ public class Main extends Application implements GameWorld {
 
 		root.setTop(titleBox);
 		root.setCenter(selections);
-
-		scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
-		scene.getStylesheets().add(Main.class.getResource("GameStyle.css").toExternalForm());
-		mainStage.setTitle("Game Start Screen");
-		hsView = new HighScoreView();
-		initGame(startBtn);
+		return startBtn;
 	}
 
 	private static void initGame(GameButton startBtn) {
@@ -65,11 +74,9 @@ public class Main extends Application implements GameWorld {
 		Scene gameScene = game.initGame();
 		BossBattle boss = new BossBattle();
 
-		// init main game scene on "start" button pressed
 		startBtn.getButton().setOnAction(e -> main.initMainGame(game, gameScene));
 
-		// continuously runs, called when variable GameView.isGameOver is set to
-		// true
+		// continuously runs, executes when variable GameView.isGameOver is true
 		main.isGameOver(game, boss, hsView, startBtn);
 
 		mainStage.setScene(scene);
