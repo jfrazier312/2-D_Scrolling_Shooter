@@ -3,13 +3,18 @@ Jordan Frazier (jrf30)
 
 A basic javaFX game. Design.txt located in Compsci308_Project1_Game/src/game.
 
-Current issues: 
+TODO: 
 TODO: Collision with enemy ship
-TODO: Fix starting position with ship/enemyships
 TODO: Create missile launch animation for boss scene
-TODO: Move all key inputs to new class
-TODO: Create static class in GameView to keep track of GameState (instead of using so many fields)
+TODO: Move all key inputs to new class?
+TODO: Create static class in GameView to keep track of GameState (instead of using so many instance variables/fields)
 TODO: General clean up of comments, prints
+TODO: Implement Explosion.java
+
+Issues: 
+Too many instance variables
+Gameview class is too large
+More efficient method to track win/lost besides timeline boolean checker
 
 
 Images from:
