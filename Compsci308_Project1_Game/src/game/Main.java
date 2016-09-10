@@ -23,11 +23,11 @@ public class Main extends Application implements GameWorld {
 	public static boolean DEBUG = false;
 
 	// Static in order to keep across new instances of gameview/bossbattle
-	private static BorderPane root;
-	private static Stage mainStage;
-	private static Scene scene;
-	private static HighScoreView hsView;
-	private static Main main = new Main();
+	private BorderPane root;
+	private Stage mainStage;
+	private Scene scene;
+	private HighScoreView hsView;
+	private Main main;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -68,16 +68,16 @@ public class Main extends Application implements GameWorld {
 		return startBtn;
 	}
 
-	private static void initGame(GameButton startBtn) {
+	private void initGame(GameButton startBtn) {
 		// Loads new scenes in background while on start screen
 		GameView game = new GameView();
 		Scene gameScene = game.initGame();
 		BossBattle boss = new BossBattle();
 
-		startBtn.getButton().setOnAction(e -> main.initMainGame(game, gameScene));
+		startBtn.getButton().setOnAction(e -> initMainGame(game, gameScene));
 
 		// continuously runs, executes when variable GameView.isGameOver is true
-		main.isGameOver(game, boss, hsView, startBtn);
+		isGameOver(game, boss, hsView, startBtn);
 
 		mainStage.setScene(scene);
 		mainStage.show();
@@ -167,7 +167,7 @@ public class Main extends Application implements GameWorld {
 		hsView.getOkButton().setOnAction(e -> {
 			if (hsView.getTextField().isDisabled()) {
 				hsView.getTextField().setDisable(false);
-				Main.initGame(startBtn);
+				main.initGame(startBtn);
 			} else {
 				hsView.handleOkButtonInput(game.getShip().getScore().get());
 			}
@@ -175,7 +175,7 @@ public class Main extends Application implements GameWorld {
 
 		hsView.getCloseButton().setOnAction(e -> {
 			hsView.getTextField().setDisable(false);
-			Main.initGame(startBtn);
+			initGame(startBtn);
 		});
 
 		mainStage.setScene(hsView.getScene());
@@ -194,7 +194,7 @@ public class Main extends Application implements GameWorld {
 		text.setFill(Color.GHOSTWHITE);
 
 		Button btn = new Button("Retry");
-		btn.setOnMouseClicked(e -> Main.initGame(startBtn));
+		btn.setOnMouseClicked(e -> main.initGame(startBtn));
 
 		newRoot.setCenter(text);
 		newRoot.setBottom(btn);
