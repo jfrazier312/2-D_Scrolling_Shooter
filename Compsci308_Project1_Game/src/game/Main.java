@@ -20,14 +20,12 @@ import javafx.util.Duration;
 public class Main extends Application implements GameWorld {
 
 	// public static debug, set to true to see print statements in console when playing
-	public static boolean DEBUG = false;
+	public static boolean DEBUG = true;
 
-	// Static in order to keep across new instances of gameview/bossbattle
 	private BorderPane root;
 	private Stage mainStage;
 	private Scene scene;
 	private HighScoreView hsView;
-	private Main main;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -167,7 +165,7 @@ public class Main extends Application implements GameWorld {
 		hsView.getOkButton().setOnAction(e -> {
 			if (hsView.getTextField().isDisabled()) {
 				hsView.getTextField().setDisable(false);
-				main.initGame(startBtn);
+				initGame(startBtn);
 			} else {
 				hsView.handleOkButtonInput(game.getShip().getScore().get());
 			}
@@ -194,7 +192,7 @@ public class Main extends Application implements GameWorld {
 		text.setFill(Color.GHOSTWHITE);
 
 		Button btn = new Button("Retry");
-		btn.setOnMouseClicked(e -> main.initGame(startBtn));
+		btn.setOnMouseClicked(e -> initGame(startBtn));
 
 		newRoot.setCenter(text);
 		newRoot.setBottom(btn);

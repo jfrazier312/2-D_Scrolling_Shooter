@@ -43,20 +43,23 @@ public class GameView implements GameWorld {
 	private final Random random = new Random();
 	private boolean isGameOver = false;
 	private boolean skipBattle = false;
-	// private CheatCodes cheats;
+	
 	private static final int SHIP_SPEED = 400;
 	private static final int BULLET_SPEED = 2;
 	private static final int MAX_ENEMIES = 9;
+	
 	private boolean spaceRepeat = false;
-	private Ship myShip;
-	private int enemyNumber = 2;
-	private Scene gameScene;
 	private final Text scoreCounter = new Text();
+	private int enemyNumber = 2;
+	
 	private List<TranslateTransition> animationList = new ArrayList<>();
 	private List<Timeline> timelineList = new ArrayList<>();
 	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
-	private CountDownTimer timer;
+	
+	private Ship myShip;
+	private Scene gameScene;
 	private Group gameRoot;
+	private CountDownTimer timer;
 	private AnimationTimer shipAnimation;
 	private ParallelTransition scrollingBackground;
 
