@@ -8,14 +8,21 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
-
+/**
+ * Creates a timer that is used by GameView.java. 
+ * The timer counts down until the boss battle scene is triggered
+ * 
+ * ex. Timer time = new Timer(Duration.seconds(30), new Ship("myship.png"))
+ * @author Jordan Frazier
+ *
+ */
 public class CountDownTimer {
 
 	private Timeline timeline;
 	private Label countdownLbl = new Label();
 	private Integer START_TIME;
 	private IntegerProperty countdownSeconds;
-	private static boolean countDownOver;
+	private boolean countDownOver;
 
 	public CountDownTimer(int startTime, Ship myShip) {
 		countDownOver = false;

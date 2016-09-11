@@ -18,7 +18,10 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /**
- * Main class to control game, determines when to switch scenes
+ * Main class to control game, determines when to switch scenes.
+ * Uses booleans in timelines to determine switch to boss battle and highscoreview.
+ * Starts game when GameButton("Start") is pressed.
+ * 
  * @author Jordan Frazier
  *
  */

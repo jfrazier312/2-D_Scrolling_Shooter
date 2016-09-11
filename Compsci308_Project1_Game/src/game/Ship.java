@@ -4,6 +4,14 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
+/**
+ * Ship class extends Sprite.java to create your ship image.
+ * Holds hit points, score, and ammo information
+ * 
+ * ex. Ship ship = new Ship("myship.png");
+ * @author jf
+ *
+ */
 public class Ship extends Sprite implements GameWorld {
 	
 	private final IntegerProperty playerHitPoints = new SimpleIntegerProperty();

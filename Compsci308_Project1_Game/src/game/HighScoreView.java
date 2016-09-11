@@ -22,8 +22,12 @@ import javafx.scene.paint.Stop;
 import javafx.scene.text.Text;
 
 /**
- * This class creates a high scores view and is called when the player defeats 
- * the boss
+ * This class creates a high scores view and is called by Main.java when the player defeats 
+ * the boss in BossBattle.java
+ * This class does not personally know the player's score, it is instead input by 
+ * Main.java into the handleOkButtonInput(int playerscore) method. 
+ * 
+ * ex. HighScoreView hsview = new HighScoreView();
  * @author Jordan Frazier (jrf30)
  *
  */

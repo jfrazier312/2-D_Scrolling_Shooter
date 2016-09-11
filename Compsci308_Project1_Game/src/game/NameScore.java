@@ -1,5 +1,10 @@
 package game;
 
+/**
+ * Used to help sort high scores in HighScoreView.java
+ * @author Jordan Frazier
+ *
+ */
 public class NameScore implements Comparable<NameScore> {
 	
 	private String name;

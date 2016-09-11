@@ -5,6 +5,13 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 
+/**
+ * This class is (supposed to be) used to add cheat codes to the game
+ * The Gameview and BossBattle scenes would use this class
+ * I have not yet implemented this class
+ * @author Jordan Frazier
+ *
+ */
 public class CheatCodes extends GameView {
 	
 	public CheatCodes(Scene scene, Ship ship, Text text) {

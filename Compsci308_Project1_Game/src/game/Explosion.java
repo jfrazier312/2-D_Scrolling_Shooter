@@ -8,7 +8,13 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
-
+/**
+ * This class is intended to become the animation for explosion of enemy boss 
+ * and your ship. Currently not implemented. 
+ * Explosion exp = new Explosion(20.0, 30.0);
+ * @author Jordan Frazier
+ *
+ */
 public class Explosion {
 	
 	private Path path;

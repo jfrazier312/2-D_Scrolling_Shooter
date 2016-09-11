@@ -3,7 +3,17 @@ package game;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
-
+/**
+ * Acts as the main screen game buttons. Used by Main.java to create the buttons.
+ * 
+ * Someone could call GameButton("randomtext"), which would cause this method to 
+ * create a game button that has no function. They would need to add in functionality
+ * in the switch statement in the contructor. 
+ * 
+ * ex. GameButton btn = new GameButton("Start");
+ * @author jf
+ *
+ */
 public class GameButton extends Button {
 	
 	private Button button;

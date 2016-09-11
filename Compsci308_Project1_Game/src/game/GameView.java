@@ -12,7 +12,6 @@ import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -22,8 +21,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -36,15 +33,20 @@ import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 /**
- * The main shooting game scene. Is called when the start button is pressed and 
- * continues to boss scene when the timer is finished.
+ * The main shooting game scene. Is called by Main.java when the start button is pressed and 
+ * continues to boss scene (BossBattle.java) when the timer (CountDownTimer.java) is finished.
+ * 
+ * GameView game = new GameView();
+ * game.initGame(); //sets up game background
+ * game.animatGame(); //begins game animation
+ * 
  * @author Jordan Frazier
  *
  */
 public class GameView implements GameWorld {
 
 	// Use this to change how long the timer lasts before boss battle triggered
-	private static final int GAME_TIME = 40;
+	private static final int GAME_TIME = 10;
 
 	private final Random random = new Random();
 	private boolean isGameOver = false;
