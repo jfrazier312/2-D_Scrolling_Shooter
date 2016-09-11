@@ -11,6 +11,10 @@ TODO: Move all key inputs to new class?
 TODO: Create static class in GameView to keep track of GameState (instead of using so many instance variables/fields)
 TODO: General clean up of comments, print statementds
 
+Bugs:
+In BossBattle, if user presses input keys when clicking through arrow key prompts, game interprets that as incorrect sequence
+and will cause game over to occur. --Solution is to not allow for inputs during this dialogue period. 
+
 Issues: 
 Too many instance variables
 Gameview class is too large
