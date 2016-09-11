@@ -57,7 +57,7 @@ public class GameView implements GameWorld {
 	private static final int MAX_ENEMIES = 9;
 
 	private boolean spaceRepeat = false;
-	private final Text scoreCounter = new Text();
+	private final Text scoreCounter;
 	private int enemyNumber = 2;
 
 	private List<TranslateTransition> animationList;
@@ -75,6 +75,7 @@ public class GameView implements GameWorld {
 		animationList = new ArrayList<TranslateTransition>();
 		timelineList = new ArrayList<Timeline>();
 		enemies = new ArrayList<EnemyShip>();
+		scoreCounter = new Text();
 
 		isGameOver = false;
 		// Creates game play timer
@@ -263,6 +264,7 @@ public class GameView implements GameWorld {
 		enemyNumber++;
 	}
 
+	@SuppressWarnings("unused")
 	@Deprecated
 	private void moveEnemyShip(EnemyShip enemy) {
 		TranslateTransition animation = new TranslateTransition(Duration.seconds(random.nextInt(2) + 1),

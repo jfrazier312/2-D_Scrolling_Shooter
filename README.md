@@ -21,7 +21,8 @@ TODO: Implement Explosion.java
 TODO: Create missile launch animation for boss scene
 TODO: Move all key inputs to new class? (CheatCodes renamed to KeyInputs and implemented)
 TODO: Create static class in GameView to keep track of GameState (instead of using so many instance variables/fields)
-TODO: General clean up of comments, print statementds
+TODO: General clean up of comments, print statements
+TODO: Implement enemy moving algorithm instead of random movements. It would be nice to create a cubic curve to have them circle the screen. 
 
 Bugs:
 In BossBattle, if user presses input keys when clicking 'Next' through arrow key prompts, game interprets that as 
