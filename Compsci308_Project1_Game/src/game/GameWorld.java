@@ -4,7 +4,7 @@ import javafx.scene.text.Text;
 
 /**
  * This interface determines the scene height and width
- * along with the ships dimensions
+ * along with the ship's dimensions
  * @author Jordan Frazier (jrf30)
  *
  */

@@ -33,11 +33,11 @@ import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 /**
- * The main shooting game scene. Is called by Main.java when the start button is pressed and 
- * continues to boss scene (BossBattle.java) when the timer (CountDownTimer.java) is finished.
+ * The main shooting game scene. Is called by Main.java when the start button is
+ * pressed and continues to boss scene (BossBattle.java) when the timer
+ * (CountDownTimer.java) is finished.
  * 
- * GameView game = new GameView();
- * game.initGame(); //sets up game background
+ * GameView game = new GameView(); game.initGame(); //sets up game background
  * game.animatGame(); //begins game animation
  * 
  * @author Jordan Frazier
@@ -46,24 +46,24 @@ import javafx.util.Duration;
 public class GameView implements GameWorld {
 
 	// Use this to change how long the timer lasts before boss battle triggered
-	private static final int GAME_TIME = 10;
+	private static final int GAME_TIME = 40;
 
 	private final Random random = new Random();
 	private boolean isGameOver = false;
 	private boolean skipBattle = false;
-	
+
 	private static final int SHIP_SPEED = 400;
 	private static final int BULLET_SPEED = 2;
 	private static final int MAX_ENEMIES = 9;
-	
+
 	private boolean spaceRepeat = false;
 	private final Text scoreCounter = new Text();
 	private int enemyNumber = 2;
-	
-	private List<TranslateTransition> animationList = new ArrayList<>();
-	private List<Timeline> timelineList = new ArrayList<>();
-	private List<EnemyShip> enemies = new ArrayList<EnemyShip>();
-	
+
+	private List<TranslateTransition> animationList;
+	private List<Timeline> timelineList;
+	private List<EnemyShip> enemies;
+
 	private Ship myShip;
 	private Scene gameScene;
 	private Group gameRoot;
@@ -72,6 +72,10 @@ public class GameView implements GameWorld {
 	private ParallelTransition scrollingBackground;
 
 	public GameView() {
+		animationList = new ArrayList<TranslateTransition>();
+		timelineList = new ArrayList<Timeline>();
+		enemies = new ArrayList<EnemyShip>();
+		
 		isGameOver = false;
 		// Creates game play timer
 		myShip = new Ship("images/MainShip.png");
@@ -79,12 +83,21 @@ public class GameView implements GameWorld {
 		gameRoot = new Group();
 	}
 
+	/**
+	 * Begins animation of main game. Called by Main.java when Start GameButton
+	 * is clicked.
+	 */
 	public void animateGame() {
 		timer.startCountDown();
 		EnemyShip enemy = createEnemy();
 		animateEnemy(enemy);
 	}
 
+	/**
+	 * Creates game scene in the background when the title screen is shown
+	 * 
+	 * @return game scene
+	 */
 	public Scene initGame() {
 		gameScene = new Scene(gameRoot, SCENE_WIDTH, SCENE_HEIGHT);
 
@@ -92,7 +105,6 @@ public class GameView implements GameWorld {
 		scrollBackground(backgroundGroup);
 		gameRoot.getChildren().add(backgroundGroup);
 		gameRoot.getChildren().add(timer.getLabel());
-
 		gameRoot.getChildren().add(myShip.getImageView());
 
 		// sets score counter at top and HitPoints
@@ -100,7 +112,6 @@ public class GameView implements GameWorld {
 
 		LongProperty lastUpdateTime = new SimpleLongProperty();
 		shipAnimation = new AnimationTimer() {
-
 			@Override
 			public void handle(long timestamp) {
 				// TODO: Figure out better algorithm that works spawning in
@@ -108,13 +119,10 @@ public class GameView implements GameWorld {
 				handleShipMovement(lastUpdateTime, timestamp);
 			}
 		};
-
 		shipAnimation.start();
-
 		// TODO: Move key inputs to new class?
 		handleKeyPressed();
 		handleKeyReleased();
-
 		return gameScene;
 	}
 
@@ -281,33 +289,32 @@ public class GameView implements GameWorld {
 		Timeline timeline = new Timeline();
 		timelineList.add(timeline);
 
-		KeyFrame end = new KeyFrame(Duration.millis(random.nextInt(2300) + 1000),
-				new KeyValue(enemy.getEnemyShip().xProperty(),
-						random.nextInt(SCENE_WIDTH - (int) enemy.getEnemyWidth())),
-				new KeyValue(enemy.getEnemyShip().yProperty(),
-						(int) enemy.getEnemyShip().getY() + random.nextInt(100) + 20));
+		KeyFrame end = getEnemyMovementKeyFrame(enemy);
 
 		timeline.getKeyFrames().add(end);
 		timeline.setCycleCount(1);
 		timeline.setOnFinished(e -> {
 			checkYBounds(enemy);
-
 			if (enemy.getAnimationStop()) {
 				timeline.stop();
 			} else {
 				timeline.getKeyFrames().remove(0);
-				timeline.getKeyFrames()
-						.add(new KeyFrame(Duration.millis(random.nextInt(2300) + 1000),
-								new KeyValue(enemy.getEnemyShip().xProperty(),
-										random.nextInt(SCENE_WIDTH - (int) enemy.getEnemyWidth())),
-								new KeyValue(enemy.getEnemyShip().yProperty(),
-										(int) enemy.getEnemyShip().getY() + random.nextInt(100) + 40)));
+				timeline.getKeyFrames().add(getEnemyMovementKeyFrame(enemy));
 				timeline.playFromStart();
 			}
 		});
 		if (!enemy.getAnimationStop()) {
 			timeline.playFromStart();
 		}
+	}
+
+	private KeyFrame getEnemyMovementKeyFrame(EnemyShip enemy) {
+		KeyFrame kf = new KeyFrame(Duration.millis(random.nextInt(2300) + 1000),
+				new KeyValue(enemy.getEnemyShip().xProperty(),
+						random.nextInt(SCENE_WIDTH - (int) enemy.getEnemyWidth())),
+				new KeyValue(enemy.getEnemyShip().yProperty(),
+						(int) enemy.getEnemyShip().getY() + random.nextInt(100) + 40));
+		return kf;
 	}
 
 	private EnemyShip createEnemy() {
@@ -481,6 +488,5 @@ public class GameView implements GameWorld {
 	public Scene getGameScene() {
 		return gameScene;
 	}
-
 
 }
