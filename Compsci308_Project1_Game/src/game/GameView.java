@@ -75,7 +75,7 @@ public class GameView implements GameWorld {
 		animationList = new ArrayList<TranslateTransition>();
 		timelineList = new ArrayList<Timeline>();
 		enemies = new ArrayList<EnemyShip>();
-		
+
 		isGameOver = false;
 		// Creates game play timer
 		myShip = new Ship("images/MainShip.png");
@@ -216,13 +216,12 @@ public class GameView implements GameWorld {
 			gameRoot.getChildren().add(bullet);
 			TranslateTransition animation = new TranslateTransition(Duration.seconds(BULLET_SPEED), bullet);
 			animationList.add(animation);
-			animation.setFromX(myShip.getImageView().getTranslateX() + SHIP_WIDTH / 2);
-			animation.setFromY(SCENE_HEIGHT - myShip.getImageView().getFitHeight());
-			animation.setToX(myShip.getImageView().getTranslateX() + SHIP_WIDTH / 2);
-			animation.setToY(-40);
+			setAnimationBounds(animation, myShip.getImageView().getTranslateX() + SHIP_WIDTH / 2,
+					SCENE_HEIGHT - myShip.getImageView().getFitHeight(),
+					myShip.getImageView().getTranslateX() + SHIP_WIDTH / 2, -40);
+			animation.play();
 
 			bullet.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
-
 				@Override
 				public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
 					for (EnemyShip enemy : new ArrayList<EnemyShip>(enemies)) {
@@ -232,13 +231,16 @@ public class GameView implements GameWorld {
 					}
 				}
 			});
-			animation.setOnFinished(e -> {
-				animation.stop();
-				gameRoot.getChildren().remove(bullet);
-			});
+			setOnBulletAnimationFinished(bullet, animation);
 			updateScoreCounter();
-			animation.play();
 		}
+	}
+
+	private void setAnimationBounds(TranslateTransition animation, double fromX, double fromY, double toX, double toY) {
+		animation.setFromX(fromX);
+		animation.setFromY(fromY);
+		animation.setToX(toX);
+		animation.setToY(toY);
 	}
 
 	private void handleBulletDestroyedEnemy(Shape bullet, TranslateTransition animation, EnemyShip enemy) {
@@ -248,7 +250,7 @@ public class GameView implements GameWorld {
 		animation.stop();
 		gameRoot.getChildren().remove(bullet);
 		// Creates two enemies on hit every three hits (offset by 2 to start)
-		// and # enemies < MAX_ENEMIES
+		// and if # enemies < MAX_ENEMIES
 		if (enemyNumber % 3 == 0 && enemies.size() < MAX_ENEMIES) {
 			for (int i = 0; i < 2; i++) {
 				animateEnemy(createEnemy());
@@ -318,7 +320,6 @@ public class GameView implements GameWorld {
 	}
 
 	private EnemyShip createEnemy() {
-		// TODO: need to randomize creation of enemy position
 		EnemyShip enemy = new EnemyShip("images/enemyShip.png");
 		enemies.add(enemy);
 		gameRoot.getChildren().add(enemy.getEnemyShip());
@@ -359,10 +360,8 @@ public class GameView implements GameWorld {
 		gameRoot.getChildren().add(enemyBullet);
 		TranslateTransition animation = new TranslateTransition(Duration.seconds(random.nextInt(3) + 1), enemyBullet);
 		animationList.add(animation);
-		animation.setFromX(ship.getX() + enemy.getEnemyWidth() / 2);
-		animation.setFromY(ship.getY() + enemy.getEnemyHeight());
-		animation.setToX(ship.getX() + enemy.getEnemyWidth() / 2);
-		animation.setToY(SCENE_HEIGHT + 40);
+		setAnimationBounds(animation, ship.getX() + enemy.getEnemyWidth() / 2, ship.getY() + enemy.getEnemyHeight(),
+				ship.getX() + enemy.getEnemyWidth() / 2, SCENE_HEIGHT + 40);
 		animation.play();
 
 		enemyBullet.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
@@ -379,12 +378,14 @@ public class GameView implements GameWorld {
 				}
 			}
 		});
+		setOnBulletAnimationFinished(enemyBullet, animation);
+	}
 
+	private void setOnBulletAnimationFinished(Shape bullet, TranslateTransition animation) {
 		animation.setOnFinished(e -> {
-			gameRoot.getChildren().remove(enemyBullet);
+			gameRoot.getChildren().remove(bullet);
 			animation.stop();
 		});
-
 	}
 
 	private void checkYBounds(EnemyShip enemy) {
