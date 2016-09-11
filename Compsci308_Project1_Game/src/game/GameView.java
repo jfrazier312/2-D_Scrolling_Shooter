@@ -35,6 +35,12 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
+/**
+ * The main shooting game scene. Is called when the start button is pressed and 
+ * continues to boss scene when the timer is finished.
+ * @author Jordan Frazier
+ *
+ */
 public class GameView implements GameWorld {
 
 	// Use this to change how long the timer lasts before boss battle triggered

@@ -17,15 +17,19 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+/**
+ * Main class to control game, determines when to switch scenes
+ * @author Jordan Frazier
+ *
+ */
 public class Main extends Application implements GameWorld {
 
 	// public static debug, set to true to see print statements in console when playing
-	public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
 
 	private BorderPane root;
 	private Stage mainStage;
 	private Scene scene;
-	private HighScoreView hsView;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -35,6 +39,7 @@ public class Main extends Application implements GameWorld {
 	public void start(Stage primaryStage) throws Exception {
 		mainStage = primaryStage;
 		root = new BorderPane();
+		HighScoreView hsView = new HighScoreView();
 
 		// start, rules, cheat codes buttons
 		GameButton startBtn = createButtons();
@@ -42,8 +47,7 @@ public class Main extends Application implements GameWorld {
 		scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
 		scene.getStylesheets().add(Main.class.getResource("GameStyle.css").toExternalForm());
 		mainStage.setTitle("Game Start Screen");
-		hsView = new HighScoreView();
-		initGame(startBtn);
+		initGame(startBtn, hsView);
 	}
 
 	/**
@@ -66,7 +70,7 @@ public class Main extends Application implements GameWorld {
 		return startBtn;
 	}
 
-	private void initGame(GameButton startBtn) {
+	private void initGame(GameButton startBtn, HighScoreView hsView) {
 		// Loads new scenes in background while on start screen
 		GameView game = new GameView();
 		Scene gameScene = game.initGame();
@@ -100,7 +104,7 @@ public class Main extends Application implements GameWorld {
 				createGameOverWon(game, hsView, startBtn);
 			} else if (boss.getGameOverLost()) {
 				timeline.stop();
-				createGameOverLost(startBtn);
+				createGameOverLost(startBtn, hsView);
 			}
 		}));
 		timeline.play();
@@ -140,7 +144,7 @@ public class Main extends Application implements GameWorld {
 				isGameWon(game, hsView, startBtn, boss);
 			} else if (game.getGameOver()) {
 				timeline.stop();
-				createGameOverLost(startBtn);
+				createGameOverLost(startBtn, hsView);
 			}
 		}));
 		timeline.play();
@@ -165,7 +169,7 @@ public class Main extends Application implements GameWorld {
 		hsView.getOkButton().setOnAction(e -> {
 			if (hsView.getTextField().isDisabled()) {
 				hsView.getTextField().setDisable(false);
-				initGame(startBtn);
+				initGame(startBtn, hsView);
 			} else {
 				hsView.handleOkButtonInput(game.getShip().getScore().get());
 			}
@@ -173,13 +177,13 @@ public class Main extends Application implements GameWorld {
 
 		hsView.getCloseButton().setOnAction(e -> {
 			hsView.getTextField().setDisable(false);
-			initGame(startBtn);
+			initGame(startBtn, hsView);
 		});
 
 		mainStage.setScene(hsView.getScene());
 	}
 
-	private void createGameOverLost(GameButton startBtn) {
+	private void createGameOverLost(GameButton startBtn, HighScoreView hsView) {
 		BorderPane newRoot = new BorderPane();
 		newRoot.getStyleClass().add("gameOverLost");
 		newRoot.setStyle("-fx-background-color: black");
@@ -192,7 +196,7 @@ public class Main extends Application implements GameWorld {
 		text.setFill(Color.GHOSTWHITE);
 
 		Button btn = new Button("Retry");
-		btn.setOnMouseClicked(e -> initGame(startBtn));
+		btn.setOnMouseClicked(e -> initGame(startBtn, hsView));
 
 		newRoot.setCenter(text);
 		newRoot.setBottom(btn);
