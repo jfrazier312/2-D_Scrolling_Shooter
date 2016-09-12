@@ -73,6 +73,11 @@ public class Main extends Application implements GameWorld {
 		return startBtn;
 	}
 
+	/**
+	 * Loads the start screen and other scenes in the background.
+	 * @param startBtn button that starts game instance
+	 * @param hsView the high score view
+	 */
 	private void initGame(GameButton startBtn, HighScoreView hsView) {
 		// Loads new scenes in background while on start screen
 		GameView game = new GameView();
@@ -116,8 +121,8 @@ public class Main extends Application implements GameWorld {
 	/**
 	 * Animates a new game
 	 * 
-	 * @param game
-	 * @param gameScene
+	 * @param game the game instance
+	 * @param gameScene the game's scene
 	 */
 	private void initMainGame(GameView game, Scene gameScene) {
 		mainStage.setScene(gameScene);
@@ -129,10 +134,10 @@ public class Main extends Application implements GameWorld {
 	 * Continuously runs in main game scene, checks if you die or timer stops
 	 * first.
 	 * 
-	 * @param game
-	 * @param boss
-	 * @param hsView
-	 * @param startBtn
+	 * @param game game instance
+	 * @param boss boss battle instance
+	 * @param hsView highscore view instance
+	 * @param startBtn button that starts game instance
 	 */
 	private void isGameOver(GameView game, BossBattle boss, HighScoreView hsView, GameButton startBtn) {
 		Timeline timeline = new Timeline();
@@ -158,7 +163,7 @@ public class Main extends Application implements GameWorld {
 	 * 
 	 * @param game current game instance
 	 * @param hsView high score view (preloaded)
-	 * @param startBtn
+	 * @param startBtn button that starts game instance
 	 */
 	private void createGameOverWon(GameView game, HighScoreView hsView, GameButton startBtn) {
 		mainStage.setTitle("High Scores");
