@@ -32,12 +32,10 @@ import javafx.scene.text.Text;
 public class BossBattle implements GameWorld {
 
 	private Scene bossScene;
-	private BorderPane root;
 	private VBox vbox;
 
-	private List<Text> textList = new ArrayList<>();
 	private List<Text> inputList = new ArrayList<>();
-	private List<KeyCode> inputs;
+	private List<KeyCode> inputs = new ArrayList<>();
 
 	private static final int SEQUENCE_LENGTH = 6;
 	private int currentSequence = 2;
@@ -54,25 +52,27 @@ public class BossBattle implements GameWorld {
 		gameOverLost = false;
 		gameOverWon = false;
 
-		setRootAndScene();
-		fillDialogList();
-		createLaunchTimerAndButtons();
+		List<Text> textList = new ArrayList<>();
+		BorderPane root = setRootAndScene();
+		fillDialogList(textList);
+		createLaunchTimerAndButtons(textList, root);
 	}
 
 	/**
 	 * Sets the root and scene for the boss battle
 	 */
-	private void setRootAndScene() {
-		root = new BorderPane();
-		root.getStyleClass().add("bossBackground");
-		bossScene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
+	private BorderPane setRootAndScene() {
+		BorderPane bp = new BorderPane();
+		bp.getStyleClass().add("bossBackground");
+		bossScene = new Scene(bp, SCENE_WIDTH, SCENE_HEIGHT);
 		bossScene.getStylesheets().add(BossBattle.class.getResource("GameStyle.css").toExternalForm());
+		return bp;
 	}
-	
+
 	/**
 	 * Fills dialog list with text
 	 */
-	private void fillDialogList() {
+	private void fillDialogList(List<Text> textList) {
 		textList.add(new Text("The enemy boss is here!"));
 		textList.add(new Text("We only have one missile strong enough to defeat the mothership..."));
 		textList.add(new Text("That means we only have one chance to do this!"));
@@ -85,31 +85,36 @@ public class BossBattle implements GameWorld {
 
 	/**
 	 * Creates launch timer, buttons, and sets button actions
+	 * 
+	 * @param textList
+	 *            The text list of dialog
+	 * @param root
+	 *            the BorderPane
 	 */
-	private void createLaunchTimerAndButtons() {
+	private void createLaunchTimerAndButtons(List<Text> textList, BorderPane root) {
 		final SimpleIntegerProperty launchCounter = new SimpleIntegerProperty();
 		Timer timer = createLaunchCheckerTimer(launchCounter);
 		Button continueBtn = new Button("Continue");
 		Button nextBtn = new Button("Next");
 		Button okBtn = new Button("Let's do this");
-		createVBox(continueBtn);
-		setButtonActions(nextBtn, okBtn, continueBtn, timer, launchCounter);
+
+		createVBox();
+		vbox.getChildren().addAll(textList.get(textNum), continueBtn);
+		root.setBottom(vbox);
+
+		setButtonActions(nextBtn, okBtn, continueBtn, timer, launchCounter, textList);
 	}
-	
+
 	/**
-	 * Creates vbox to hold buttons and text
+	 * Creates VBox to hold buttons and text
 	 * 
-	 * @param continueBtn btn is added to vbox
 	 */
-	private void createVBox(Button continueBtn) {
+	private void createVBox() {
 		vbox = new VBox(10);
 		vbox.setPadding(new Insets(50, 0, 70, 0));
 		vbox.setAlignment(Pos.CENTER);
-		vbox.getChildren().addAll(textList.get(textNum), continueBtn);
-		root.setBottom(vbox);
 	}
-	
-	
+
 	/**
 	 * Creates timer that continuously checks if the launch boolean is true
 	 * 
@@ -135,17 +140,21 @@ public class BossBattle implements GameWorld {
 	 * 
 	 * Method sets buttons to toggle through input and launch sequence.
 	 * 
-	 * @param nextBtn the next button
-	 * @param okBtn the ok button
-	 * @param continueBtn the continue button
-	 * @param timer the timer that checks for launch
-	 * @param launchCounter counts when launch is ready
+	 * @param nextBtn
+	 *            the next button
+	 * @param okBtn
+	 *            the ok button
+	 * @param continueBtn
+	 *            the continue button
+	 * @param timer
+	 *            the timer that checks for launch
+	 * @param launchCounter
+	 *            counts when launch is ready
 	 */
 	private void setButtonActions(Button nextBtn, Button okBtn, Button continueBtn, Timer timer,
-			SimpleIntegerProperty launchCounter) {
-		
+			SimpleIntegerProperty launchCounter, List<Text> textList) {
 		setNextButtonActions(nextBtn, okBtn);
-		setContinueButtonActions(nextBtn, continueBtn);
+		setContinueButtonActions(nextBtn, continueBtn, textList);
 		setOkButtonActions(nextBtn, okBtn, timer, launchCounter);
 		// If 'b' is pressed, cheat code is activated and triggers automatic win
 		setCheatCodeAction();
@@ -178,16 +187,14 @@ public class BossBattle implements GameWorld {
 		});
 	}
 
-	private void setContinueButtonActions(Button nextBtn, Button continueBtn) {
+	private void setContinueButtonActions(Button nextBtn, Button continueBtn, List<Text> textList) {
 		continueBtn.setOnMouseClicked(e -> {
 			vbox.getChildren().removeAll(textList.get(textNum), continueBtn);
 			textNum++;
 			if (textNum < textList.size()) {
 				vbox.getChildren().addAll(textList.get(textNum), continueBtn);
 			} else {
-				// Fill list with launch sequence
 				fillInputList(currentSequence);
-				inputs = translateInputListToKeyCodes();
 				vbox.getChildren().addAll(inputList.get(inputNum), nextBtn);
 			}
 		});
@@ -195,8 +202,11 @@ public class BossBattle implements GameWorld {
 
 	/**
 	 * Checks whether the launch sequence is ready to fire and win the game
-	 * @param timer The timer checking the boolean
-	 * @param launchCounter the SimpleIntegerProperty to hold the length of launchCounter
+	 * 
+	 * @param timer
+	 *            The timer checking the boolean
+	 * @param launchCounter
+	 *            the SimpleIntegerProperty to hold the length of launchCounter
 	 */
 	private void checkLaunchBoolean(Timer timer, SimpleIntegerProperty launchCounter) {
 		if (launchCounter.get() == SEQUENCE_LENGTH || cheatCodeActive) {
@@ -226,32 +236,37 @@ public class BossBattle implements GameWorld {
 
 	/**
 	 * Resets input list and key codes, so player can get new instructions
-	 * @param nextBtn toggle through inputs
-	 * @param launchCounter holds length of current sequence, resets to 0
+	 * 
+	 * @param nextBtn
+	 *            toggle through inputs
+	 * @param launchCounter
+	 *            holds length of current sequence, resets to 0
 	 */
 	private void resetInputList(Button nextBtn, SimpleIntegerProperty launchCounter) {
 		launchCounter.set(0);
-		currentSequence++;
 		inputNum = 0;
+		
+		currentSequence++;
 		fillInputList(currentSequence);
-		inputs = translateInputListToKeyCodes();
 		vbox.getChildren().addAll(inputList.get(inputNum), nextBtn);
 	}
 
 	/**
 	 * Handles the missile sequence input logic
 	 * 
-	 * @param timer timer to check boolean
-	 * @param nextBtn toggles through input
-	 * @param launchCounter holds length of current sequence
+	 * @param timer
+	 *            timer to check boolean
+	 * @param nextBtn
+	 *            toggles through input
+	 * @param launchCounter
+	 *            holds length of current sequence
 	 */
 	private void handleLaunchInput(Timer timer, Button nextBtn, SimpleIntegerProperty launchCounter) {
-		// boo used to ensure multiple incorrect keys don't trigger
-		// incorrectLaunchInput() more than once
-		final SimpleBooleanProperty boo = new SimpleBooleanProperty();
-		boo.set(true);
-	
-		//Executes logic to handle if keys are input in correct order
+		// blocker used to ensure multiple incorrect keys don't trigger incorrectLaunchInput() more than once
+		final SimpleBooleanProperty blocker = new SimpleBooleanProperty();
+		blocker.set(true);
+
+		// Checks whether player inputs keys in correct order
 		bossScene.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.B) {
 				cheatCodeActive = true;
@@ -261,11 +276,12 @@ public class BossBattle implements GameWorld {
 					if ((launchCounter.get() == currentSequence) && (launchCounter.get() != SEQUENCE_LENGTH)) {
 						resetInputList(nextBtn, launchCounter);
 					}
-				} else if (boo.get() && e.getCode() != KeyCode.B) {
-					boo.set(false);
+				} else if (blocker.get() && e.getCode() != KeyCode.B) {
+					blocker.set(false);
 					timer.cancel();
 					bossScene.setOnKeyPressed(ev -> {
-						if(Main.DEBUG) System.out.println("Stop pressing keys. You lost.");
+						if (Main.DEBUG)
+							System.out.println("Stop pressing keys. You are dead.");
 					});
 					incorrectLaunchInput();
 				}
@@ -278,53 +294,60 @@ public class BossBattle implements GameWorld {
 	 * button to signal game is over.
 	 */
 	private void incorrectLaunchInput() {
+		if (Main.DEBUG)
+			System.out.println("You lose");
+
 		Button btn = new Button("Accept fate");
 		Text text = new Text("Missile Malfunction! Missile exploding before launching!");
 		text.setFill(Color.GHOSTWHITE);
 		vbox.getChildren().addAll(text, btn);
-		if (Main.DEBUG)
-			System.out.println("You lose");
 		btn.setOnAction(e -> {
 			gameOverLost = true;
 		});
 	}
 
 	/**
-	 * Translates the text input list to KeyCodes that can be compared to
+	 * Translates the text input list to KeyCodes that can be compared to event handlers
+	 * 
 	 * @return returns a list of keycodes
 	 */
+	@SuppressWarnings("unused")
 	private List<KeyCode> translateInputListToKeyCodes() {
-		List<KeyCode> input = new ArrayList<>();
+		List<KeyCode> inputs = new ArrayList<>();
 		for (Text text : inputList) {
 			switch (text.getText()) {
 			case "UP":
-				input.add(KeyCode.UP);
+				inputs.add(KeyCode.UP);
 				break;
 			case "RIGHT":
-				input.add(KeyCode.RIGHT);
+				inputs.add(KeyCode.RIGHT);
 				break;
 			case "DOWN":
-				input.add(KeyCode.DOWN);
+				inputs.add(KeyCode.DOWN);
 				break;
 			case "LEFT":
-				input.add(KeyCode.LEFT);
+				inputs.add(KeyCode.LEFT);
 				break;
 			default:
 				// do nothing
 			}
 		}
-		return input;
+		return inputs;
+
 	}
-	
+
 	/**
 	 * Fills input list with keycodes text
-	 * @param len size of input list
+	 * 
+	 * @param len
+	 *            - size of input list
 	 */
 	private void fillInputList(int len) {
 		inputList.clear();
+		inputs.clear();
 		Random random = new Random();
 		for (int i = 0; i < len; i++) {
-			Text direction = getRandomDirection(random);
+			Text direction = getRandomDirection(random.nextInt(4));
 			direction.setFill(Color.CADETBLUE);
 			inputList.add(direction);
 		}
@@ -335,24 +358,29 @@ public class BossBattle implements GameWorld {
 
 	/**
 	 * Gets random directions for input
-	 * @param random number generator
+	 * 
+	 * @param randomNum
+	 *            a random number
 	 * @return Text containing direction
 	 */
-	private Text getRandomDirection(Random random) {
-		int num = random.nextInt(4);
+	private Text getRandomDirection(int randomNum) {
 		Text text;
-		switch (num) {
+		switch (randomNum) {
 		case 0:
-			text = new Text("UP");
+			text = Directions.UP.toText();
+			inputs.add(Directions.UP.getKeyCode());
 			break;
 		case 1:
-			text = new Text("RIGHT");
+			text = Directions.RIGHT.toText();
+			inputs.add(Directions.RIGHT.getKeyCode());
 			break;
 		case 2:
-			text = new Text("DOWN");
+			text = Directions.DOWN.toText();
+			inputs.add(Directions.DOWN.getKeyCode());
 			break;
 		case 3:
-			text = new Text("LEFT");
+			text = Directions.LEFT.toText();
+			inputs.add(Directions.LEFT.getKeyCode());
 			break;
 		default:
 			text = new Text();
