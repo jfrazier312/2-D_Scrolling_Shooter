@@ -19,6 +19,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
+// This entire file is part of my masterpiece
+// Jordan Frazier
+
 /**
  * Creates a boss battle scene. This class is called when the player has
  * survived the GameView scene for as long as the count down timer is set to.
@@ -52,10 +55,32 @@ public class BossBattle implements GameWorld {
 		gameOverWon = false;
 
 		setRootAndScene();
-
 		fillDialogList();
-
 		createLaunchTimerAndButtons();
+	}
+
+	/**
+	 * Sets the root and scene for the boss battle
+	 */
+	private void setRootAndScene() {
+		root = new BorderPane();
+		root.getStyleClass().add("bossBackground");
+		bossScene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
+		bossScene.getStylesheets().add(BossBattle.class.getResource("GameStyle.css").toExternalForm());
+	}
+	
+	/**
+	 * Fills dialog list with text
+	 */
+	private void fillDialogList() {
+		textList.add(new Text("The enemy boss is here!"));
+		textList.add(new Text("We only have one missile strong enough to defeat the mothership..."));
+		textList.add(new Text("That means we only have one chance to do this!"));
+		textList.add(new Text("You must memorize the launch sequence as I transmit it and input it into the ship..."));
+		textList.add(new Text("Good luck, and Godspeed."));
+		for (Text txt : textList) {
+			txt.setFill(Color.ORANGERED);
+		}
 	}
 
 	/**
@@ -70,7 +95,21 @@ public class BossBattle implements GameWorld {
 		createVBox(continueBtn);
 		setButtonActions(nextBtn, okBtn, continueBtn, timer, launchCounter);
 	}
-
+	
+	/**
+	 * Creates vbox to hold buttons and text
+	 * 
+	 * @param continueBtn btn is added to vbox
+	 */
+	private void createVBox(Button continueBtn) {
+		vbox = new VBox(10);
+		vbox.setPadding(new Insets(50, 0, 70, 0));
+		vbox.setAlignment(Pos.CENTER);
+		vbox.getChildren().addAll(textList.get(textNum), continueBtn);
+		root.setBottom(vbox);
+	}
+	
+	
 	/**
 	 * Creates timer that continuously checks if the launch boolean is true
 	 * 
@@ -91,29 +130,6 @@ public class BossBattle implements GameWorld {
 	}
 
 	/**
-	 * Sets the root and scene for the boss battle
-	 */
-	private void setRootAndScene() {
-		root = new BorderPane();
-		root.getStyleClass().add("bossBackground");
-		bossScene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
-		bossScene.getStylesheets().add(BossBattle.class.getResource("GameStyle.css").toExternalForm());
-	}
-
-	/**
-	 * Creates vbox to hold buttons and text
-	 * 
-	 * @param continueBtn btn is added to vbox
-	 */
-	private void createVBox(Button continueBtn) {
-		vbox = new VBox(10);
-		vbox.setPadding(new Insets(50, 0, 70, 0));
-		vbox.setAlignment(Pos.CENTER);
-		vbox.getChildren().addAll(textList.get(textNum), continueBtn);
-		root.setBottom(vbox);
-	}
-
-	/**
 	 * Set Button actions on Mouse Clicked instead of On Action in case user is
 	 * pressing spacebar to fire in game view, and scene shifts to boss scene.
 	 * 
@@ -129,11 +145,8 @@ public class BossBattle implements GameWorld {
 			SimpleIntegerProperty launchCounter) {
 		
 		setNextButtonActions(nextBtn, okBtn);
-
 		setContinueButtonActions(nextBtn, continueBtn);
-
 		setOkButtonActions(nextBtn, okBtn, timer, launchCounter);
-		
 		// If 'b' is pressed, cheat code is activated and triggers automatic win
 		setCheatCodeAction();
 	}
@@ -180,6 +193,11 @@ public class BossBattle implements GameWorld {
 		});
 	}
 
+	/**
+	 * Checks whether the launch sequence is ready to fire and win the game
+	 * @param timer The timer checking the boolean
+	 * @param launchCounter the SimpleIntegerProperty to hold the length of launchCounter
+	 */
 	private void checkLaunchBoolean(Timer timer, SimpleIntegerProperty launchCounter) {
 		if (launchCounter.get() == SEQUENCE_LENGTH || cheatCodeActive) {
 			if (Main.DEBUG)
@@ -195,7 +213,7 @@ public class BossBattle implements GameWorld {
 	/**
 	 * Creates text and button for missile firing
 	 * 
-	 * @return button
+	 * @return button button to select after defeating boss
 	 */
 	private Button createMissileFiringDialog() {
 		Text text = new Text("Missile sequence accepted. Launching missile!");
@@ -208,8 +226,8 @@ public class BossBattle implements GameWorld {
 
 	/**
 	 * Resets input list and key codes, so player can get new instructions
-	 * @param nextBtn
-	 * @param launchCounter
+	 * @param nextBtn toggle through inputs
+	 * @param launchCounter holds length of current sequence, resets to 0
 	 */
 	private void resetInputList(Button nextBtn, SimpleIntegerProperty launchCounter) {
 		launchCounter.set(0);
@@ -223,12 +241,12 @@ public class BossBattle implements GameWorld {
 	/**
 	 * Handles the missile sequence input logic
 	 * 
-	 * @param timer
-	 * @param nextBtn
-	 * @param launchCounter
+	 * @param timer timer to check boolean
+	 * @param nextBtn toggles through input
+	 * @param launchCounter holds length of current sequence
 	 */
 	private void handleLaunchInput(Timer timer, Button nextBtn, SimpleIntegerProperty launchCounter) {
-		// Used to ensure multiple incorrect keys don't trigger
+		// boo used to ensure multiple incorrect keys don't trigger
 		// incorrectLaunchInput() more than once
 		final SimpleBooleanProperty boo = new SimpleBooleanProperty();
 		boo.set(true);
@@ -316,23 +334,9 @@ public class BossBattle implements GameWorld {
 	}
 
 	/**
-	 * Fills dialog list with text
-	 */
-	private void fillDialogList() {
-		textList.add(new Text("The enemy boss is here!"));
-		textList.add(new Text("We only have one missile strong enough to defeat the mothership..."));
-		textList.add(new Text("That means we only have one chance to do this!"));
-		textList.add(new Text("You must memorize the launch sequence as I transmit it and input it into the ship..."));
-		textList.add(new Text("Good luck, and Godspeed."));
-		for (Text txt : textList) {
-			txt.setFill(Color.ORANGERED);
-		}
-	}
-
-	/**
 	 * Gets random directions for input
 	 * @param random number generator
-	 * @return
+	 * @return Text containing direction
 	 */
 	private Text getRandomDirection(Random random) {
 		int num = random.nextInt(4);
