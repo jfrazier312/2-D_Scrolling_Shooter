@@ -8,7 +8,7 @@ Resources:
 - http://docs.oracle.com/javafx/2/get_started/jfxpub-get_started.htm
 - http://docs.oracle.com/javase/8/javase-clienttechnologies.htm
 - http://stackoverflow.com/questions/116519/best-resources-for-learning-javafx
-- 
+
 Images:
 - http://www.desktopwallpaperhd.net/wallpapers/18/5/space-wallpaper-earth-background-cool-mania-186853.jpg
 - filmconnoisseur.blogspot.com
