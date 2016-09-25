@@ -1,8 +1,8 @@
-README
-Jordan Frazier (jrf30)
-Started: ~August 10th. Ended: September 11.
-Hours (including reading javafx docs): 70+
-Design.txt located in Compsci308_Project1_Game/src/game.
+README <br>
+Jordan Frazier 
+
+Initialize <br> 
+Ensure your IDE supports JavaFX. Clone repo into local directory and run Main.java. 
 
 Resources:
 - http://docs.oracle.com/javafx/2/get_started/jfxpub-get_started.htm
@@ -56,18 +56,3 @@ This scene features a textfield to input your initials, and a list that will kee
 and sort them by score (the number of enemy ships you destroyed in GameView.java scene). From this screen,
 you can enter your score, then hit retry to go back to the start screen. If you do not end the program,
 the high scores will be saved and you can try to beat your last score. 
-
-Impressions:
-- I had a lot of fun working on this project. I liked how it was open-ended and gave me freedom to make any type of 
-game I wanted. I probably spent too much time on little things (like the high score view_, and not enough time beforehand 
-focusing on the design of the project. The game began with me following a tutorial that explained how to animate
-a rectangle and make it move sideways, and from there I thought about how I could easily turn this
-into something like one of my favorite old arcade games, Galaga. 
-- However, if I hadn't started pretty far in advance, I think I would have had more difficulty with this project.
-For instance, it is much easier to add to an ArrayList than having to create a new array of integers each time 
-you want to add a new integer to a list/array. 
-- Similarly, I spent a good amount of time trying to figure out if there was a difference between using a Timeline
-and Keyframes or using TranslateTransition, or the multitude of other transitions. Unless you have experience
-with the library, it is hard to know what resources you have available to you and what would work best.
-Overall, good fun and, as this is my first experience with GUI stuff, it was rewarding to see the project
-come to life. 
